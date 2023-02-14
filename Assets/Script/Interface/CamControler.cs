@@ -9,44 +9,66 @@ public class CamControler : MonoBehaviour
     [SerializeField] Transform playerTarget;
     [SerializeField] Vector3 focoPos;
 
-    [Range(1,100)][SerializeField]
+    [Range(1,500)][SerializeField]
     float SpeedCamSwith = 5;
 
     [SerializeField]
     float mouseSensivity = 8;
 
+    [Header("Config Foco")]
     [Range(10,80)][SerializeField]
-    float fieldOfView = 40f;
+    float fieldOfView = 0f;
+    [Range(10,80)][SerializeField]
+    float fieldView = 0;
+    [SerializeField] float alturaFoco = 0;
 
     [Header("Position Cam")]
     [SerializeField] float distance = 25;
-    [SerializeField] float altura = 6;
-    [SerializeField] float pan = 0;
+    [SerializeField] float altura = 0;
+    //[SerializeField] float pan = 0;
+    
+    
 
     float camDistance = 0; 
     float camAltura = 0;
     float camPan = 0;
 
-    Vector2 yMinMax = new Vector2(-75, 75);
+    [SerializeField] Vector2 yMinMax = new Vector2(-75, 75);
 
     //Hud hud;
     Vector3 foco;
-    Vector3 rotationSmoothSpeed;
+    [SerializeField] Vector3 rotationSmoothSpeed;
     RaycastHit hit;
     Vector3 rotationAtual;
 
-    bool NotOrbit;
+    [HideInInspector] public bool cursorVisible = true;
 
     float x;
     float y;
 
-    void Start(){       
+    private void Awake() {
+        Application.targetFrameRate = 60;
+    }
+
+    void Start(){    
         playerTarget.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+        transform.SetParent(playerTarget);
     }
 
     void Update(){
-        
-        if(Input.GetKeyDown(KeyCode.LeftAlt)) NotOrbit = !NotOrbit;
+
+        if(Input.GetKeyDown(KeyCode.LeftAlt))
+            cursorVisible = !cursorVisible;        
+
+        if(cursorVisible)
+           Cursor.lockState = CursorLockMode.None;
+        else
+           Cursor.lockState = CursorLockMode.Locked;
+
+        CamFoco(Input.GetMouseButton(1));
+
+        Cursor.visible = cursorVisible;
 
         foco = focoPos + playerTarget.position;
     }
@@ -56,12 +78,12 @@ public class CamControler : MonoBehaviour
     {
         transform.localEulerAngles = CamRotationOrbital(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
 
-        transform.position = CamColider();  
+        transform.position = Vector3.Lerp(transform.position, CamColider(),SpeedCamSwith * Time.deltaTime);
     }
 
     Vector3 CamRotationOrbital(float eixoX, float eixoY){
 
-        if(NotOrbit)
+        if(cursorVisible)
             return rotationAtual;
 
         x += eixoX * mouseSensivity ;
@@ -76,7 +98,7 @@ public class CamControler : MonoBehaviour
 
     float CamDistance(){
 
-        camDistance = Mathf.Lerp(camDistance,distance,SpeedCamSwith * 0.12f);
+        camDistance = Mathf.MoveTowards(camDistance,distance,SpeedCamSwith * Time.deltaTime);
 
         return camDistance;
        
@@ -84,7 +106,7 @@ public class CamControler : MonoBehaviour
 
     float CamAltura(){
 
-        camAltura = Mathf.Lerp(camAltura,altura,SpeedCamSwith * 0.12f);
+        camAltura = Mathf.MoveTowards(camAltura,altura,SpeedCamSwith * Time.deltaTime);
 
         return camAltura;
 
@@ -92,7 +114,7 @@ public class CamControler : MonoBehaviour
 
     float CamPan(){
 
-        camPan = Mathf.Lerp(camPan,0,(SpeedCamSwith/4) * 0.12f);
+        camPan = Mathf.MoveTowards(camPan,0,(SpeedCamSwith/4) * Time.deltaTime);
 
         return camPan;
     }
@@ -128,13 +150,13 @@ public class CamControler : MonoBehaviour
 
     }
 
-    public void CamFoco(bool inputPress){
+    void CamFoco(bool inputPress){
 
         if(inputPress){
-            mainCam.fieldOfView = Mathf.Lerp( mainCam.fieldOfView, 20, 0.12f);
-            altura = Mathf.Lerp(altura,2.5f,0.12f);
+            mainCam.fieldOfView = Mathf.Lerp( mainCam.fieldOfView, fieldView, 0.12f);
+            camAltura = Mathf.Lerp(camAltura,alturaFoco,0.12f);
         }else{
-            altura = Mathf.Lerp(altura,5,0.12f);;
+            camAltura = Mathf.Lerp(camAltura, altura,0.12f);
             mainCam.fieldOfView = Mathf.Lerp(mainCam.fieldOfView, fieldOfView, 0.12f);
         }
         
