@@ -6,7 +6,7 @@ public class PlayerControler
 {
     public InputsVar inputsControl;
 
-    public void CharacterInputs(){        
+    public void GameInputs(){        
         
         if(!Cursor.visible){
         

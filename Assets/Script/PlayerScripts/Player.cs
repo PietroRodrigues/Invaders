@@ -8,8 +8,10 @@ public class Player : Statos
     [SerializeField] Rigidbody rb;
     [SerializeField] HUD hud;
     [SerializeField] CamControler camControler;
+    [SerializeField] float DistanciaRaioPropulsor;
+    [SerializeField] float fatorAmplification;
 
-    PlayerControler playerControler;
+    [HideInInspector] public PlayerControler playerControler;
     PlayerFisics playerFisics;
     Shoting shoting;
     PlayerAnimation playerAnimation;
@@ -20,6 +22,8 @@ public class Player : Statos
     [SerializeField] PartsTank partsTank;
     [SerializeField] ShotingSettings shotingSettings;
     [Range(10,100)] [SerializeField] float maxDistanceBullets;
+
+    [SerializeField] Transform[] pointsRaycast;
 
     private void Awake() {
         playerControler = new PlayerControler();
@@ -34,7 +38,7 @@ public class Player : Statos
         playerFisics.SpeedRotation = speedRotation;
         playerAnimation.anguloDePropulsores = anguloDePropulsores;
 
-        playerControler.CharacterInputs();
+        playerControler.GameInputs();      
         
     }
 
@@ -42,7 +46,8 @@ public class Player : Statos
     {   
         shoting.CanonShoting(playerControler.inputsControl.disparar,playerFisics.speed,transform.position,maxDistanceBullets);
 
-        playerFisics.MoverCharacterAWSD(playerControler.inputsControl.xInput,playerControler.inputsControl.zInput,speedMax);
+        playerFisics.MoverAWSD(playerControler.inputsControl.xInput,playerControler.inputsControl.zInput,DistanciaRaioPropulsor,fatorAmplification,pointsRaycast);
+
     }
 
     private void LateUpdate() {

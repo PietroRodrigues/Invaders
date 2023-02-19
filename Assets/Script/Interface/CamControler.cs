@@ -36,15 +36,21 @@ public class CamControler : MonoBehaviour
     [SerializeField] Vector2 yMinMax = new Vector2(-75, 75);
 
     //Hud hud;
-    Vector3 foco;
+    Vector3 LockAtTarget;
     [SerializeField] Vector3 rotationSmoothSpeed;
+    [SerializeField] Vector3 suportPosSmoothSpeed;
     RaycastHit hit;
     Vector3 rotationAtual;
 
     [HideInInspector] public bool cursorVisible = true;
 
+    PlayerControler playerControler;
+
     float x;
     float y;
+    float xMause;
+    float yMause;
+
 
     private void Awake() {
         Application.targetFrameRate = 60;
@@ -52,8 +58,8 @@ public class CamControler : MonoBehaviour
 
     void Start(){    
         playerTarget.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-
-        transform.SetParent(playerTarget);
+        playerControler = playerTarget.GetComponent<Player>().playerControler;
+       
     }
 
     void Update(){
@@ -61,24 +67,27 @@ public class CamControler : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.LeftAlt))
             cursorVisible = !cursorVisible;        
 
+        xMause = playerControler.inputsControl.xMause;
+        yMause = playerControler.inputsControl.yMause;
+
+        CamFoco(playerControler.inputsControl.foco);
+
         if(cursorVisible)
            Cursor.lockState = CursorLockMode.None;
         else
            Cursor.lockState = CursorLockMode.Locked;
 
-        CamFoco(Input.GetMouseButton(1));
+        Cursor.visible = cursorVisible;        
 
-        Cursor.visible = cursorVisible;
+        LockAtTarget = focoPos + playerTarget.position;
 
-        foco = focoPos + playerTarget.position;
+        transform.localEulerAngles = CamRotationOrbital(xMause,yMause);
     }
 
     // Update is called once per frame
    void LateUpdate()
     {
-        transform.localEulerAngles = CamRotationOrbital(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y"));
-
-        transform.position = Vector3.Lerp(transform.position, CamColider(),SpeedCamSwith * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position,  CamPos(),SpeedCamSwith * Time.deltaTime);
     }
 
     Vector3 CamRotationOrbital(float eixoX, float eixoY){
@@ -127,9 +136,11 @@ public class CamControler : MonoBehaviour
 
         Vector3 pam =  transform.right * CamPan();
 
-        Vector3 camPos = (foco + altura) - (distance + pam);
+        Vector3 camPos = (LockAtTarget + altura) - (distance + pam);
 
-        return camPos;
+        bool see = Physics.Linecast(LockAtTarget,camPos, out hit,1,QueryTriggerInteraction.Ignore);
+
+        return (see)? hit.point + (LockAtTarget - camPos) * 0.12f : camPos;
 
     }
 
@@ -138,14 +149,14 @@ public class CamControler : MonoBehaviour
         Vector3 pos = Vector3.zero;
         Vector3 camPos = CamPos();  
         
-        bool see = Physics.Linecast(foco,camPos, out hit,1,QueryTriggerInteraction.Ignore);
+        bool see = Physics.Linecast(LockAtTarget,camPos, out hit,1,QueryTriggerInteraction.Ignore);
 
         if(see){
-            pos = hit.point + (foco - camPos) * 0.12f;
+            pos = hit.point + (LockAtTarget - camPos) * 0.12f;
         }else{
             pos = camPos;
         }
-        
+
         return pos;
 
     }

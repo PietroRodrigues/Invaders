@@ -8,34 +8,26 @@ public class PlayerAnimation
     PartsTank parts;
     public float speedCanonAim;
     public int anguloDePropulsores;
-
+  
     public PlayerAnimation(PartsTank parts){
         
         this.parts = parts;
-
+        
     }
 
-    public void AimCanon(Vector3 target){
-        
-        Vector3 baseDirection = target - parts.beseTower.position;
-        Vector3 canonDirection = target - parts.canon.position;        
-
-        Quaternion baseRotation = Quaternion.LookRotation(baseDirection, parts.cabine.up);
+    public void AimCanon(Vector3 target){               
+       
+        Vector3 canonDirection = target - parts.canon.position;       
         Quaternion canonRotation = Quaternion.LookRotation(canonDirection, parts.cabine.up);
-
-        Vector3 baseEuler = baseRotation.eulerAngles;
-        baseEuler.x = 0;
-        baseEuler.z = 0;
-        baseRotation = Quaternion.Euler(baseEuler);
-
         Vector3 canonEuler = canonRotation.eulerAngles;
-        canonEuler.y = parts.beseTower.rotation.eulerAngles.y;
-        canonEuler.z = 0;
+       
+        if(target.y + 10 < parts.canon.position.y)
+            canonEuler.x = parts.canon.rotation.eulerAngles.x;
+
         canonRotation = Quaternion.Euler(canonEuler);        
 
-        parts.beseTower.rotation = Quaternion.RotateTowards(parts.beseTower.rotation, baseRotation, speedCanonAim * Time.deltaTime);
-        
         parts.canon.rotation = Quaternion.RotateTowards(parts.canon.rotation, canonRotation, speedCanonAim * Time.deltaTime);
+       
     }
 
     public void PropulsoresControler(float x, float z, float turnDirection){
@@ -70,7 +62,7 @@ public class PlayerAnimation
         parts.propulsorBack_Right.localRotation = Quaternion.RotateTowards(parts.propulsorBack_Right.localRotation,Back_Right, 100 * Time.deltaTime);
 
     }
-
+    
     Quaternion PropulsorRot(float x, float z){
         
         return Quaternion.Euler(new Vector3(z * anguloDePropulsores,0,-x * anguloDePropulsores));

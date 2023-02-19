@@ -14,11 +14,10 @@ public class PlayerFisics
     Vector3 currentDirection;
     Vector3 oldDirection;
 
-    float acceleration = 2f;
-    float deceleration = 2f;
-
     public float SpeedRotation;
     public float ditectionRotation;
+
+    float distanciaRaio;
 
     bool rotacionar;
 
@@ -30,22 +29,10 @@ public class PlayerFisics
 
     }
 
-
-    public void MoverCharacterAWSD(float x, float z,float speedMax){
-        
-        if(x != 0 || z != 0){
-            currentDirection = baseTank.forward * z + baseTank.right * x;
-            speed = Mathf.Lerp(speed, speedMax * currentDirection.magnitude, acceleration * Time.deltaTime);
-            
-        }else{
-            speed = Mathf.Lerp(speed, 0 , deceleration * Time.deltaTime);
-        }
-
-        moveAmount = Vector3.SmoothDamp(moveAmount, currentDirection, ref smootMoveSpeed, 0.15f);
+    public void MoverAWSD(float x,float z,float distanciaRaio,float fatorAmplification,Transform[] posicoesRaio){
 
         ditectionRotation = PlayerRotation(x,z);
-
-        rb.MovePosition((rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime)));
+        Propussor(distanciaRaio,fatorAmplification,posicoesRaio);
 
     }
 
@@ -77,6 +64,34 @@ public class PlayerFisics
         }
 
         return turnDirection;
+        
+    }
+
+    void Propussor(float distanciaRaio,float fatorAmplification,Transform[] posicoesRaio){
+
+        float aceleracaoGravidade = rb.mass * Mathf.Abs(Physics.gravity.magnitude);
+
+        Vector3 forcaPropulsor = Vector3.zero;
+
+        foreach (Transform posicaoRaio in posicoesRaio) {
+            
+            Ray raio = new Ray(posicaoRaio.position, -posicaoRaio.up);
+            RaycastHit hit;
+            
+            bool see = Physics.Raycast(raio, out hit, distanciaRaio, 1, QueryTriggerInteraction.Ignore);
+
+            Vector3 limitRaio = raio.origin + raio.direction * distanciaRaio;
+            float distancia = Vector3.Distance(rb.transform.position,(see)? hit.point :  limitRaio); 
+            float distanciaNormalizada = Mathf.InverseLerp(0, distanciaRaio, distancia);
+            float fatorForca = Mathf.Lerp(2, 1, distanciaNormalizada);
+            forcaPropulsor += posicaoRaio.up * aceleracaoGravidade * (fatorForca / posicoesRaio.Length) * fatorAmplification;
+
+            Debug.Log(fatorForca);
+            
+            Debug.DrawLine(posicaoRaio.position,(see)? hit.point: limitRaio, Color.red);      
+        }
+
+        rb.AddForce(forcaPropulsor,ForceMode.Force); 
 
     }
 
