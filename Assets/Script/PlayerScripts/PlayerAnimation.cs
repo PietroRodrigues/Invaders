@@ -8,16 +8,16 @@ public class PlayerAnimation
     PartsTank parts;
     public float speedCanonAim;
     public int anguloDePropulsores;
-  
+
     public PlayerAnimation(PartsTank parts){
         
         this.parts = parts;
-        
     }
 
-    public void AimCanon(Vector3 target){               
-       
-        Vector3 canonDirection = target - parts.canon.position;       
+    public void AimCanon(Vector3 target){
+
+        Vector3 canonDirection = target - parts.canon.position;
+
         Quaternion canonRotation = Quaternion.LookRotation(canonDirection, parts.cabine.up);
         Vector3 canonEuler = canonRotation.eulerAngles;
        
@@ -27,7 +27,7 @@ public class PlayerAnimation
         canonRotation = Quaternion.Euler(canonEuler);        
 
         parts.canon.rotation = Quaternion.RotateTowards(parts.canon.rotation, canonRotation, speedCanonAim * Time.deltaTime);
-       
+        
     }
 
     public void PropulsoresControler(float x, float z, float turnDirection){

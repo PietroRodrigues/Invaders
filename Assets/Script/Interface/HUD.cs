@@ -5,17 +5,10 @@ using UnityEngine;
 public class HUD : MonoBehaviour
 {
 
-    [SerializeField] public HudComponentes hudComponentes;  
-
-     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] public HudComponentes hudComponentes;
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         ReticulasUpdate();
     }
@@ -42,6 +35,7 @@ public class HUD : MonoBehaviour
 public struct HudComponentes
 {
     public float aimDistance;
+    public float aimCanonDistance;
     public Transform canon;
     public RectTransform miraVeiculo;
     public RectTransform mousePos;
@@ -50,10 +44,10 @@ public struct HudComponentes
     public Vector3 MiraVeiculo
     {
         get
-        {   return canon == null
-            ? Camera.main.transform.forward * aimDistance
-            : (canon.transform.forward * aimDistance) + canon.transform.position;
+        {   return (canon == null) ? Camera.main.transform.forward * aimCanonDistance
+            : canon.transform.forward * Vector3.Distance(canon.transform.position, AimCast(canon.transform.position,(canon.transform.forward * aimCanonDistance) + canon.transform.position)) + canon.transform.position;
         }
+
     }
     
     public Vector3 MouseAimPos
@@ -62,12 +56,30 @@ public struct HudComponentes
         {           
             if (mouseAim != null)
             {          
-                return mouseAim.position + (mouseAim.forward * aimDistance);
+                return AimCast(mouseAim.position,mouseAim.position + (mouseAim.forward * aimDistance));
             }
             else
             {
                 return Camera.main.transform.forward * aimDistance;
             }
         }
+    }
+
+    Vector3 AimCast(Vector3 referencePoint, Vector3 target){
+
+        RaycastHit hit;
+        
+        Ray ray = new Ray(referencePoint, target - referencePoint);
+        
+        bool see = Physics.Raycast(ray,out hit,Vector3.Distance(referencePoint,target),1,QueryTriggerInteraction.Ignore);
+
+        Debug.DrawLine(referencePoint,(see)? hit.point : ray.origin + ray.direction * Vector3.Distance(ray.origin,target), Color.yellow);
+
+        if(see){
+            return hit.point;
+        }else{
+            return target;
+        }
+
     }
 }

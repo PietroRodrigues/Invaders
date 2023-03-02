@@ -85,8 +85,6 @@ public class PlayerFisics
             float distanciaNormalizada = Mathf.InverseLerp(0, distanciaRaio, distancia);
             float fatorForca = Mathf.Lerp(2, 1, distanciaNormalizada);
             forcaPropulsor += posicaoRaio.up * aceleracaoGravidade * (fatorForca / posicoesRaio.Length) * fatorAmplification;
-
-            Debug.Log(fatorForca);
             
             Debug.DrawLine(posicaoRaio.position,(see)? hit.point: limitRaio, Color.red);      
         }
