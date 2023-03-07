@@ -1149,8 +1149,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.78, z: -3.725}
+  m_LocalRotation: {x: -0.32404217, y: -0.0030140216, z: 0.00058168016, w: -0.9460377}
+  m_LocalPosition: {x: 0.2654856, y: 7.0519304, z: -10.947796}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2026,8 +2026,11 @@ MonoBehaviour:
   bullet: {fileID: 0}
   coodalShoting: 0
   speed: 2
+  speedRotation: 100
   AlturaMax: 5
-  AlturaMin: 1
+  AlturaMin: 2
+  eixoX: 45
+  eixoZ: 45
   raioDistance: 8
   checkRadius: 1
   obstacleLayer:
@@ -2755,8 +2758,11 @@ MonoBehaviour:
   bullet: {fileID: 0}
   coodalShoting: 0
   speed: 2
+  speedRotation: 100
   AlturaMax: 5
-  AlturaMin: 1
+  AlturaMin: 2
+  eixoX: 45
+  eixoZ: 45
   raioDistance: 8
   checkRadius: 1
   obstacleLayer:
@@ -4765,8 +4771,11 @@ MonoBehaviour:
   bullet: {fileID: 0}
   coodalShoting: 0
   speed: 2
+  speedRotation: 100
   AlturaMax: 5
-  AlturaMin: 1
+  AlturaMin: 2
+  eixoX: 45
+  eixoZ: 45
   raioDistance: 8
   checkRadius: 1
   obstacleLayer:
@@ -6179,8 +6188,11 @@ MonoBehaviour:
   bullet: {fileID: 0}
   coodalShoting: 0
   speed: 2
+  speedRotation: 100
   AlturaMax: 5
-  AlturaMin: 1
+  AlturaMin: 2
+  eixoX: 45
+  eixoZ: 45
   raioDistance: 8
   checkRadius: 1
   obstacleLayer:
@@ -11089,7 +11101,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1585169341}
   m_LocalRotation: {x: -0.13094796, y: 0.23604226, z: 0.16024813, w: 0.9494511}
-  m_LocalPosition: {x: 6.43, y: 0.63277, z: -2.97}
+  m_LocalPosition: {x: 5.33, y: 0.99, z: -1.7}
   m_LocalScale: {x: 1.4419, y: 7.26577, z: 1.4419}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11876,7 +11888,7 @@ MonoBehaviour:
   fatorAmplification: 1
   speedCanonAim: 200
   speedRotation: 150
-  anguloDePropulsores: 30
+  anguloDePropulsores: 20
   partsTank:
     beseTower: {fileID: 63390018}
     canon: {fileID: 1289353745}
@@ -11908,7 +11920,7 @@ Rigidbody:
   m_GameObject: {fileID: 1966469944}
   serializedVersion: 2
   m_Mass: 100
-  m_Drag: 1
+  m_Drag: 0.7
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0

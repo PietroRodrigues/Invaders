@@ -84,11 +84,12 @@ public class PlayerFisics
             float distancia = Vector3.Distance(rb.transform.position,(see)? hit.point :  limitRaio); 
             float distanciaNormalizada = Mathf.InverseLerp(0, distanciaRaio, distancia);
             float fatorForca = Mathf.Lerp(2, 1, distanciaNormalizada);
-            forcaPropulsor += posicaoRaio.up * aceleracaoGravidade * (fatorForca / posicoesRaio.Length) * fatorAmplification;
             
+            forcaPropulsor += posicaoRaio.up * aceleracaoGravidade * (fatorForca / posicoesRaio.Length) * ((see)? fatorAmplification : fatorAmplification % 3);
+           
             Debug.DrawLine(posicaoRaio.position,(see)? hit.point: limitRaio, Color.red);      
         }
-
+        
         rb.AddForce(forcaPropulsor,ForceMode.Force); 
 
     }
