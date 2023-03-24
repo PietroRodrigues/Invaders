@@ -7,6 +7,10 @@ public class HUD : MonoBehaviour
 
     [SerializeField] public HudComponentes hudComponentes;
 
+    void Start() {
+        Random.InitState((int)Time.time * 1000);
+    }
+
     // Update is called once per frame
     void LateUpdate()
     {

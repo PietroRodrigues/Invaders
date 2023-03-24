@@ -9,6 +9,7 @@ public class Player : Statos
    [SerializeField] CamControler camControler;
    [SerializeField] float DistanciaRaioPropulsor;
    [SerializeField] float fatorAmplification;
+   [SerializeField] float speedMax;
 
    [HideInInspector] public PlayerControler playerControler;
    PlayerFisics playerFisics;
@@ -46,7 +47,7 @@ public class Player : Statos
    {
       shoting.CanonShoting(playerControler.inputsControl.disparar, playerFisics.speed, transform.position, maxDistanceBullets);
 
-      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput, DistanciaRaioPropulsor, fatorAmplification, pointsRaycast);
+      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput, DistanciaRaioPropulsor, fatorAmplification, pointsRaycast,speedMax);
 
    }
 

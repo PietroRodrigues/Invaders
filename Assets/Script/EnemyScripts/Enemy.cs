@@ -5,91 +5,97 @@ using UnityEngine;
 public class Enemy : Statos
 {
    public GameObject target;
-   [SerializeField] GameObject bullet;
-   [HideInInspector] public float coodalShoting;
+   [SerializeField] EnemyParamets proprerts;
 
-   [SerializeField] float speed = 5f;
-   [SerializeField] float speedRotation;
-   [SerializeField] float AlturaMax;
-   [SerializeField] float AlturaMin;
-   [SerializeField] float eixoX;
-   [SerializeField] float eixoZ;
-   [SerializeField] float raioDistance;
-   [SerializeField] float checkRadius;
-   
-   public LayerMask obstacleLayer;
-   [SerializeField] Vector3 newPosition;
+   EnemyMoviment moviment;
+   EnemyMecanics mecanics;
+   Cronometro cronometro = new Cronometro();
 
-   Rigidbody rb;
+   Vector3 posObjetive;
+
+   float speedStart;
+
+   int porcentAttck;
 
    private void Awake()
    {
-      rb = GetComponent<Rigidbody>();
+      proprerts.rb = GetComponent<Rigidbody>();
+      mecanics = new EnemyMecanics(proprerts);
+      moviment = new EnemyMoviment();
+      speedStart = proprerts.speed;     
+   }
+
+   private void Start() {
+      porcentAttck = Random.Range(0,100);
    }
 
    void Update()
    {
-      // Define a nova posição aleatória do objeto
-      if (Vector3.Distance(transform.position, newPosition) < 1)
-      {
-         newPosition = NewPositionGenerator();
+      Color cor;
+      proprerts.target = target.transform.position;
+      if(Vector3.Distance(transform.position,proprerts.target) >= proprerts.distanceShoting + 2){
+         if(cronometro.CronometroPorSeg(proprerts.cooldownTime)){
+            if(porcentAttck <= proprerts.attakPorcent){
+               proprerts.attack = true;
+            }else{
+               cronometro.Reset();
+               porcentAttck = Random.Range(0,100);
+            }
+         }
       }
 
-      if (newPosition.y > AlturaMax || newPosition.y < AlturaMin)
-         newPosition = NewPositionGenerator();
+      if(proprerts.attack){
+         proprerts.speed = speedStart * (speedStart/2);
+         posObjetive = proprerts.target;
 
-      if(newPosition.x > eixoX || newPosition.x < -eixoX)
-         newPosition = NewPositionGenerator();
+         if(Vector3.Distance(transform.position,proprerts.target) <= proprerts.distanceShoting){
+            mecanics.Attack();
+            cronometro.Reset();
+            porcentAttck = Random.Range(0,100);
+            proprerts.attack = false;
+           
+         }
+         
+         cor = Color.red;
+      }else{
+         proprerts.speed = speedStart;
+         posObjetive = moviment.GeraPosObjetivo(proprerts);
+         cor = Color.green;
+      }
 
-      if(newPosition.z > eixoZ || newPosition.z < -eixoZ)
-         newPosition = NewPositionGenerator();
-
-      //if()
-
-      Debug.DrawLine(transform.position, newPosition, Color.red);
-
-      // Move o objeto em direção à nova posição com a velocidade especificada
-      transform.position += transform.forward * speed * Time.deltaTime;
-      //transform.position = Vector3.MoveTowards(transform.position, newPosition, speed * Time.deltaTime);
-
-      NewRotation(newPosition);
+      Debug.DrawLine(transform.position,posObjetive,cor);
    }
 
-   void NewRotation(Vector3 target)
-   {
-      Vector3 direction = target - transform.position; 
-      Quaternion enemyRotation = Quaternion.LookRotation(direction, Vector3.up);
-      Vector3 enemyEulerAngle = enemyRotation.eulerAngles;
-
-      enemyRotation = Quaternion.Euler(enemyEulerAngle);
-
-      transform.rotation = Quaternion.RotateTowards(transform.rotation,enemyRotation,speedRotation * Time.deltaTime);
-
+   private void FixedUpdate() 
+   {     
+      moviment.MovimentaEnemy(proprerts);
+      moviment.NewRotation(proprerts,posObjetive);      
    }
-
-   Vector3 NewPositionGenerator()
-   {
-
-      Vector3 randomPoint;
-      do
-      {
-         randomPoint = transform.position + Random.insideUnitSphere * raioDistance;
-
-      } while (Physics.CheckSphere(randomPoint, checkRadius, obstacleLayer, QueryTriggerInteraction.Ignore));
-
-      return randomPoint;
-   }
+}
 
 
-   private void OnDrawGizmos()
-   {
+[System.Serializable]
+public struct EnemyParamets
+{
+   public int cooldownTime;
+   public int distanceShoting;
+   public int attakPorcent;
+   public float speed;
+   public float speedRotation;
+   public float AlturaMax;
+   public float AlturaMin;
+   public float eixoX;
+   public float eixoZ;
 
-      // Desenha uma esfera na nova posição gerada
-      Gizmos.color = Color.blue;
-      Gizmos.DrawWireSphere(newPosition, checkRadius);
+   [Range(5,50)]public float raioDistance;
+   public float checkRadius;
+   [HideInInspector] public Rigidbody rb;
+   [HideInInspector] public Vector3 target;
+   [HideInInspector] public bool attack;
 
-      // Desenha uma esfera na posição atual do objeto
-      Gizmos.color = Color.white;
-      Gizmos.DrawWireSphere(transform.position, raioDistance);
-   }
+   [HideInInspector] public List<GameObject> BoxBullet;
+   public Transform particleCanon;
+   public Transform cxBalas;
+   public GameObject bullet;
+   [HideInInspector] public float speedBody;
 }

@@ -10,12 +10,14 @@ public class PlayerFisics
     public float speed;
     float smootSpeed;
     Vector3 smootMoveSpeed;
-    Vector3 moveAmount;
     Vector3 currentDirection;
     Vector3 oldDirection;
 
     public float SpeedRotation;
     public float ditectionRotation;
+
+    float acceleration = 2f;
+    float deceleration = 2f;
 
     float distanciaRaio;
 
@@ -29,9 +31,24 @@ public class PlayerFisics
 
     }
 
-    public void MoverAWSD(float x,float z,float distanciaRaio,float fatorAmplification,Transform[] posicoesRaio){
+    public void MoverAWSD(float x,float z,float distanciaRaio,float fatorAmplification,Transform[] posicoesRaio,float speedMax){
+
+        Vector3 moveAmount = Vector3.zero;        
+
+        if(x != 0 || z != 0){
+            currentDirection = Camera.main.transform.forward * z + Camera.main.transform.right * x;
+            speed = Mathf.Lerp(speed, speedMax * currentDirection.magnitude, acceleration * Time.deltaTime);
+            
+        }else{
+            speed = Mathf.Lerp(speed, 0 , deceleration * Time.deltaTime);
+        }
+
+        moveAmount = Vector3.SmoothDamp(moveAmount, currentDirection, ref smootMoveSpeed, 0.15f);
+
+        rb.MovePosition((rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime)));
 
         ditectionRotation = PlayerRotation(x,z);
+        
         Propussor(distanciaRaio,fatorAmplification,posicoesRaio);
 
     }
@@ -85,7 +102,7 @@ public class PlayerFisics
             float distanciaNormalizada = Mathf.InverseLerp(0, distanciaRaio, distancia);
             float fatorForca = Mathf.Lerp(2, 1, distanciaNormalizada);
             
-            forcaPropulsor += posicaoRaio.up * aceleracaoGravidade * (fatorForca / posicoesRaio.Length) * ((see)? fatorAmplification : fatorAmplification % 3);
+            forcaPropulsor += posicaoRaio.up * aceleracaoGravidade * (fatorForca / posicoesRaio.Length) * ((see)? fatorAmplification : fatorAmplification / 2);
            
             Debug.DrawLine(posicaoRaio.position,(see)? hit.point: limitRaio, Color.red);      
         }

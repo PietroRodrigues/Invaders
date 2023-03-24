@@ -28,7 +28,7 @@ public class Shoting
                 bala.name = (y+1).ToString();
                 bala.GetComponent<MisselBasico>().gumOringem = cxBalas;
                 bala.GetComponent<MisselBasico>().BulletOrigen();
-                shotingSettings.BoxBullet[i, y] = bala;               
+                shotingSettings.BoxBullet[i, y] = bala;            
             }
         }
     }
@@ -72,7 +72,7 @@ public class Shoting
         }      
     }
 
-    public void bulletReturn(Vector3 pos, float maxDistanceReset)
+    void bulletReturn(Vector3 pos, float maxDistanceReset)
     {
         for (int i = 0; i < shotingSettings.BoxBullet.GetLength(0); i++)
         {
