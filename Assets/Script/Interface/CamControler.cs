@@ -14,20 +14,10 @@ public class CamControler : MonoBehaviour
 
     [SerializeField]
     float mouseSensivity = 8;
-
-    [Header("Config Foco")]
-    [Range(10,80)][SerializeField]
-    float fieldOfView = 0f;
-    [Range(10,80)][SerializeField]
-    float fieldView = 0;
-    [SerializeField] float alturaFoco = 0;
-
+    
     [Header("Position Cam")]
     [SerializeField] float distance = 25;
-    [SerializeField] float altura = 0;
-    //[SerializeField] float pan = 0;
-    
-    
+    [SerializeField] float altura = 0; 
 
     float camDistance = 0; 
     float camAltura = 0;
@@ -70,24 +60,25 @@ public class CamControler : MonoBehaviour
         xMause = playerControler.inputsControl.xMause;
         yMause = playerControler.inputsControl.yMause;
 
-        CamFoco(playerControler.inputsControl.foco);
-
         if(cursorVisible)
            Cursor.lockState = CursorLockMode.None;
         else
            Cursor.lockState = CursorLockMode.Locked;
 
-        Cursor.visible = cursorVisible;        
+        Cursor.visible = cursorVisible;
 
-        LockAtTarget = focoPos + playerTarget.position;
+        if(playerTarget != null){
+            LockAtTarget = focoPos + playerTarget.position;
 
-        transform.localEulerAngles = CamRotationOrbital(xMause,yMause);
+            transform.localEulerAngles = CamRotationOrbital(xMause,yMause);
+        }
     }
 
     // Update is called once per frame
    void LateUpdate()
     {
-        transform.position = Vector3.Lerp(transform.position,  CamPos(),SpeedCamSwith * Time.deltaTime);
+        if(playerTarget != null)
+            transform.position = Vector3.Lerp(transform.position,  CamPos(),SpeedCamSwith * Time.deltaTime);
     }
 
     Vector3 CamRotationOrbital(float eixoX, float eixoY){
@@ -159,18 +150,6 @@ public class CamControler : MonoBehaviour
 
         return pos;
 
-    }
-
-    void CamFoco(bool inputPress){
-
-        if(inputPress){
-            mainCam.fieldOfView = Mathf.Lerp( mainCam.fieldOfView, fieldView, 0.12f);
-            camAltura = Mathf.Lerp(camAltura,alturaFoco,0.12f);
-        }else{
-            camAltura = Mathf.Lerp(camAltura, altura,0.12f);
-            mainCam.fieldOfView = Mathf.Lerp(mainCam.fieldOfView, fieldOfView, 0.12f);
-        }
-        
     }
 
 }

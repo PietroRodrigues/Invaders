@@ -25,8 +25,12 @@ public class Player : Statos
 
    [SerializeField] Transform[] pointsRaycast;
 
+   Vector3 grondCheckPos;
+
    private void Awake()
    {
+      hp = hpMax;
+      shild = ShildMax;
       playerControler = new PlayerControler();
       playerFisics = new PlayerFisics(rb, partsTank.cabine, hud);
       shoting = new Shoting(shotingSettings);
@@ -40,6 +44,7 @@ public class Player : Statos
       playerAnimation.anguloDePropulsores = anguloDePropulsores;
 
       playerControler.GameInputs();
+      AutoDestruir();
 
    }
 
@@ -57,4 +62,11 @@ public class Player : Statos
       playerAnimation.PropulsoresControler(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput, playerFisics.ditectionRotation);
 
    }
+
+   void AutoDestruir(){
+      if(hp <= 0){
+        this.gameObject.SetActive(false);
+      }
+   }
+
 }

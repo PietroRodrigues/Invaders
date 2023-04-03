@@ -12,6 +12,7 @@ public class PlayerFisics
     Vector3 smootMoveSpeed;
     Vector3 currentDirection;
     Vector3 oldDirection;
+    bool isGrounded;
 
     public float SpeedRotation;
     public float ditectionRotation;
@@ -108,6 +109,31 @@ public class PlayerFisics
         }
         
         rb.AddForce(forcaPropulsor,ForceMode.Force); 
+
+    }
+
+    public void Jump(bool junpInput,float jumpForce,Vector3 GrondCheckPos,float GrondCheckSize){
+
+        Collider[] hitColiders = Physics.OverlapSphere(GrondCheckPos,GrondCheckSize,~LayerMask.GetMask("Player"));
+
+        int hits = 0;
+
+        for (int i = 0; i < hitColiders.Length; i++)
+        {
+            if(!hitColiders[i].isTrigger)
+                hits++;
+        }
+
+        if(hits > 0){
+            isGrounded = true;              
+        }else{
+            isGrounded = false;                            
+        }
+        
+        if(junpInput && isGrounded){
+            Debug.Log("entro");
+            rb.AddForce(rb.transform.up * jumpForce, ForceMode.Impulse);         
+        }
 
     }
 

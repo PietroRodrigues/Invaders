@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : Statos
 {
    public GameObject target;
-   [SerializeField] EnemyParamets proprerts;
+   [SerializeField] public EnemyParamets proprerts;
 
    EnemyMoviment moviment;
    EnemyMecanics mecanics;
@@ -19,41 +19,51 @@ public class Enemy : Statos
 
    private void Awake()
    {
+      hp = hpMax;
+      shild = ShildMax;
       proprerts.rb = GetComponent<Rigidbody>();
       mecanics = new EnemyMecanics(proprerts);
       moviment = new EnemyMoviment();
       speedStart = proprerts.speed;     
    }
 
-   private void Start() {
+   private void OnEnable() {
       porcentAttck = Random.Range(0,100);
+      proprerts.target = FindObjectOfType<Player>().gameObject;
    }
 
    void Update()
    {
+      AutoDestruir();
+
       Color cor;
-      proprerts.target = target.transform.position;
-      if(Vector3.Distance(transform.position,proprerts.target) >= proprerts.distanceShoting + 2){
-         if(cronometro.CronometroPorSeg(proprerts.cooldownTime)){
-            if(porcentAttck <= proprerts.attakPorcent){
-               proprerts.attack = true;
-            }else{
-               cronometro.Reset();
-               porcentAttck = Random.Range(0,100);
+      
+      if(proprerts.target != null){
+         if(Vector3.Distance(transform.position,proprerts.target.transform.position) >= proprerts.distanceShoting + 2){
+            if(cronometro.CronometroPorSeg(proprerts.cooldownTime)){
+               if(porcentAttck <= proprerts.attakPorcent){
+                  proprerts.attack = true;
+               }else{
+                  cronometro.Reset();
+                  porcentAttck = Random.Range(0,100);
+               }
             }
          }
+      }else{
+         cronometro.Reset();
+         porcentAttck = Random.Range(0,100);
+         proprerts.attack = false;
       }
 
-      if(proprerts.attack){
+      if(target != null && proprerts.attack){
          proprerts.speed = speedStart * (speedStart/2);
-         posObjetive = proprerts.target;
+         posObjetive = proprerts.target.transform.position;
 
-         if(Vector3.Distance(transform.position,proprerts.target) <= proprerts.distanceShoting){
+         if(Vector3.Distance(transform.position,proprerts.target.transform.position) <= proprerts.distanceShoting){
             mecanics.Attack();
             cronometro.Reset();
             porcentAttck = Random.Range(0,100);
             proprerts.attack = false;
-           
          }
          
          cor = Color.red;
@@ -71,7 +81,18 @@ public class Enemy : Statos
       moviment.MovimentaEnemy(proprerts);
       moviment.NewRotation(proprerts,posObjetive);      
    }
+
+   void AutoDestruir(){
+
+      if(hp <= 0){
+         this.gameObject.SetActive(false);
+      }
+
+   }
+
 }
+
+
 
 
 [System.Serializable]
@@ -90,7 +111,7 @@ public struct EnemyParamets
    [Range(5,50)]public float raioDistance;
    public float checkRadius;
    [HideInInspector] public Rigidbody rb;
-   [HideInInspector] public Vector3 target;
+   public GameObject target;
    [HideInInspector] public bool attack;
 
    [HideInInspector] public List<GameObject> BoxBullet;

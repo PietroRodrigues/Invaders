@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Projetil : MonoBehaviour
 {   
+    public GameObject meuDono;
     public Transform gumOringem;
     public GameObject particulaColider;
     [SerializeField] float speed;
@@ -11,54 +12,60 @@ public class Projetil : MonoBehaviour
     Rigidbody rb;
     float speedBody;
 
-    void Awake(){
-        rb =  GetComponent<Rigidbody>();
-    }
+    bool jaColidio = false;
+
+    [SerializeField] SpawnerEnemys spawnerEnemys;
+    GameObject alvoTermico;
+    [SerializeField] List<Enemy> allEnemy;
     
     void OnCollisionEnter(Collision other)
     {
-        if(!other.collider.isTrigger){
+        if(!other.collider.isTrigger && !jaColidio){
+            //this.GetComponentInChildren<Collider>().enabled = false;
             AplicaDano(other,DanoProjetil);
             //InstatiateParticle(other);
             BulletOrigen();
+
         }
     }
 
    void AplicaDano(Collision other, float DanoAplicado){
 
-        GameObject ObjGame = other.collider.gameObject;
+        GameObject ObjGame = other.collider.gameObject.transform.root.gameObject;
 
-        if(ObjGame.tag == "Player"){
+        if(!jaColidio && ObjGame.GetComponent<Player>() != null){
             
-            float hp = ObjGame.GetComponent<Enemy>().hp;
-            float Shild = ObjGame.GetComponent<Enemy>().shild;
+            Player player = ObjGame.GetComponent<Player>();
 
-            if(Shild > 0){
-                Shild -= DanoAplicado * 2;
-                if(Shild  < 0)
-                Shild = 0;
+            if(player.shild > 0){
+                player.shild -= DanoAplicado;
+                if(player.shild  < 0)
+                player.shild = 0;
 
-            }else if(hp > 0){
-                hp -= DanoAplicado;
-                if(hp < 0)
-                hp = 0;
+            }else if(player.hp > 0){
+                player.hp -= DanoAplicado;
+                if(player.hp < 0)
+                player.hp = 0;
             }
 
-        }else if (ObjGame.tag == "Enemy"){
+            jaColidio = true;
 
-            float hp = ObjGame.GetComponent<Enemy>().hp;
-            float Shild = ObjGame.GetComponent<Enemy>().shild;
+        }else if (!jaColidio && ObjGame.GetComponent<Enemy>() != null){
 
-            if(Shild > 0){
-                Shild -= DanoAplicado * 2;
-                if(Shild  < 0)
-                Shild = 0;
+            Enemy enemy = ObjGame.GetComponent<Enemy>();
 
-            }else if(hp > 0){
-                hp -= DanoAplicado;
-                if(hp < 0)
-                hp = 0;
+            if(enemy.shild > 0){
+                enemy.shild -= DanoAplicado;
+                if(enemy.shild  < 0)
+                enemy.shild = 0;
+
+            }else if(enemy.hp > 0){
+                enemy.hp -= DanoAplicado;
+                if(enemy.hp < 0)
+                enemy.hp = 0;
             }
+
+            jaColidio = true;
         }
 
     }
@@ -72,22 +79,59 @@ public class Projetil : MonoBehaviour
 
     public void BulletOrigen()
     {   
-        this.gameObject.SetActive(false);
-        this.transform.SetParent(gumOringem);    
-        transform.localPosition = new Vector3(0,0,0);
-        transform.localRotation = Quaternion.Euler(0,0,0);
-        
+        allEnemy.Clear();
         if(rb != null)
             rb.velocity = Vector3.zero;
+        this.transform.SetParent(gumOringem);
+        meuDono = transform.root.gameObject;
+        transform.localPosition = new Vector3(0,0,0);
+        transform.localRotation = Quaternion.Euler(0,0,0);
+        this.gameObject.SetActive(false);
+    
     }
 
-    void OnEnable() {
-        rb.velocity = this.transform.forward * (speedBody + speed);
-        transform.SetParent(null);
+    void EnableBullet() {
+        
+        if( rb == null){
+            rb =  GetComponent<Rigidbody>();
+        }
+        
+        if( rb != null){
+            rb.velocity = this.transform.forward * (speedBody + speed);
+            transform.SetParent(null);
+            gameObject.SetActive(true);
+            jaColidio = false;
+            //this.GetComponentInChildren<Collider>().enabled = true;
+        }
+    }
+
+    void AlvosPossiveis() {  
+      if(meuDono.GetComponent<Player>() != null){
+         if(spawnerEnemys == null)
+            spawnerEnemys = FindObjectOfType<SpawnerEnemys>(); 
+
+         allEnemy.Clear();
+         
+         foreach (GameObject enemy in spawnerEnemys.enemyesInScene)
+         {
+            if(enemy.activeSelf)
+                allEnemy.Add(enemy.GetComponent<Enemy>());      
+         }
+      }else if(meuDono.GetComponent<Enemy>() != null){
+         alvoTermico = meuDono.GetComponent<Enemy>().target;
+      }
+    }
+
+    private void OnDisable() {
+        allEnemy.Clear();
     }
 
     public void Disparar(float speedBody){
-        this.speedBody = speedBody;
-        this.gameObject.SetActive(true); 
+      this.speedBody = speedBody;
+      AlvosPossiveis();
+      EnableBullet();
     }
+
+    
+
 }

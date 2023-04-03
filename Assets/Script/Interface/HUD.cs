@@ -6,15 +6,24 @@ public class HUD : MonoBehaviour
 {
 
     [SerializeField] public HudComponentes hudComponentes;
+    public GameObject player;
 
     void Start() {
+        player = FindObjectOfType<Player>().gameObject;
         Random.InitState((int)Time.time * 1000);
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
-        ReticulasUpdate();
+        if(player.gameObject != null){
+            hudComponentes.miraVeiculo.gameObject.SetActive(true);
+            hudComponentes.mousePos.gameObject.SetActive(true);
+            ReticulasUpdate();
+        }else{
+            hudComponentes.miraVeiculo.gameObject.SetActive(false);
+            hudComponentes.mousePos.gameObject.SetActive(false);
+        }
     }
 
     void ReticulasUpdate(){

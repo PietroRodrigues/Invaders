@@ -39,7 +39,7 @@ public class EnemyMoviment
       if(newPosition.z > parameters.eixoZ || newPosition.z < -parameters.eixoZ)
          newPosition = NewPositionGenerator(parameters);
 
-      if(Vector3.Distance(newPosition, parameters.target) < (parameters.raioDistance/2))
+      if(Vector3.Distance(newPosition, parameters.target.transform.position) < (parameters.raioDistance/2))
          newPosition = NewPositionGenerator(parameters);
 
       return newPosition;
@@ -70,7 +70,7 @@ public class EnemyMoviment
 
       do
       {
-         randomPoint = parameters.target + Random.insideUnitSphere * parameters.raioDistance;
+         randomPoint = parameters.target.transform.position + Random.insideUnitSphere * parameters.raioDistance;
 
          see = Physics.Linecast(parameters.rb.transform.position,randomPoint, out RaycastHit hit, layerMask, QueryTriggerInteraction.Ignore);
 
@@ -88,7 +88,7 @@ public class EnemyMoviment
       bool see = false;
       int layerMask = ~LayerMask.GetMask("Enemy");
 
-      see = Physics.Linecast(parameters.rb.transform.position,parameters.target, out RaycastHit hit, layerMask, QueryTriggerInteraction.Ignore);
+      see = Physics.Linecast(parameters.rb.transform.position,parameters.target.transform.position, out RaycastHit hit, layerMask, QueryTriggerInteraction.Ignore);
 
       return see;
 

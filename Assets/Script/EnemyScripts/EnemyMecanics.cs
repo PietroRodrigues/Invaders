@@ -22,9 +22,9 @@ public class EnemyMecanics
 
         if(parameters.cxBalas.childCount == 0){
             GameObject bala = GameObject.Instantiate(parameters.bullet);
-            bala.name = (parameters.cxBalas.childCount+1).ToString();
-            bala.GetComponent<MisselBasico>().gumOringem = parameters.cxBalas;
-            bala.GetComponent<MisselBasico>().BulletOrigen();
+            bala.name = parameters.cxBalas.root.name + " Bullet";
+            bala.GetComponent<Bullet>().gumOringem = parameters.cxBalas;
+            bala.GetComponent<Bullet>().BulletOrigen();
             parameters.BoxBullet.Add(bala);            
         }
 
@@ -34,7 +34,7 @@ public class EnemyMecanics
             
             if (!bullet.activeSelf)
             {                  
-                bullet.GetComponent<MisselBasico>().Disparar(parameters.speedBody);
+                bullet.GetComponent<Bullet>().Disparar(parameters.speedBody); 
                 parameters.attack = false;
                 lastUsedTime = Time.time;
               
@@ -55,7 +55,7 @@ public class EnemyMecanics
             {
                 if (Vector3.Distance(bullet.transform.position, pos) >= maxDistanceReset)
                 {   
-                    bullet.GetComponent<MisselBasico>().BulletOrigen();
+                    bullet.GetComponent<Bullet>().BulletOrigen();
                     i = parameters.BoxBullet.Capacity;
                 }
             }

@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: -919034986830049335}
   - component: {fileID: -6374526968590326732}
   m_Layer: 2
-  m_Name: Missel
+  m_Name: MisselPlayer[
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -196,8 +196,10 @@ MonoBehaviour:
   meuDono: {fileID: 0}
   gumOringem: {fileID: 0}
   particulaColider: {fileID: 0}
-  speed: 10
+  speed: 30
   DanoProjetil: 10
+  spawnerEnemys: {fileID: 0}
+  allEnemy: []
 --- !u!1 &8734556364147653074
 GameObject:
   m_ObjectHideFlags: 0
