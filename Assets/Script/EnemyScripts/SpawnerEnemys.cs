@@ -5,13 +5,16 @@ using UnityEngine;
 public class SpawnerEnemys : MonoBehaviour
 {   
     [SerializeField] int radiusSpawnPont;
-    int waveCaunt = 0;
-    [SerializeField] Transform[] spawnerPoints;
+    [SerializeField] int waveCaunt = 0;
+    bool bossFight = false;
+    bool EndStage = false;
     [SerializeField] GameObject boss;
+    [SerializeField] Transform spawnerBossPoint;
+    [SerializeField] Transform[] spawnerPoints;
     [SerializeField] GameObject[] enemysFaze;
     [SerializeField] Wave[] waves;
     [SerializeField] public List<GameObject> enemyesInScene;
-    List<GameObject> enemyesCemiterio = new List<GameObject>();
+    [SerializeField] List<GameObject> enemyesCemiterio = new List<GameObject>();
 
     private void Awake() {
         foreach (Wave wave in waves)
@@ -25,31 +28,72 @@ public class SpawnerEnemys : MonoBehaviour
 
     private void Update() {
 
-        if(enemyesInScene.Capacity == 0){
-            for (int i = 0; i < waves[waveCaunt].enemyInfos.Length; i++)
-            {   
-                GameObject enemy = null;
-                
-                for(int j = 0; j < enemyesCemiterio.Count; j++)
-                {
-                    if(enemyesCemiterio[j].GetComponent<Enemy>().tipo == waves[waveCaunt].enemyInfos[i].tipo){
-                        enemy = enemyesCemiterio[j];
-                        enemyesCemiterio.Remove(enemyesCemiterio[j]);
+        if(enemyesInScene.Count == 0){
+
+            if(!bossFight){
+                for (int i = 0; i < waves[waveCaunt].enemyInfos.Length; i++)
+                {   
+                    GameObject enemy = null;
+                    
+                    for(int j = 0; j < enemyesCemiterio.Count; j++)
+                    {
+                        if(enemyesCemiterio[j].GetComponent<Enemy>().tipo == waves[waveCaunt].enemyInfos[i].tipo){
+                            enemy = enemyesCemiterio[j];
+                            enemyesCemiterio.Remove(enemyesCemiterio[j]);
+                            Vector3 randomDirection = Random.insideUnitSphere;
+                            Vector3 randomPosition = randomDirection * radiusSpawnPont;
+                            enemy.transform.position = spawnerPoints[Random.Range(0,spawnerPoints.Length)].position + randomPosition;
+                            enemy.SetActive(true);
+                            enemy.GetComponent<Enemy>().ResetEnemy();
+                            j = enemyesCemiterio.Count;
+                        }
+                    }
+
+                    if(enemy == null){
+                        enemy = Instantiate(waves[waveCaunt].enemyInfos[i].enemy);
                         Vector3 randomDirection = Random.insideUnitSphere;
                         Vector3 randomPosition = randomDirection * radiusSpawnPont;
                         enemy.transform.position = spawnerPoints[Random.Range(0,spawnerPoints.Length)].position + randomPosition;
-                        j = enemyesCemiterio.Count;
                     }
+
+                    enemyesInScene.Add(enemy);
+                }
+            }else{
+                if(!EndStage){
+                    GameObject bossInstantiate = Instantiate(boss);
+                    bossInstantiate.transform.position = spawnerBossPoint.position;
+                    enemyesInScene.Add(bossInstantiate);
+                }
+            }
+        }else
+        {
+            int enemysDeath = 0;
+
+            for (int i = 0; i < enemyesInScene.Count; i++)
+            {
+                if(!enemyesInScene[i].activeSelf){
+                    enemysDeath++;
+                }
+            }
+            
+            if(enemyesInScene.Count == enemysDeath){
+                
+                foreach (GameObject enemy in enemyesInScene)
+                {
+                    enemyesCemiterio.Add(enemy);            
+                }
+                
+                if(!bossFight){
+                    if(waves.Length-1 > waveCaunt)
+                        waveCaunt++;
+                    else
+                        bossFight = true;
+                }else{
+                    EndStage = true;
+                    print("Comgratulations!!!");
                 }
 
-                if(enemy == null){
-                    enemy = Instantiate(waves[waveCaunt].enemyInfos[i].enemy);
-                    Vector3 randomDirection = Random.insideUnitSphere;
-                    Vector3 randomPosition = randomDirection * radiusSpawnPont;
-                    enemy.transform.position = spawnerPoints[Random.Range(0,spawnerPoints.Length)].position + randomPosition;
-                }
-
-                enemyesInScene.Add(enemy);
+                enemyesInScene.Clear();
             }
         }
     }
@@ -80,6 +124,5 @@ public struct Wave
 public struct EnemyInfo
 {
     [SerializeField] public Statos.Tipo tipo;
-    //[HideInInspector] 
-    public GameObject enemy;
+    [HideInInspector] public GameObject enemy;
 }

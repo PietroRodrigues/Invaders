@@ -2,37 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shoting
+public class Shotting
 {
-    ShotingSettings shotingSettings;
-    Cronometro cronometro = new Cronometro();
-    bool primeiroTiro = true;
+    ShottingSettings shottingSettings;
+    Chronometry chronometry = new Chronometry();
+    bool primeroTiro = true;
 
-    public Shoting(ShotingSettings settings)
+    public Shotting(ShottingSettings settings)
     {
-        shotingSettings = settings;
-        shotingSettings.particleCanon = shotingSettings.canho.Find("ParticleCanon").transform;
-        shotingSettings.cxBalas = shotingSettings.canho.Find("CxBalas");
+        shottingSettings = settings;
+        shottingSettings.particleCanon = shottingSettings.cannon.Find("ParticleCanon").transform;
+        shottingSettings.cxBalas = shottingSettings.cannon.Find("CxBalas");
 
     }
 
-    public void CanonShoting(bool atack, float speed, Vector3 pos, float maxDistanceReset)
+    public void CanonShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset)
     {             
-        if(atack){
+        if(attack){
             
-            shotingSettings.speedBody = speed;
+            shottingSettings.speedBody = speed;
 
-            if(primeiroTiro){
+            if(primeroTiro){
                 AnimationStart();
                 FireBullet();
-                primeiroTiro = false;
+                primeroTiro = false;
             }
         }
         
-        if(primeiroTiro == false){
-            if(cronometro.CronometroPorMileseg(400)){
-                cronometro.Reset();
-                primeiroTiro = true;
+        if(primeroTiro == false){
+            if(chronometry.ChronometryPorMiles(600)){
+                chronometry.Reset();
+                primeroTiro = true;
             }
         }
 
@@ -42,22 +42,22 @@ public class Shoting
 
     void FireBullet()
     {
-        if(shotingSettings.cxBalas.childCount == 0){
-            GameObject bala = GameObject.Instantiate(shotingSettings.bullet);
-            bala.name = shotingSettings.cxBalas.root.name + " Bullet";
-            bala.GetComponent<Bullet>().gumOringem = shotingSettings.cxBalas;
+        if(shottingSettings.cxBalas.childCount == 0){
+            GameObject bala = GameObject.Instantiate(shottingSettings.bullet);
+            bala.name = shottingSettings.cxBalas.root.name + " Bullet";
+            bala.GetComponent<Bullet>().gumOrigen = shottingSettings.cxBalas;
             bala.GetComponent<Bullet>().BulletOrigen();            
-            shotingSettings.BoxBullet.Add(bala);            
+            shottingSettings.BoxBullet.Add(bala);            
         }
       
 
-        if(shotingSettings.cxBalas.childCount != 0){                
+        if(shottingSettings.cxBalas.childCount != 0){                
             
-            GameObject bullet = shotingSettings.cxBalas.GetChild(0).gameObject;
+            GameObject bullet = shottingSettings.cxBalas.GetChild(0).gameObject;
             
             if (!bullet.activeSelf)
             {                  
-                bullet.GetComponent<Bullet>().Disparar(shotingSettings.speedBody);
+                bullet.GetComponent<Bullet>().Disparate(shottingSettings.speedBody);
               
             }
         }
@@ -66,16 +66,16 @@ public class Shoting
 
     void bulletReturn(Vector3 pos, float maxDistanceReset)
     {
-        for (int i = 0; i < shotingSettings.BoxBullet.Count; i++)
+        for (int i = 0; i < shottingSettings.BoxBullet.Count; i++)
         {            
-            GameObject bullet = shotingSettings.BoxBullet[i];
+            GameObject bullet = shottingSettings.BoxBullet[i];
 
             if (bullet.activeSelf)
             {
                 if (Vector3.Distance(bullet.transform.position, pos) >= maxDistanceReset)
                 {   
                     bullet.GetComponent<Bullet>().BulletOrigen();
-                    i = shotingSettings.BoxBullet.Capacity;
+                    i = shottingSettings.BoxBullet.Capacity;
                 }
             }
             
@@ -83,38 +83,19 @@ public class Shoting
     }
 
     void AnimationStart()
-    {        
-        foreach (Transform particleSysten in shotingSettings.particleCanon.transform)
-        {
-            ParticleSystem p = particleSysten.GetComponent<ParticleSystem>();
-            
-            if(p.isStopped){
-                
-                var main = p.main;
-                main.loop = true;
-                p.Play();
-                
-            }
-        }         
+    {       
+        ParticleSystem p = shottingSettings.particleCanon.GetComponent<ParticleSystem>();
+        var main = p.main;
+        main.loop = false;
+        p.Play();                    
     }
 
-    void AnimationStop()
-    {
-        foreach (Transform particleSysten in shotingSettings.particleCanon.transform)
-        {
-            ParticleSystem p = particleSysten.GetComponent<ParticleSystem>();
-            var main = p.main;
-            main.loop = false;
-            p.Stop();
-                            
-        }      
-    }
 }
 
 [System.Serializable]
-public struct ShotingSettings
+public struct ShottingSettings
 {   
-    public Transform canho;
+    public Transform cannon;
     [HideInInspector] public List<GameObject> BoxBullet;
     [HideInInspector]public Transform particleCanon;
     [HideInInspector]public Transform cxBalas;

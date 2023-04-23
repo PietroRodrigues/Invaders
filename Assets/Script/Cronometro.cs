@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cronometro
+public class Chronometry
 {
     public int min = 0;
     public int seg = 0;
@@ -68,7 +68,7 @@ public class Cronometro
     }
 
 
-    public bool CronometroPorMileseg(int milisegLimite)
+    public bool ChronometryPorMiles(int milisegLimite)
     {
         bool limitTimer = false;
 

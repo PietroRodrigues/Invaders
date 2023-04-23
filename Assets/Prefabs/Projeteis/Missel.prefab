@@ -193,11 +193,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6898c35f3c0ff994898fc910156ec9da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  distanceRadar: 20
   meuDono: {fileID: 0}
   gumOringem: {fileID: 0}
-  particulaColider: {fileID: 0}
+  particulaColider: {fileID: 8815346070927431996, guid: dcca6e319a3201540bb4437d55b9fec4,
+    type: 3}
   speed: 10
+  speedRot: 10
   DanoProjetil: 10
+  spawnerEnemys: {fileID: 0}
+  alvoTermico: {fileID: 0}
+  allEnemy: []
 --- !u!1 &8734556364147653074
 GameObject:
   m_ObjectHideFlags: 0

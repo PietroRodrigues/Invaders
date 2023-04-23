@@ -10,17 +10,18 @@ public class Player : Statos
    [SerializeField] float DistanciaRaioPropulsor;
    [SerializeField] float fatorAmplification;
    [SerializeField] float speedMax;
+   [SerializeField] Transform minimapIco;
 
    [HideInInspector] public PlayerControler playerControler;
    PlayerFisics playerFisics;
-   Shoting shoting;
+   Shotting shoting;
    PlayerAnimation playerAnimation;
 
    [Range(1, 360)][SerializeField] float speedCanonAim = 1f;
    [Range(1, 360)][SerializeField] float speedRotation = 1f;
    [Range(1, 360)][SerializeField] int anguloDePropulsores = 1;
    [SerializeField] PartsTank partsTank;
-   [SerializeField] ShotingSettings shotingSettings;
+   [SerializeField] ShottingSettings shotingSettings;
    [Range(10, 100)][SerializeField] float maxDistanceBullets;
 
    [SerializeField] Transform[] pointsRaycast;
@@ -33,7 +34,7 @@ public class Player : Statos
       shild = ShildMax;
       playerControler = new PlayerControler();
       playerFisics = new PlayerFisics(rb, partsTank.cabine, hud);
-      shoting = new Shoting(shotingSettings);
+      shoting = new Shotting(shotingSettings);
       playerAnimation = new PlayerAnimation(partsTank);
    }
 
@@ -50,9 +51,9 @@ public class Player : Statos
 
    void FixedUpdate()
    {
-      shoting.CanonShoting(playerControler.inputsControl.disparar, playerFisics.speed, transform.position, maxDistanceBullets);
+      shoting.CanonShotting(playerControler.inputsControl.disparar, playerFisics.speed, transform.position, maxDistanceBullets);
 
-      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput, DistanciaRaioPropulsor, fatorAmplification, pointsRaycast,speedMax);
+      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput, DistanciaRaioPropulsor, fatorAmplification, pointsRaycast,speedMax,minimapIco);
 
    }
 

@@ -32,7 +32,7 @@ public class PlayerFisics
 
     }
 
-    public void MoverAWSD(float x,float z,float distanciaRaio,float fatorAmplification,Transform[] posicoesRaio,float speedMax){
+    public void MoverAWSD(float x,float z,float distanciaRaio,float fatorAmplification,Transform[] posicoesRaio,float speedMax, Transform miniMapIco){
 
         Vector3 moveAmount = Vector3.zero;        
 
@@ -48,13 +48,13 @@ public class PlayerFisics
 
         rb.MovePosition((rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime)));
 
-        ditectionRotation = PlayerRotation(x,z);
+        ditectionRotation = PlayerRotation(x,z,miniMapIco);
         
         Propussor(distanciaRaio,fatorAmplification,posicoesRaio);
 
     }
 
-    float PlayerRotation(float x,float z){
+    float PlayerRotation(float x,float z, Transform miniMapIco){
 
         float camY =  Camera.main.transform.eulerAngles.y;
         float currentRotation = baseTank.rotation.eulerAngles.y;
@@ -62,6 +62,7 @@ public class PlayerFisics
 
         if(x != 0 || z != 0){
             baseTank.rotation = Quaternion.RotateTowards(baseTank.rotation, Quaternion.Euler(0, camY + baseTank.rotation.y, 0),SpeedRotation * Time.deltaTime);
+
         }else{
 
             if(ForwardCheck(baseTank.transform,hud.hudComponentes.MouseAimPos,40) == 0){
@@ -80,6 +81,13 @@ public class PlayerFisics
             }
 
         }
+
+        miniMapIco.gameObject.SetActive(true);
+        Vector3 baseV3 = baseTank.eulerAngles;
+        baseV3.x = 90;
+        baseV3.z = 0;
+        miniMapIco.rotation  = Quaternion.Euler(baseV3);
+        miniMapIco.transform.position = new Vector3(miniMapIco.transform.position.x,20,miniMapIco.transform.position.z);
 
         return turnDirection;
         

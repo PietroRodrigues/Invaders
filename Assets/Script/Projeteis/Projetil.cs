@@ -4,32 +4,49 @@ using UnityEngine;
 
 public class Projetil : MonoBehaviour
 {   
+    public float distanceRadar;
     public GameObject meuDono;
-    public Transform gumOringem;
+    public Transform gumOrigen;
     public GameObject particulaColider;
     [SerializeField] float speed;
+    [SerializeField] float speedRot;
     [SerializeField] float DanoProjetil;
     Rigidbody rb;
     float speedBody;
-
+    
     bool jaColidio = false;
 
     [SerializeField] SpawnerEnemys spawnerEnemys;
-    GameObject alvoTermico;
+    [SerializeField] GameObject alvoTermico;
     [SerializeField] List<Enemy> allEnemy;
+
+    private void Update() {
+        SetAlvoTermico(distanceRadar);
+
+        if(rb != null)
+            rb.velocity = this.transform.forward * (speedBody + speed);
+        
+        if(alvoTermico != null){
+            
+            Vector3 direction = alvoTermico.transform.position - rb.transform.position;
+            Quaternion projetilRotation = Quaternion.LookRotation(direction);
+            rb.transform.rotation = Quaternion.RotateTowards(rb.transform.rotation,projetilRotation,speedRot * Time.deltaTime);
+
+        }
+    }
     
     void OnCollisionEnter(Collision other)
     {
         if(!other.collider.isTrigger && !jaColidio){
             //this.GetComponentInChildren<Collider>().enabled = false;
             AplicaDano(other,DanoProjetil);
-            //InstatiateParticle(other);
+            InstatiateParticle(other);
             BulletOrigen();
 
         }
     }
 
-   void AplicaDano(Collision other, float DanoAplicado){
+    void AplicaDano(Collision other, float DanoAplicado){
 
         GameObject ObjGame = other.collider.gameObject.transform.root.gameObject;
 
@@ -82,7 +99,7 @@ public class Projetil : MonoBehaviour
         allEnemy.Clear();
         if(rb != null)
             rb.velocity = Vector3.zero;
-        this.transform.SetParent(gumOringem);
+        this.transform.SetParent(gumOrigen);
         meuDono = transform.root.gameObject;
         transform.localPosition = new Vector3(0,0,0);
         transform.localRotation = Quaternion.Euler(0,0,0);
@@ -97,12 +114,31 @@ public class Projetil : MonoBehaviour
         }
         
         if( rb != null){
-            rb.velocity = this.transform.forward * (speedBody + speed);
             transform.SetParent(null);
             gameObject.SetActive(true);
             jaColidio = false;
             //this.GetComponentInChildren<Collider>().enabled = true;
         }
+    }
+
+    void SetAlvoTermico(float DistanceRadar){
+        if(alvoTermico == null){
+            if(meuDono.GetComponent<Enemy>() != null){
+                alvoTermico = meuDono.GetComponent<Enemy>().proprerts.target;
+            }else if(meuDono.GetComponent<Player>() != null){
+                foreach (Enemy enemy in allEnemy)
+                {
+                    if(Vector3.Distance(enemy.transform.position,transform.position) <= DistanceRadar){
+                        alvoTermico = enemy.gameObject;
+                    }                    
+                }                
+            }
+        }else{
+            if(Vector3.Distance(alvoTermico.transform.position,transform.position) > DistanceRadar){
+                alvoTermico = null;
+            }                    
+        }
+
     }
 
     void AlvosPossiveis() {  
@@ -117,16 +153,16 @@ public class Projetil : MonoBehaviour
             if(enemy.activeSelf)
                 allEnemy.Add(enemy.GetComponent<Enemy>());      
          }
-      }else if(meuDono.GetComponent<Enemy>() != null){
-         alvoTermico = meuDono.GetComponent<Enemy>().target;
+         
       }
     }
 
     private void OnDisable() {
         allEnemy.Clear();
+        alvoTermico = null;
     }
 
-    public void Disparar(float speedBody){
+    public void Disparate(float speedBody){
       this.speedBody = speedBody;
       AlvosPossiveis();
       EnableBullet();

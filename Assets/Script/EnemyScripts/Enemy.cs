@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Enemy : Statos
 {
-   public GameObject target;
+   [SerializeField] Transform miniMapIco;
    [SerializeField] public EnemyParamets proprerts;
 
    EnemyMoviment moviment;
    EnemyMecanics mecanics;
-   Cronometro cronometro = new Cronometro();
+   Chronometry cronometro = new Chronometry();
 
    Vector3 posObjetive;
 
@@ -36,6 +36,13 @@ public class Enemy : Statos
    {
       AutoDestruir();
 
+      miniMapIco.gameObject.SetActive(true);
+      Vector3 baseV3 = transform.eulerAngles;
+      baseV3.x = 90;
+      baseV3.z = 0;
+      miniMapIco.rotation  = Quaternion.Euler(baseV3);
+      miniMapIco.transform.position = new Vector3(miniMapIco.transform.position.x,20,miniMapIco.transform.position.z);
+
       Color cor;
       
       if(proprerts.target != null){
@@ -55,7 +62,7 @@ public class Enemy : Statos
          proprerts.attack = false;
       }
 
-      if(target != null && proprerts.attack){
+      if(proprerts.target != null && proprerts.attack){
          proprerts.speed = speedStart * (speedStart/2);
          posObjetive = proprerts.target.transform.position;
 
@@ -88,6 +95,13 @@ public class Enemy : Statos
          this.gameObject.SetActive(false);
       }
 
+   }
+
+   public void ResetEnemy(){
+      hp = hpMax;
+      shild = ShildMax;
+      proprerts.rb.velocity = Vector3.zero;
+      proprerts.rb.angularVelocity = Vector3.zero;
    }
 
 }
