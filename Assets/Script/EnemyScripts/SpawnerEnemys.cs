@@ -1,28 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Designer;
 
 public class SpawnerEnemys : MonoBehaviour
-{   
-    [SerializeField] int radiusSpawnPont;
-    [SerializeField] int waveCaunt = 0;
+{       
+    [HideInInspector] public List<GameObject> enemyesInScene;
+    List<GameObject> enemyesCemiterio = new List<GameObject>();
+    int waveCaunt = 0;
     bool bossFight = false;
     bool EndStage = false;
+
+
     [SerializeField] GameObject boss;
+    [SerializeField] GameObject[] enemysFaze;
+    
+    [SerializeField] int radiusSpawnPont;
     [SerializeField] Transform spawnerBossPoint;
     [SerializeField] Transform[] spawnerPoints;
-    [SerializeField] GameObject[] enemysFaze;
     [SerializeField] Wave[] waves;
-    [SerializeField] public List<GameObject> enemyesInScene;
-    [SerializeField] List<GameObject> enemyesCemiterio = new List<GameObject>();
+
+    AlocationStage alocationStage;
+
+    [SerializeField]  Transform[] wavePos;
+    [SerializeField] Vector2 raioMinMaxDistance;
+    [SerializeField] Vector2 alturaMinMax;
+
+    public List<WaveDesigner> waveDesigner = new List<WaveDesigner>();
 
     private void Awake() {
+
+        alocationStage = new AlocationStage(wavePos,raioMinMaxDistance,alturaMinMax);
+
         foreach (Wave wave in waves)
         {
             for (int i = 0; i < wave.enemyInfos.Length; i++)
             {              
-                wave.enemyInfos[i].enemy = EnemyLocationWave(wave.enemyInfos[i].tipo);     
-            }           
+                wave.enemyInfos[i].enemy = EnemyLocationWave(wave.enemyInfos[i].tipo);
+            }
         }       
     }
 
@@ -96,6 +111,10 @@ public class SpawnerEnemys : MonoBehaviour
                 enemyesInScene.Clear();
             }
         }
+
+        if(!bossFight || !EndStage)
+            alocationStage.Alocar(enemyesInScene);
+
     }
 
     GameObject EnemyLocationWave(Statos.Tipo tipo){
@@ -125,4 +144,19 @@ public struct EnemyInfo
 {
     [SerializeField] public Statos.Tipo tipo;
     [HideInInspector] public GameObject enemy;
+}
+
+
+namespace Designer
+{
+    [System.Serializable]
+    public struct WaveDesigner
+    {
+        public bool[,] grade;
+
+        public WaveDesigner(int linha, int colunas)
+        {
+            grade = new bool[linha,colunas];
+        }
+    }
 }

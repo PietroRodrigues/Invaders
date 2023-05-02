@@ -20,7 +20,7 @@ public class EnemyMoviment
       speed = Mathf.Lerp(parameters.speed, parameters.speed * currentDirection.magnitude, acceleration * Time.deltaTime);      
 
       moveAmount = Vector3.SmoothDamp(moveAmount, currentDirection, ref smootMoveSpeed, 0.15f);
-
+      
       parameters.rb.MovePosition((parameters.rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime)));
       
    }
@@ -41,6 +41,9 @@ public class EnemyMoviment
 
       if(Vector3.Distance(newPosition, parameters.target.transform.position) < (parameters.raioDistance/2))
          newPosition = NewPositionGenerator(parameters);
+
+      parameters.rb.velocity = new Vector3(0f,0f,0f); 
+      parameters.rb.angularVelocity = new Vector3(0f,0f,0f);
 
       return newPosition;
 
