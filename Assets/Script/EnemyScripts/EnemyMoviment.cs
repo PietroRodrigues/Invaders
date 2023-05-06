@@ -27,7 +27,7 @@ public class EnemyMoviment
 
    public Vector3 GeraPosObjetivo(EnemyParamets parameters){
       
-     if (Vector3.Distance(parameters.rb.transform.position, newPosition) < 2)
+     if (Vector3.Distance(parameters.rb.transform.position, newPosition) < 1)
          newPosition = NewPositionGenerator(parameters);      
 
       if (newPosition.y > parameters.AlturaMax || newPosition.y < parameters.AlturaMin)
@@ -82,7 +82,7 @@ public class EnemyMoviment
       } while (see && see2);
 
 
-      return randomPoint;
+      return parameters.posDestination;
 
    }
 

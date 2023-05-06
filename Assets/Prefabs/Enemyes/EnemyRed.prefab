@@ -947,13 +947,14 @@ MonoBehaviour:
     cooldownTime: 2
     distanceShoting: 12
     attakPorcent: 10
-    speed: 3.5
+    speed: 10
     speedRotation: 500
     AlturaMax: 13
     AlturaMin: 7
     eixoX: 45
     eixoZ: 45
-    raioDistance: 40
+    posDestination: {x: 0, y: 0, z: 0}
+    raioDistance: 5
     checkRadius: 1
     rb: {fileID: 0}
     target: {fileID: 0}

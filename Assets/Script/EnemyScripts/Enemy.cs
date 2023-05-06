@@ -49,7 +49,7 @@ public class Enemy : Statos
          if(Vector3.Distance(transform.position,proprerts.target.transform.position) >= proprerts.distanceShoting + 2){
             if(cronometro.CronometroPorSeg(proprerts.cooldownTime)){
                if(porcentAttck <= proprerts.attakPorcent){
-                  proprerts.attack = true;
+                  proprerts.attack = false;
                }else{
                   cronometro.Reset();
                   porcentAttck = Random.Range(0,100);
@@ -121,6 +121,7 @@ public struct EnemyParamets
    public float AlturaMin;
    public float eixoX;
    public float eixoZ;
+   public Vector3 posDestination;
 
    [Range(5,50)]public float raioDistance;
    public float checkRadius;

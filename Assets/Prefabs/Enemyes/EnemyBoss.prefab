@@ -80,7 +80,8 @@ MonoBehaviour:
     AlturaMin: 7
     eixoX: 45
     eixoZ: 45
-    raioDistance: 40
+    posDestination: {x: 0, y: 0, z: 0}
+    raioDistance: 5
     checkRadius: 1
     rb: {fileID: 0}
     target: {fileID: 0}

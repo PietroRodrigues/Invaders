@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Designer;
+using UnityEditor;
 
 public class SpawnerEnemys : MonoBehaviour
 {       
+    [SerializeField] MapGridFase mapGridFase;
+    
     [HideInInspector] public List<GameObject> enemyesInScene;
     List<GameObject> enemyesCemiterio = new List<GameObject>();
     int waveCaunt = 0;
@@ -18,7 +21,7 @@ public class SpawnerEnemys : MonoBehaviour
     [SerializeField] int radiusSpawnPont;
     [SerializeField] Transform spawnerBossPoint;
     [SerializeField] Transform[] spawnerPoints;
-    [SerializeField] Wave[] waves;
+    [SerializeField] public Wave[] waves;
 
     AlocationStage alocationStage;
 
@@ -26,9 +29,10 @@ public class SpawnerEnemys : MonoBehaviour
     [SerializeField] Vector2 raioMinMaxDistance;
     [SerializeField] Vector2 alturaMinMax;
 
-    public List<WaveDesigner> waveDesigner = new List<WaveDesigner>();
+    
+    [SerializeField] SettingsLocationArea settings;
 
-    private void Awake() {
+    private void Awake() {       
 
         alocationStage = new AlocationStage(wavePos,raioMinMaxDistance,alturaMinMax);
 
@@ -104,8 +108,7 @@ public class SpawnerEnemys : MonoBehaviour
                     else
                         bossFight = true;
                 }else{
-                    EndStage = true;
-                    print("Comgratulations!!!");
+                    EndStage = true;                    
                 }
 
                 enemyesInScene.Clear();
@@ -113,7 +116,7 @@ public class SpawnerEnemys : MonoBehaviour
         }
 
         if(!bossFight || !EndStage)
-            alocationStage.Alocar(enemyesInScene);
+            alocationStage.Alocar(enemyesInScene , mapGridFase, settings);
 
     }
 
@@ -131,6 +134,13 @@ public class SpawnerEnemys : MonoBehaviour
         return enemy;
     }
 
+    private void OnDrawGizmos() {
+        
+        if(alocationStage == null)
+            alocationStage = new AlocationStage(wavePos,raioMinMaxDistance,alturaMinMax);
+        
+        alocationStage.Draw(settings,mapGridFase);
+    }
 }
 
 [System.Serializable]
@@ -146,7 +156,6 @@ public struct EnemyInfo
     [HideInInspector] public GameObject enemy;
 }
 
-
 namespace Designer
 {
     [System.Serializable]
@@ -156,7 +165,7 @@ namespace Designer
 
         public WaveDesigner(int linha, int colunas)
         {
-            grade = new bool[linha,colunas];
+            this.grade = new bool[linha,colunas];
         }
     }
 }
