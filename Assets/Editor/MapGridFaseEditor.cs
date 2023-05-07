@@ -5,15 +5,25 @@ using UnityEngine;
 
 [CustomEditor(typeof(MapGridFase))]
 public class MapGridFaseEditor : Editor
-{
+{   
+    MapGridFase mapGridFase;
+
+    private int width = 8;
+    private int height = 5;
+
+    private void OnEnable() {
+        mapGridFase = (MapGridFase)target;
+
+        for (int i = 0; i < mapGridFase.GetNivel().Count; i++)
+        {
+            mapGridFase.LoadTogglesFromPrefs(i);
+        }
+
+    }
+
     public override void OnInspectorGUI(){
-
-        MapGridFase mapGridFase = (MapGridFase)target;
-
-        EditorGUILayout.LabelField("Map Grid Fase");
         
-        int width = 8;
-        int height = 5;
+        EditorGUILayout.LabelField("Map Grid Fase");
 
         for (int i = 0; i < mapGridFase.GetNivel().Count; i++)
         {
@@ -45,10 +55,8 @@ public class MapGridFaseEditor : Editor
                 EditorGUILayout.BeginHorizontal();
               
                 for (int x = 0; x < width; x++)
-                {
-                   
-                    mapGridFase.SetWavePos(i,x,y,EditorGUILayout.Toggle(mapGridFase.GetWavePos(i,x,y)));
-                
+                {                   
+                    mapGridFase.SetWavePos(i,x,y,EditorGUILayout.Toggle(mapGridFase.GetWavePos(i,x,y)));                
                 }
 
                 EditorGUILayout.EndHorizontal();
@@ -58,6 +66,11 @@ public class MapGridFaseEditor : Editor
         }
 
         if(EditorGUI.EndChangeCheck()){
+            
+            for (int i = 0; i < mapGridFase.GetNivel().Count; i++)
+            {
+                mapGridFase.SaveTogglesToPrefs(i);
+            }
             EditorUtility.SetDirty(mapGridFase);
         }
     }

@@ -11,11 +11,16 @@ public class MapGridFase : ScriptableObject
     public const int defaultWidth = 8;
     public const int defaultHeight = 5;
 
+    private const string PlayerPrefsKeyPrefix = "MapGridFase_Toggle_";
+
     public MapGridFase(){
-        fase = new List<bool[,]>();
-        for (int i = 0; i < tamanho; i++)
-        {
-            fase.Add(new bool[defaultWidth,defaultHeight]);
+        if(fase == null){
+            Debug.Log("entro");
+            fase = new List<bool[,]>();
+            for (int i = 0; i < tamanho; i++)
+            {
+                fase.Add(new bool[defaultWidth,defaultHeight]);
+            }
         }
     }
 
@@ -39,6 +44,32 @@ public class MapGridFase : ScriptableObject
 
     public void SetWavePos(int i,int x,int y, bool value){
         fase[i][x,y] = value;
+    }
+
+    public void LoadTogglesFromPrefs(int nivel)
+    {
+        for (int y = 0; y < defaultHeight; y++)
+        {
+            for (int x = 0; x < defaultWidth; x++)
+            {
+                string key = PlayerPrefsKeyPrefix + nivel + "_" + x + "_" + y;
+                bool value = PlayerPrefs.GetInt(key, 0) != 0;
+                SetWavePos(nivel, x, y, value);
+            }
+        }
+    }
+
+    public void SaveTogglesToPrefs(int nivel)
+    {
+        for (int y = 0; y < defaultHeight; y++)
+        {
+            for (int x = 0; x < defaultWidth; x++)
+            {
+                string key = PlayerPrefsKeyPrefix + nivel + "_" + x + "_" + y;
+                bool value = GetWavePos(nivel, x, y);
+                PlayerPrefs.SetInt(key, value ? 1 : 0);
+            }
+        }
     }
 
 }
