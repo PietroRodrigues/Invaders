@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d02cb590c8656164f8a7b2a0e2a71426, type: 3}
   m_Name: New Fase Grid
   m_EditorClassIdentifier: 
-  tamanho: 0
+  tamanho: 10

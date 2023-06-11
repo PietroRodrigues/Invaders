@@ -1,16 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {
-
     [SerializeField] public HudComponentes hudComponentes;
-    public GameObject player;
+    [SerializeField] public PlayerHud playerHud;
+    [HideInInspector] public Player player;
 
     void Start() {
-        player = FindObjectOfType<Player>().gameObject;
+        player = FindObjectOfType<Player>();
         Random.InitState((int)Time.time * 1000);
+    }
+
+    private void Update() {
+        playerHud.bars.transform.Find("Life").GetComponent<Image>().fillAmount = (float) player.hp / player.hpMax;
+        playerHud.bars.transform.Find("Shild").GetComponent<Image>().fillAmount = (float) player.shild / player.ShildMax;
     }
 
     // Update is called once per frame
@@ -46,7 +52,7 @@ public class HUD : MonoBehaviour
 
 [System.Serializable]
 public struct HudComponentes
-{
+{   
     public float aimDistance;
     public float aimCanonDistance;
     public Transform canon;
@@ -95,4 +101,15 @@ public struct HudComponentes
         }
 
     }
+}
+
+[System.Serializable]
+public struct PlayerHud
+{
+    public GameObject bars;
+    public GameObject EnemyDefted;
+    public GameObject SpecialShoting;
+    public GameObject Itens;
+    public GameObject Missiles;
+        
 }

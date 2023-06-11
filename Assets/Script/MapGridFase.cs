@@ -8,19 +8,30 @@ public class MapGridFase : ScriptableObject
     public int tamanho = 10;
     [SerializeField] private List<bool[,]> fase;
 
-    public const int defaultWidth = 8;
-    public const int defaultHeight = 5;
+    public const int defaultWidth = 10;
+    public const int defaultHeight = 7;
 
     private const string PlayerPrefsKeyPrefix = "MapGridFase_Toggle_";
 
     public MapGridFase(){
+        
         if(fase == null){
-            Debug.Log("entro");
             fase = new List<bool[,]>();
             for (int i = 0; i < tamanho; i++)
             {
                 fase.Add(new bool[defaultWidth,defaultHeight]);
             }
+        }    
+    }
+
+    private void OnEnable() {
+        ChargedLoad();
+    }
+
+    public void ChargedLoad(){
+
+        for (int i = 0; i < GetNivel().Count; i++) {
+            LoadTogglesFromPrefs(i);
         }
     }
 
@@ -71,6 +82,5 @@ public class MapGridFase : ScriptableObject
             }
         }
     }
-
 }
 

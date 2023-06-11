@@ -1,32 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class Player : Statos
 {
    [SerializeField] Rigidbody rb;
    [SerializeField] HUD hud;
    [SerializeField] CamControler camControler;
-   [SerializeField] float DistanciaRaioPropulsor;
-   [SerializeField] float fatorAmplification;
-   [SerializeField] float speedMax;
-   [SerializeField] Transform minimapIco;
+   [SerializeField] Transform shildParticle;
 
    [HideInInspector] public PlayerControler playerControler;
    PlayerFisics playerFisics;
    Shotting shoting;
    PlayerAnimation playerAnimation;
+   [SerializeField] PartsTank partsTank;
+   
+   [SerializeField] ShottingSettings shotingSettings;
+
+   [SerializeField] float speedMax;
+   [Range(1, 360)][SerializeField] float speedRotation = 1f;
 
    [Range(1, 360)][SerializeField] float speedCanonAim = 1f;
-   [Range(1, 360)][SerializeField] float speedRotation = 1f;
-   [Range(1, 360)][SerializeField] int anguloDePropulsores = 1;
-   [SerializeField] PartsTank partsTank;
-   [SerializeField] ShottingSettings shotingSettings;
+   [SerializeField] float minCanonX = 0;
+   [SerializeField] float maxCanonX = 1;
+  
    [Range(10, 100)][SerializeField] float maxDistanceBullets;
 
-   [SerializeField] Transform[] pointsRaycast;
+   [SerializeField] float distRaycast;
+   [SerializeField] float floatingHeight;
 
    Vector3 grondCheckPos;
+   
 
    private void Awake()
    {
@@ -42,32 +47,55 @@ public class Player : Statos
    {
       playerAnimation.speedCanonAim = speedCanonAim;
       playerFisics.SpeedRotation = speedRotation;
-      playerAnimation.anguloDePropulsores = anguloDePropulsores;
 
       playerControler.GameInputs();
+
+      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,speedMax,distRaycast,floatingHeight);
+
       AutoDestruir();
 
    }
 
    void FixedUpdate()
    {
-      shoting.CanonShotting(playerControler.inputsControl.disparar, playerFisics.speed, transform.position, maxDistanceBullets);
+      bool lookMissel = shoting.LockingMissile(playerControler.inputsControl.mirar);
 
-      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput, DistanciaRaioPropulsor, fatorAmplification, pointsRaycast,speedMax,minimapIco);
+      if(!playerControler.inputsControl.mirar)
+         shoting.GunShotting(playerControler.inputsControl.disparar, 0, transform.position, maxDistanceBullets);
+      
+      if(playerControler.inputsControl.mirar)
+         shoting.MissileShotting(playerControler.inputsControl.disparar, 0, transform.position, maxDistanceBullets);
+
+       playerFisics.AplicaMovemento();
 
    }
 
    private void LateUpdate()
    {
-      playerAnimation.AimCanon(hud.hudComponentes.MouseAimPos);
-      playerAnimation.PropulsoresControler(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput, playerFisics.ditectionRotation);
-
+      playerAnimation.AimCanon(hud.hudComponentes.MouseAimPos,minCanonX, maxCanonX);
    }
 
-   void AutoDestruir(){
-      if(hp <= 0){
-        this.gameObject.SetActive(false);
+   void AutoDestruir()
+   {
+      if (hp <= 0)
+      {
+         this.gameObject.SetActive(false);
       }
+   }
+
+   public void Ripples(Vector3 posBullet){
+      
+      VisualEffect ripples = shildParticle.Find("ShieldRipples").GetComponent<VisualEffect>();
+
+      Vector3 direction = posBullet - ripples.transform.position;
+
+      Quaternion ripplesRotation = Quaternion.LookRotation(direction,Vector3.up);
+      Vector3 ripplesEulerAngle = ripplesRotation.eulerAngles;
+
+      ripples.transform.rotation = Quaternion.Euler(ripplesEulerAngle);
+
+      ripples.Play();
+
    }
 
 }

@@ -4,159 +4,136 @@ using UnityEngine;
 
 public class PlayerFisics
 {
-    Rigidbody rb;
-    Transform baseTank;
-    HUD hud;
-    public float speed;
-    float smootSpeed;
-    Vector3 smootMoveSpeed;
-    Vector3 currentDirection;
-    Vector3 oldDirection;
-    bool isGrounded;
+   Rigidbody rb;
+   Transform baseTank;
+   HUD hud;
+   Vector3 currentDirection;
+   public float speed;
+   float acceleration = 0.5f;
+   float deceleration = 1f;
+   Vector3 smootMoveSpeed;
 
-    public float SpeedRotation;
-    public float ditectionRotation;
+   bool dirCima = true;
+   float heightAtual = 1;
+   Vector3 movePos;
+   Vector3 pos;
+   Quaternion moveRot;
+   Quaternion rot;
 
-    float acceleration = 2f;
-    float deceleration = 2f;
 
-    float distanciaRaio;
+   float motorInput;
+   float breakInput;
+   float steeringInput;
 
-    bool rotacionar;
+   bool isGrounded;
 
-    public PlayerFisics(Rigidbody rb, Transform baseTank, HUD hud){
+   public float SpeedRotation;
 
-        this.rb = rb;
-        this.hud = hud;
-        this.baseTank = baseTank;
+   float distanciaRaio;
 
-    }
+   bool rotacionar;
 
-    public void MoverAWSD(float x,float z,float distanciaRaio,float fatorAmplification,Transform[] posicoesRaio,float speedMax, Transform miniMapIco){
+   public PlayerFisics(Rigidbody rb, Transform baseTank, HUD hud)
+   {
 
-        Vector3 moveAmount = Vector3.zero;        
+      this.rb = rb;
+      this.hud = hud;
+      this.baseTank = baseTank;
 
-        if(x != 0 || z != 0){
-            currentDirection = Camera.main.transform.forward * z + Camera.main.transform.right * x;
-            speed = Mathf.Lerp(speed, speedMax * currentDirection.magnitude, acceleration * Time.deltaTime);
-            
-        }else{
-            speed = Mathf.Lerp(speed, 0 , deceleration * Time.deltaTime);
-        }
+      pos = rb.transform.position;
+      rot = rb.transform.rotation;
 
-        moveAmount = Vector3.SmoothDamp(moveAmount, currentDirection, ref smootMoveSpeed, 0.15f);
+   }
 
-        rb.MovePosition((rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime)));
+   public void MoverAWSD(float x, float z, float speedMax, float distRaycast, float floatingHeight)
+   {
+      Vector3 moveAmount = Vector3.zero;
 
-        ditectionRotation = PlayerRotation(x,z,miniMapIco);
-        
-        Propussor(distanciaRaio,fatorAmplification,posicoesRaio);
+      if (x != 0 || z != 0)
+      {
+         currentDirection = Vector3.ProjectOnPlane(Camera.main.transform.forward * z + Camera.main.transform.right * x, Vector3.up);
+         speed = Mathf.Lerp(speed, speedMax * currentDirection.magnitude, acceleration * Time.deltaTime);
+      }
+      else
+      {
+         speed = Mathf.Lerp(speed, 0, deceleration * Time.deltaTime);
+      }
 
-    }
+      moveAmount = Vector3.SmoothDamp(moveAmount, currentDirection, ref smootMoveSpeed, 0.15f);
 
-    float PlayerRotation(float x,float z, Transform miniMapIco){
+      movePos = (rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime));
 
-        float camY =  Camera.main.transform.eulerAngles.y;
-        float currentRotation = baseTank.rotation.eulerAngles.y;
-        float turnDirection = 0;
+      AlinharComSuperficie(distRaycast, floatingHeight);
+      moveRot = PlayerRotation(x, z, rot);
 
-        if(x != 0 || z != 0){
-            baseTank.rotation = Quaternion.RotateTowards(baseTank.rotation, Quaternion.Euler(0, camY + baseTank.rotation.y, 0),SpeedRotation * Time.deltaTime);
+   }
 
-        }else{
+   void AlinharComSuperficie(float distRaycast, float floatingHeight)
+   {
 
-            if(ForwardCheck(baseTank.transform,hud.hudComponentes.MouseAimPos,40) == 0){
-                rotacionar = true;
-            }
+      RaycastHit hit;
+      pos = rb.transform.position;
+      Quaternion currentRotation = rb.transform.rotation;
+      rot = currentRotation;
 
-            if(rotacionar){
-                baseTank.rotation = Quaternion.RotateTowards(baseTank.rotation, Quaternion.Euler(0, camY + baseTank.rotation.y, 0),SpeedRotation * Time.deltaTime);
+      if (dirCima && heightAtual >= 0.8f)
+      {
+         dirCima = false;
 
-                float desiredRotation = camY + baseTank.rotation.y;
-                turnDirection = Mathf.Sign(desiredRotation - currentRotation);
-            
-                if(Quaternion.Angle(baseTank.rotation,Quaternion.Euler(0, camY + baseTank.rotation.y, 0)) < 2){
-                    rotacionar = false;                       
-                }
-            }
+      }else if (!dirCima && heightAtual <= 0.6f)
+      {
+         dirCima = true;
+      }
 
-        }
+      heightAtual = Mathf.MoveTowards(heightAtual, dirCima ? 0.8f : 0.6f, Time.deltaTime * 0.1f);
 
-        miniMapIco.gameObject.SetActive(true);
-        Vector3 baseV3 = baseTank.eulerAngles;
-        baseV3.x = 90;
-        baseV3.z = 0;
-        miniMapIco.rotation  = Quaternion.Euler(baseV3);
-        miniMapIco.transform.position = new Vector3(miniMapIco.transform.position.x,20,miniMapIco.transform.position.z);
 
-        return turnDirection;
-        
-    }
+      bool see = Physics.Raycast(rb.transform.position, -rb.transform.up, out hit, distRaycast);
 
-    void Propussor(float distanciaRaio,float fatorAmplification,Transform[] posicoesRaio){
+      if (see)
+      {
+         Vector3 incomingVec = hit.point - rb.transform.position;
+         Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
 
-        float aceleracaoGravidade = rb.mass * Mathf.Abs(Physics.gravity.magnitude);
+         Quaternion desiredRotation = Quaternion.FromToRotation(rb.transform.up, reflectVec) * rb.transform.rotation;
+         
+         if (Quaternion.Angle(currentRotation, desiredRotation) > 10f)
+         {
+            rot = Quaternion.Slerp(rot, desiredRotation, Time.deltaTime * 5f);
 
-        Vector3 forcaPropulsor = Vector3.zero;
+         }
 
-        foreach (Transform posicaoRaio in posicoesRaio) {
-            
-            Ray raio = new Ray(posicaoRaio.position, -posicaoRaio.up);
-            RaycastHit hit;
-            
-            bool see = Physics.Raycast(raio, out hit, distanciaRaio, 1, QueryTriggerInteraction.Ignore);
+         pos = new Vector3(0, hit.point.y + heightAtual, 0);
 
-            Vector3 limitRaio = raio.origin + raio.direction * distanciaRaio;
-            float distancia = Vector3.Distance(rb.transform.position,(see)? hit.point :  limitRaio); 
-            float distanciaNormalizada = Mathf.InverseLerp(0, distanciaRaio, distancia);
-            float fatorForca = Mathf.Lerp(2, 1, distanciaNormalizada);
-            
-            forcaPropulsor += posicaoRaio.up * aceleracaoGravidade * (fatorForca / posicoesRaio.Length) * ((see)? fatorAmplification : fatorAmplification / 2);
-           
-            Debug.DrawLine(posicaoRaio.position,(see)? hit.point: limitRaio, Color.red);      
-        }
-        
-        rb.AddForce(forcaPropulsor,ForceMode.Force); 
+      }
 
-    }
+   }
 
-    public void Jump(bool junpInput,float jumpForce,Vector3 GrondCheckPos,float GrondCheckSize){
+   Quaternion PlayerRotation(float x, float z, Quaternion rotAlinhada)
+   {
 
-        Collider[] hitColiders = Physics.OverlapSphere(GrondCheckPos,GrondCheckSize,~LayerMask.GetMask("Player"));
+      float camY = Camera.main.transform.eulerAngles.y;
+      float currentRotation = rb.transform.eulerAngles.y;
+      Quaternion curentRotatin = rb.transform.rotation;
+      Quaternion dirRot = curentRotatin;
 
-        int hits = 0;
+      Vector3 dirTarget = currentDirection - rb.transform.position;
 
-        for (int i = 0; i < hitColiders.Length; i++)
-        {
-            if(!hitColiders[i].isTrigger)
-                hits++;
-        }
+      dirRot = Quaternion.Slerp(dirRot, Quaternion.Euler(0, camY + rb.transform.rotation.y, 0), Time.deltaTime * ((x != 0 || z != 0) ? 8f : 3f ));
+      
+      Vector3 dirEuler = dirRot.eulerAngles;
+      dirRot = Quaternion.Euler(dirEuler);
 
-        if(hits > 0){
-            isGrounded = true;              
-        }else{
-            isGrounded = false;                            
-        }
-        
-        if(junpInput && isGrounded){
-            Debug.Log("entro");
-            rb.AddForce(rb.transform.up * jumpForce, ForceMode.Impulse);         
-        }
+      return dirRot;
 
-    }
+   }
 
-    float ForwardCheck(Transform elementTransform, Vector3 pontVerific, int anguloLimit){
+   public void AplicaMovemento()
+   {
 
-        Vector3 direction = (new Vector3(pontVerific.x,elementTransform.position.y,pontVerific.z) - elementTransform.position).normalized;
+      rb.MoveRotation(Quaternion.Euler(rot.eulerAngles.x, moveRot.eulerAngles.y, rot.eulerAngles.z));
+      rb.MovePosition(new Vector3(movePos.x, pos.y, movePos.z));
 
-        float dot = Vector3.Dot(elementTransform.forward, direction);
+   }
 
-        float limit = Mathf.Sin(anguloLimit * Mathf.Deg2Rad);
-
-        if(dot > limit){
-            return 1;           
-        }else{
-            return 0; 
-        }
-    }
 }

@@ -1,98 +1,110 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Designer;
-using System.Linq;
 
 public class AlocationStage
 {
-   int indcWavePos = 0;
-   
-   
-   Transform[] wavePos;
    Vector2 raioMinMaxDistance;
    Vector2 alturaMinMax;
 
-   MapEnemy[,] mapEnemy = new MapEnemy[8,5];
+   MapEnemy[,] mapEnemy = new MapEnemy[10, 7];
 
-   public AlocationStage(Transform[] wavePos, Vector2 raioMinMaxDistance, Vector2 alturaMinMax)
+   MapGridFase mapGridFase;
+
+   public AlocationStage(MapGridFase mapGridFase, Vector2 raioMinMaxDistance, Vector2 alturaMinMax)
    {
-      this.wavePos = wavePos;
       this.raioMinMaxDistance = raioMinMaxDistance;
       this.alturaMinMax = alturaMinMax;
+
+      this.mapGridFase = mapGridFase;
+
+      mapGridFase.ChargedLoad();
+
    }
 
-   public void Alocar(List<GameObject> enemyInScene, MapGridFase mapGridFase,SettingsLocationArea settings){
+   public void Alocar(List<GameObject> enemyInScene, Transform wavePos, int waveFormationIndc, SettingsLocationArea settings)
+   {
+
+      Vector3 centerWave = wavePos.position;
+      centerWave -= wavePos.right * -settings.horizontalSize / 2;
+      centerWave -= wavePos.forward * -settings.verticalSize / 2;
 
       float espacoH = -settings.horizontalSize / (mapEnemy.GetLength(0) - 1);
       float espacoV = -settings.verticalSize / (mapEnemy.GetLength(1) - 1);
 
-      Vector3 centerWave = wavePos[indcWavePos].position;
-      centerWave -= wavePos[indcWavePos].right * -settings.horizontalSize / 2;
-      centerWave -= wavePos[indcWavePos].up * -settings.verticalSize / 2;
-      
       int indcEnemy = 0;
-      
-      for (int i = 0; i < mapEnemy.GetLength(0); i++)
+
+      if (enemyInScene.Count > 0)
       {
-         for (int j = 0; j < mapEnemy.GetLength(1); j++)
+
+         for (int i = 0; i < mapEnemy.GetLength(0); i++)
          {
-            Vector3 pos = centerWave + wavePos[indcWavePos].right * i * espacoH + wavePos[indcWavePos].up * j * espacoV;
-            
-            mapEnemy[i,j].autorization =  mapGridFase.GetWavePos(indcWavePos,i,j);
-            mapEnemy[i,j].pos = pos;
-            
-            if(mapEnemy[i,j].autorization){       
-               
-               if(mapEnemy[i,j].enemySeted == null){
-                  mapEnemy[i,j].enemySeted = enemyInScene[indcEnemy];
-                  mapEnemy[i,j].enemySeted.GetComponent<Enemy>().proprerts.posDestination = mapEnemy[i,j].pos;
+            for (int j = 0; j < mapEnemy.GetLength(1); j++)
+            {
+               Vector3 pos = centerWave + wavePos.right * i * espacoH + wavePos.forward * j * espacoV;
+
+               mapEnemy[i, j].autorization = mapGridFase.GetWavePos(waveFormationIndc, i, j);
+               mapEnemy[i, j].pos = pos;
+
+               if (mapEnemy[i, j].autorization)
+               {
+
+                  Enemy enemy = enemyInScene[indcEnemy].GetComponent<Enemy>();
+
+                  enemy.proprerts.posDestination = mapEnemy[i, j].pos;
+                  enemy.proprerts.waveTransform = wavePos;
                   indcEnemy++;
 
-                  if(indcEnemy >= enemyInScene.Count)
-                  indcEnemy = enemyInScene.Count - 1;
+                  if (indcEnemy >= enemyInScene.Count)
+                  {
+                     indcEnemy = enemyInScene.Count - 1;
+                     if (indcEnemy < 0)
+                        indcEnemy = 0;
+                  }
                }
             }
-            
-         }            
-      }     
+         }
+      }
    }
 
-   public void Draw(SettingsLocationArea settings,MapGridFase mapGridFase){
+   public void Draw(Transform wavePos, int waveFormationIndc, SettingsLocationArea settings)
+   {
+
+      Vector3 centerWave = wavePos.position;
+      centerWave -= wavePos.right * -settings.horizontalSize / 2;
+      centerWave -= wavePos.forward * -settings.verticalSize / 2;
 
       float espacoH = -settings.horizontalSize / (mapEnemy.GetLength(0) - 1);
       float espacoV = -settings.verticalSize / (mapEnemy.GetLength(1) - 1);
-
-      Vector3 centerWave = wavePos[indcWavePos].position;
-      centerWave -= wavePos[indcWavePos].right * -settings.horizontalSize / 2;
-      centerWave -= wavePos[indcWavePos].up * -settings.verticalSize / 2;
 
       for (int i = 0; i < mapEnemy.GetLength(0); i++)
       {
          for (int j = 0; j < mapEnemy.GetLength(1); j++)
          {
-            Vector3 pos = centerWave + wavePos[indcWavePos].right * i * espacoH + wavePos[indcWavePos].up * j * espacoV;
-            
-            mapEnemy[i,j].autorization = mapGridFase.GetWavePos(indcWavePos,i,j);
-            mapEnemy[i,j].pos = pos;
+            Vector3 pos = centerWave + wavePos.right * i * espacoH + wavePos.forward * j * espacoV;
 
-            if(mapEnemy[i,j].autorization){
+            mapEnemy[i, j].autorization = mapGridFase.GetWavePos(waveFormationIndc, i, j);
+            mapEnemy[i, j].pos = pos;
+
+            if (mapEnemy[i, j].autorization)
+            {
                Gizmos.color = Color.blue;
-            }else{
+            }
+            else
+            {
                Gizmos.color = Color.red;
             }
-            
-            Gizmos.DrawWireSphere(pos,1f);
-         }
-      }     
-   }
 
+            Gizmos.DrawWireSphere(pos, 1f);
+         }
+      }
+
+   }
 }
 
 [System.Serializable]
 public struct MapEnemy
 {
-   public GameObject enemySeted;
    public bool autorization;
    public Vector3 pos;
 }
@@ -101,6 +113,14 @@ public struct MapEnemy
 [System.Serializable]
 public struct SettingsLocationArea
 {
+   [HideInInspector] public int waveIndc;
+
+   public float waveSpeedRotation;
+   public int anguloVision;
+
+   public float minDistance;
+   public float maxDistance;
+
    public float verticalSize;
    public float horizontalSize;
 }

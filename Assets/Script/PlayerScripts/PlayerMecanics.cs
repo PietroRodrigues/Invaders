@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerMecanics
 {
-    public PlayerMecanics(){
+   public PlayerMecanics()
+   {
 
-    }
+   }
 }

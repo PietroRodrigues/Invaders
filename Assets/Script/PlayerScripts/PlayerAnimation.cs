@@ -7,75 +7,58 @@ public class PlayerAnimation
 
     PartsTank parts;
     public float speedCanonAim;
-    public int anguloDePropulsores;
 
-    public PlayerAnimation(PartsTank parts){
-        
+    private Quaternion torreRelativeRotation;
+    private Quaternion canonRelativeRotation;
+
+    public PlayerAnimation(PartsTank parts){        
         this.parts = parts;
     }
 
-    public void AimCanon(Vector3 target){
-
-        Vector3 baseDirection = target - parts.beseTower.position;
-        Vector3 canonDirection = target - parts.canon.position;        
-
-        Quaternion baseRotation = Quaternion.LookRotation(baseDirection, parts.cabine.up);
-        Quaternion canonRotation = Quaternion.LookRotation(canonDirection, parts.cabine.up);
-
-        Vector3 baseEuler = baseRotation.eulerAngles;
-        baseEuler.x = 0;
-        baseEuler.z = 0;
-        baseRotation = Quaternion.Euler(baseEuler);
-
-        Vector3 canonEuler = canonRotation.eulerAngles;
-        canonEuler.y = parts.beseTower.rotation.eulerAngles.y;
-        canonEuler.z = parts.beseTower.rotation.eulerAngles.z;
-        canonRotation = Quaternion.Euler(canonEuler);        
-
-        parts.beseTower.rotation = Quaternion.RotateTowards(parts.beseTower.rotation, baseRotation, speedCanonAim * Time.deltaTime);
+    public void AimCanon(Vector3 target , float mixCanonAngle, float maxCanonAngle){
         
-        parts.canon.rotation = Quaternion.RotateTowards(parts.canon.rotation, canonRotation, speedCanonAim * Time.deltaTime);
+        // acha a rotação bruta para o alvo
+        Quaternion lookAtTorre = Quaternion.LookRotation(target - parts.beseTower.position,parts.cabine.root.up);
         
-    }
+        Quaternion lookAtCanon = Quaternion.LookRotation(target - parts.canon.position, parts.canon.up);
 
-    public void PropulsoresControler(float x, float z, float turnDirection){
-
-        Quaternion Front_Left = PropulsorRot(x,z);
-        Quaternion Front_Right = PropulsorRot(x,z);
-        Quaternion Back_Left = PropulsorRot(x,z);
-        Quaternion Back_Right = PropulsorRot(x,z);
-
-        if(turnDirection > 0){
-            //Direita
-            Front_Left = PropulsorRot(x,1);
-            Front_Right = PropulsorRot(x,-1);
-            Back_Left = PropulsorRot(x,1);
-            Back_Right = PropulsorRot(x,-1);
-        }
+        // acha a rotação relativa e faz uma transição suavel da rotação
+        torreRelativeRotation = Quaternion.Euler(parts.cabine.root.eulerAngles - lookAtTorre.eulerAngles);
         
-        if(turnDirection < 0){
-            //Esquerda
-            Front_Left = PropulsorRot(x,-1);
-            Front_Right = PropulsorRot(x,1);
-            Back_Left = PropulsorRot(x,-1);
-            Back_Right = PropulsorRot(x,1);
+        canonRelativeRotation = Quaternion.Euler(parts.canon.eulerAngles - lookAtCanon.eulerAngles);
+
+        // rotação final dos componentes 
+        Vector3 torreEuler = parts.cabine.root.eulerAngles - torreRelativeRotation.eulerAngles;
+        Quaternion torreRot = Quaternion.Euler(torreEuler);
+        
+        Vector3 canonEuler = parts.canon.eulerAngles - canonRelativeRotation.eulerAngles;
+        Quaternion canonRot = Quaternion.Euler(canonEuler);
+
+        // aplica a rotação 
+        // **CANHÃO DEVE SER SEMPRE ANTES DA TORRE**
+        parts.canon.rotation = Quaternion.RotateTowards(parts.canon.rotation,canonRot,(speedCanonAim * 2)  * Time.deltaTime);
+        parts.beseTower.rotation = Quaternion.RotateTowards(parts.canon.rotation,torreRot,speedCanonAim * Time.deltaTime);
+
+        // --- angulo maximo e angulo minimo de rotação do canhão --- //
+        float max = 360 - maxCanonAngle;
+        float min = mixCanonAngle;
+        float currentAngle = parts.canon.localEulerAngles.x;
+
+        if(currentAngle > 180){
+            if(currentAngle < max) parts.canon.localEulerAngles = new Vector3(max,0,0);
+        }else{
+            if(currentAngle > min) parts.canon.localEulerAngles = new Vector3(min,0,0);
         }
 
-        parts.propulsorFront_Left.localRotation = Quaternion.RotateTowards(parts.propulsorFront_Left.localRotation,Front_Left, 100 * Time.deltaTime);
-        
-        parts.propulsorFront_Right.localRotation = Quaternion.RotateTowards(parts.propulsorFront_Right.localRotation,Front_Right, 100 * Time.deltaTime);
-        
-        parts.propulsorBack_Left.localRotation = Quaternion.RotateTowards(parts.propulsorBack_Left.localRotation,Back_Left, 100 * Time.deltaTime);
-        
-        parts.propulsorBack_Right.localRotation = Quaternion.RotateTowards(parts.propulsorBack_Right.localRotation,Back_Right, 100 * Time.deltaTime);
+        // bloqueia a rotação em certos eixos
+        Vector3 towerRotation = parts.beseTower.localEulerAngles;
+        Vector3 canonRotation = parts.canon.localEulerAngles;
 
+        parts.beseTower.localRotation = Quaternion.Euler(0,towerRotation.y,0);
+        parts.canon.localRotation = Quaternion.Euler(canonRotation.x,0,0);        
+        
     }
     
-    Quaternion PropulsorRot(float x, float z){
-        
-        return Quaternion.Euler(new Vector3(z * anguloDePropulsores,0,-x * anguloDePropulsores));
-
-    }
 }
 
 [System.Serializable]
@@ -85,9 +68,4 @@ public struct PartsTank
     public Transform canon;
 
     public Transform cabine;
-
-    public Transform propulsorFront_Right;
-    public Transform propulsorFront_Left;
-    public Transform propulsorBack_Right;
-    public Transform propulsorBack_Left;    
 }

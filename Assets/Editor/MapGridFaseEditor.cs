@@ -8,8 +8,8 @@ public class MapGridFaseEditor : Editor
 {   
     MapGridFase mapGridFase;
 
-    private int width = 8;
-    private int height = 5;
+    private int width = 10;
+    private int height = 7;
 
     private void OnEnable() {
         mapGridFase = (MapGridFase)target;

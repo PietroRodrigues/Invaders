@@ -68,7 +68,7 @@ public class Chronometry
     }
 
 
-    public bool ChronometryPorMiles(int milisegLimite)
+    public bool CronometryPorMiles(int milisegLimite)
     {
         bool limitTimer = false;
 

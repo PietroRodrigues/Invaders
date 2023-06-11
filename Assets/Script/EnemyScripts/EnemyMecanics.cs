@@ -3,63 +3,89 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyMecanics
-{   
-    EnemyParamets parameters;
+{
+   EnemyParamets parameters;
 
-    float lastUsedTime = -Mathf.Infinity;
-    
-    public EnemyMecanics(EnemyParamets parameters){
-        this.parameters = parameters;
-    }
+   float lastUsedTime = -Mathf.Infinity;
 
-    public void Attack(){
+   Chronometry cronometro = new Chronometry();
 
-        ShotBullet(parameters.rb.transform.position,20);
-        
-    }
+   public bool attack;
 
-    void ShotBullet(Vector3 pos, float maxDistanceReset){
+   public EnemyMecanics(EnemyParamets parameters)
+   {
+      this.parameters = parameters;
+   }
 
-        if(parameters.cxBalas.childCount == 0){
-            GameObject bala = GameObject.Instantiate(parameters.bullet);
-            bala.name = parameters.cxBalas.root.name + " Bullet";
-            bala.GetComponent<Bullet>().gumOrigen = parameters.cxBalas;
-            bala.GetComponent<Bullet>().BulletOrigen();
-            parameters.BoxBullet.Add(bala);            
-        }
+   public void Attack()
+   {   
+      ShotBullet(parameters.rb.transform.position, 50);   
+   }
 
-        if(parameters.cxBalas.childCount != 0){                
-            
-            GameObject bullet = parameters.cxBalas.GetChild(0).gameObject;
-            
-            if (!bullet.activeSelf)
-            {                  
-                bullet.GetComponent<Bullet>().Disparate(parameters.speedBody); 
-                parameters.attack = false;
-                lastUsedTime = Time.time;
-              
-            }
-        }
+   float ForwardCheck(Transform elementTransform, Vector3 pontVerific, int anguloLimit)
+   {
 
-        bulletReturn(pos, maxDistanceReset);
+      Vector3 direction = (new Vector3(pontVerific.x, elementTransform.position.y, pontVerific.z) - elementTransform.position).normalized;
 
-    }
+      float dot = Vector3.Dot(elementTransform.forward, direction);
 
-    void bulletReturn(Vector3 pos, float maxDistanceReset)
-    {
-        for (int i = 0; i < parameters.BoxBullet.Count; i++)
-        {            
-            GameObject bullet = parameters.BoxBullet[i];
+      float limit = Mathf.Sin(anguloLimit * Mathf.Deg2Rad);
 
-            if (bullet.activeSelf)
+      if (dot > limit)
+      {
+         return 1;
+      }
+      else
+      {
+         return 0;
+      }
+   }
+
+   void ShotBullet(Vector3 pos, float maxDistanceReset)
+   {
+
+      if (parameters.cxBalas.childCount == 0)
+      {
+         GameObject bala = GameObject.Instantiate(parameters.bullet);
+         bala.name = parameters.cxBalas.root.name + " Bullet";
+         bala.GetComponent<Bullet>().gumOrigen = parameters.cxBalas;
+         bala.GetComponent<Bullet>().especie = parameters.rb.GetComponent<Enemy>();
+         bala.GetComponent<Bullet>().BulletOrigen();
+         parameters.BoxBullet.Add(bala);
+      }
+
+      if (parameters.cxBalas.childCount != 0)
+      {
+
+         GameObject bullet = parameters.cxBalas.GetChild(0).gameObject;
+
+         if (!bullet.activeSelf)
+         {
+            bullet.GetComponent<Bullet>().Disparate(parameters.speedBody);
+            lastUsedTime = Time.time;
+
+         }
+      }
+
+      bulletReturn(pos, maxDistanceReset);
+
+   }
+
+   void bulletReturn(Vector3 pos, float maxDistanceReset)
+   {
+      for (int i = 0; i < parameters.BoxBullet.Count; i++)
+      {
+         GameObject bullet = parameters.BoxBullet[i];
+
+         if (bullet.activeSelf)
+         {
+            if (Vector3.Distance(bullet.transform.position, pos) >= maxDistanceReset)
             {
-                if (Vector3.Distance(bullet.transform.position, pos) >= maxDistanceReset)
-                {   
-                    bullet.GetComponent<Bullet>().BulletOrigen();
-                    i = parameters.BoxBullet.Capacity;
-                }
+               bullet.GetComponent<Bullet>().BulletOrigen();
+               i = parameters.BoxBullet.Capacity;
             }
-            
-        }
-    }
+         }
+
+      }
+   }
 }

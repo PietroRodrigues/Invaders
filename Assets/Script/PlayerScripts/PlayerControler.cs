@@ -17,15 +17,14 @@ public class PlayerControler
             inputsControl.jumpInput =  Input.GetKey(KeyCode.Space);
             inputsControl.special = Input.GetKey(KeyCode.R);
             inputsControl.disparar = Input.GetMouseButton(0);
-            inputsControl.foco = Input.GetMouseButtonDown(1);
+            inputsControl.mirar = Input.GetMouseButton(1);
 
         }else{
 
             inputsControl.xInput = 0;
             inputsControl.zInput = 0;
             inputsControl.jumpInput =  false;            
-            inputsControl.foco = false;
-
+            inputsControl.mirar = false;
         }
     
     }
@@ -37,7 +36,7 @@ public class PlayerControler
         public float yMause;
         public bool jumpInput;
         public bool correrInput;
-        public bool foco;
+        public bool mirar;
         public bool disparar;
         public bool special;
     }
