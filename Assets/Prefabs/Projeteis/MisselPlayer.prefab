@@ -69,7 +69,7 @@ MonoBehaviour:
   gumOrigen: {fileID: 0}
   particulaColider: {fileID: 8815346070927431996, guid: dcca6e319a3201540bb4437d55b9fec4,
     type: 3}
-  speed: 30
+  speed: 70
   speedRot: 20
   DanoProjetil: 10
   spread: 0

@@ -67,7 +67,7 @@ MonoBehaviour:
   meuEmisor: {fileID: 0}
   gumOrigen: {fileID: 0}
   particulaColider: {fileID: 0}
-  speed: 100
+  speed: 500
   speedRot: 0
   DanoProjetil: 5
   spread: 0.03

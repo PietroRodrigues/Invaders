@@ -9,17 +9,18 @@ public class PlayerFisics
    HUD hud;
    Vector3 currentDirection;
    public float speed;
-   float acceleration = 0.5f;
-   float deceleration = 1f;
+   float acceleration = 10;
+   float deceleration = 5f;
    Vector3 smootMoveSpeed;
 
-   bool dirCima = true;
-   float heightAtual = 1;
    Vector3 movePos;
-   Vector3 pos;
+   Vector3 moveDirection;
+   float DistanceForce;
    Quaternion moveRot;
    Quaternion rot;
-
+   float dashCooldown = 2f;
+   float dashTimer = 0f;
+   bool dash;
 
    float motorInput;
    float breakInput;
@@ -35,24 +36,36 @@ public class PlayerFisics
 
    public PlayerFisics(Rigidbody rb, Transform baseTank, HUD hud)
    {
-
       this.rb = rb;
       this.hud = hud;
       this.baseTank = baseTank;
 
-      pos = rb.transform.position;
       rot = rb.transform.rotation;
 
    }
 
-   public void MoverAWSD(float x, float z, float speedMax, float distRaycast, float floatingHeight)
+   public void MoverAWSD(float x, float z, float speedMax, float distRaycast, float floatingHeight, float dashForce)
    {
       Vector3 moveAmount = Vector3.zero;
+
+      if(dashCooldown > 0f){
+         dashCooldown -= Time.deltaTime;
+      }
+
+      if (dashTimer > 0f)
+      {
+         dashTimer -= Time.deltaTime;
+         
+      }else if(dashTimer <= 0){
+         dash = false;
+      }
 
       if (x != 0 || z != 0)
       {
          currentDirection = Vector3.ProjectOnPlane(Camera.main.transform.forward * z + Camera.main.transform.right * x, Vector3.up);
+         
          speed = Mathf.Lerp(speed, speedMax * currentDirection.magnitude, acceleration * Time.deltaTime);
+        
       }
       else
       {
@@ -63,30 +76,31 @@ public class PlayerFisics
 
       movePos = (rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime));
 
+      moveDirection = new Vector3(movePos.x - rb.transform.position.x, 0f, movePos.z - rb.transform.position.z);
+
       AlinharComSuperficie(distRaycast, floatingHeight);
       moveRot = PlayerRotation(x, z, rot);
 
    }
 
+   public void Dash(float x, float z,bool inputDash){
+      if(x != 0 || z != 0){
+         if(inputDash && dashCooldown <= 0){         
+            if (dashTimer <= 0f)
+            {
+               dash = true;
+               dashTimer = 0.2f;
+            }
+            dashCooldown = 1;    
+         }
+      }
+   }
+
    void AlinharComSuperficie(float distRaycast, float floatingHeight)
    {
-
       RaycastHit hit;
-      pos = rb.transform.position;
       Quaternion currentRotation = rb.transform.rotation;
       rot = currentRotation;
-
-      if (dirCima && heightAtual >= 0.8f)
-      {
-         dirCima = false;
-
-      }else if (!dirCima && heightAtual <= 0.6f)
-      {
-         dirCima = true;
-      }
-
-      heightAtual = Mathf.MoveTowards(heightAtual, dirCima ? 0.8f : 0.6f, Time.deltaTime * 0.1f);
-
 
       bool see = Physics.Raycast(rb.transform.position, -rb.transform.up, out hit, distRaycast);
 
@@ -99,11 +113,21 @@ public class PlayerFisics
          
          if (Quaternion.Angle(currentRotation, desiredRotation) > 10f)
          {
-            rot = Quaternion.Slerp(rot, desiredRotation, Time.deltaTime * 5f);
+            rot = Quaternion.Slerp(rot, desiredRotation, Time.deltaTime * 2f);
 
          }
 
-         pos = new Vector3(0, hit.point.y + heightAtual, 0);
+         Debug.DrawLine(rb.transform.position,hit.point, Color.red);
+
+         Vector3 limitPorpulsor = new Vector3(1, hit.point.y + floatingHeight,0);
+
+         DistanceForce = Vector3.Distance(limitPorpulsor,new Vector3(1,rb.transform.position.y,0));
+         
+         if(rb.transform.position.y > limitPorpulsor.y)
+            DistanceForce = 0;
+
+         Debug.DrawLine(limitPorpulsor,new Vector3(1,rb.transform.position.y,0), Color.blue);
+         Debug.Log(DistanceForce);
 
       }
 
@@ -128,12 +152,18 @@ public class PlayerFisics
 
    }
 
-   public void AplicaMovemento()
+   public void AplicaMovemento(float powerPropulsor,float dashForce)
    {
+      rb.AddForce(moveDirection * (speed * (rb.mass)),ForceMode.Force);
+      
+      rb.AddForce(Vector3.up * (DistanceForce * (powerPropulsor * (rb.mass))), ForceMode.Force);
+
+      if(dash){
+         rb.AddForce(moveDirection * (dashForce * (rb.mass)),ForceMode.Impulse);
+      }
 
       rb.MoveRotation(Quaternion.Euler(rot.eulerAngles.x, moveRot.eulerAngles.y, rot.eulerAngles.z));
-      rb.MovePosition(new Vector3(movePos.x, pos.y, movePos.z));
-
+      
    }
 
 }

@@ -19,7 +19,10 @@ public class Player : Statos
    [SerializeField] ShottingSettings shotingSettings;
 
    [SerializeField] float speedMax;
+   [SerializeField] float dashForce;
+   [SerializeField] float powerPropulsor;
    [Range(1, 360)][SerializeField] float speedRotation = 1f;
+   
 
    [Range(1, 360)][SerializeField] float speedCanonAim = 1f;
    [SerializeField] float minCanonX = 0;
@@ -50,7 +53,9 @@ public class Player : Statos
 
       playerControler.GameInputs();
 
-      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,speedMax,distRaycast,floatingHeight);
+      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,speedMax,distRaycast,floatingHeight,dashForce);
+
+      playerFisics.Dash(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,playerControler.inputsControl.jumpInput);
 
       AutoDestruir();
 
@@ -66,7 +71,7 @@ public class Player : Statos
       if(playerControler.inputsControl.mirar)
          shoting.MissileShotting(playerControler.inputsControl.disparar, 0, transform.position, maxDistanceBullets);
 
-       playerFisics.AplicaMovemento();
+      playerFisics.AplicaMovemento(powerPropulsor,dashForce);
 
    }
 
