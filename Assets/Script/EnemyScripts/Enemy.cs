@@ -27,7 +27,6 @@ public class Enemy : Statos
    private void OnEnable()
    {
       proprerts.target = FindObjectOfType<Player>().gameObject;
-
    }
 
    void Update()

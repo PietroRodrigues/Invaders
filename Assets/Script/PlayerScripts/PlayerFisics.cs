@@ -10,7 +10,7 @@ public class PlayerFisics
    Vector3 currentDirection;
    public float speed;
    float acceleration = 10;
-   float deceleration = 5f;
+   float deceleration = 5;
    Vector3 smootMoveSpeed;
 
    Vector3 movePos;
@@ -64,7 +64,11 @@ public class PlayerFisics
       {
          currentDirection = Vector3.ProjectOnPlane(Camera.main.transform.forward * z + Camera.main.transform.right * x, Vector3.up);
          
-         speed = Mathf.Lerp(speed, speedMax * currentDirection.magnitude, acceleration * Time.deltaTime);
+         if(speed <= speedMax){
+            speed = Mathf.Lerp(speed, speedMax * currentDirection.magnitude, acceleration * Time.deltaTime);
+         }else{
+           speed = Mathf.Lerp(speed, 0, deceleration * Time.deltaTime);
+         }
         
       }
       else
@@ -76,7 +80,7 @@ public class PlayerFisics
 
       movePos = (rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime));
 
-      moveDirection = new Vector3(movePos.x - rb.transform.position.x, 0f, movePos.z - rb.transform.position.z);
+      moveDirection = new Vector3(movePos.x - rb.transform.position.x, 0f, movePos.z - rb.transform.position.z).normalized;
 
       AlinharComSuperficie(distRaycast, floatingHeight);
       moveRot = PlayerRotation(x, z, rot);
@@ -117,18 +121,13 @@ public class PlayerFisics
 
          }
 
-         Debug.DrawLine(rb.transform.position,hit.point, Color.red);
-
          Vector3 limitPorpulsor = new Vector3(1, hit.point.y + floatingHeight,0);
 
          DistanceForce = Vector3.Distance(limitPorpulsor,new Vector3(1,rb.transform.position.y,0));
          
          if(rb.transform.position.y > limitPorpulsor.y)
             DistanceForce = 0;
-
-         Debug.DrawLine(limitPorpulsor,new Vector3(1,rb.transform.position.y,0), Color.blue);
-         Debug.Log(DistanceForce);
-
+       
       }
 
    }

@@ -9,14 +9,17 @@ public class Player : Statos
    [SerializeField] HUD hud;
    [SerializeField] CamControler camControler;
    [SerializeField] Transform shildParticle;
+   [SerializeField]Transform drones;
 
    [HideInInspector] public PlayerControler playerControler;
    PlayerFisics playerFisics;
    Shotting shoting;
    PlayerAnimation playerAnimation;
+   Drones dronesSeting;
    [SerializeField] PartsTank partsTank;
    
    [SerializeField] ShottingSettings shotingSettings;
+
 
    [SerializeField] float speedMax;
    [SerializeField] float dashForce;
@@ -44,6 +47,7 @@ public class Player : Statos
       playerFisics = new PlayerFisics(rb, partsTank.cabine, hud);
       shoting = new Shotting(shotingSettings);
       playerAnimation = new PlayerAnimation(partsTank);
+      dronesSeting = new Drones(drones,rb);
    }
 
    void Update()
@@ -73,6 +77,7 @@ public class Player : Statos
 
       playerFisics.AplicaMovemento(powerPropulsor,dashForce);
 
+      dronesSeting.MovimentDrones(hud.hudComponentes.MouseAimPos,speedCanonAim);
    }
 
    private void LateUpdate()
