@@ -19,10 +19,8 @@ public class Drop : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Update() {
-        
-        VFXDrop(getDrop,chronometry.CronometroPorSeg(stageTime));
-        
+    private void Update() {        
+        VFXDrop(getDrop,chronometry.CronometroPorSeg(stageTime));        
     }
 
     private void FixedUpdate() {

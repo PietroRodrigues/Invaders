@@ -13,7 +13,7 @@ public class ShottingDrone
    public ShottingDrone(ShottingDroneSettings settings)
    {
       shottingDroneSettings = settings;
-      muzzleGun = shottingDroneSettings.cannon.Find("Particle").GetComponent<VisualEffect>();
+      muzzleGun = shottingDroneSettings.cannon.Find("Particle").GetComponentInChildren<VisualEffect>();
       shottingDroneSettings.cxBalasGun = shottingDroneSettings.cannon.Find("CxBalas");
 
    }

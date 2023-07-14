@@ -547,7 +547,8 @@ MonoBehaviour:
     bullet: {fileID: 2821278202447033408, guid: 8bdfe2f45421444438f792bf586fe70a,
       type: 3}
     speedBody: 0
-  particleExplosion: {fileID: 0}
+  particleExplosion: {fileID: 1599176421659175414, guid: 4135bcbe87ca1274f921c5c6b27f7691,
+    type: 3}
   shildParticle: {fileID: 1962482457910826531}
 --- !u!54 &105034549109620716
 Rigidbody:

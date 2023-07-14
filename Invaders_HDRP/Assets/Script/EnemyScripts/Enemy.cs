@@ -27,6 +27,7 @@ public class Enemy : StatosEnemyes
    private void OnEnable()
    {
       proprerts.target = FindObjectOfType<Player>().gameObject;
+      moviment.StartDestination(proprerts);
    }
 
    void Update()

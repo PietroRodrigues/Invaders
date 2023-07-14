@@ -61,8 +61,10 @@ public class DropBox : Drop
    }
 
    void DroneDrop(Player player){
-      if(player.inventario.drones < 3)
+      if(player.inventario.drones < 3){
          player.inventario.drones++;
+         Debug.Log(player.inventario.drones);
+      }
    }
 
    void MissilesDrop(Player player){

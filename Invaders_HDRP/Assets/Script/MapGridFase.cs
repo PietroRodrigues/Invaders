@@ -5,11 +5,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Fase Grid", menuName = "Fase")]
 public class MapGridFase : ScriptableObject
 {   
-    public int tamanho = 10;
+    public int tamanho = 6;
     [SerializeField] private List<bool[,]> fase;
 
-    public const int defaultWidth = 10;
-    public const int defaultHeight = 7;
+    public const int defaultWidth = 6;
+    public const int defaultHeight = 5;
 
     private const string PlayerPrefsKeyPrefix = "MapGridFase_Toggle_";
 
@@ -30,30 +30,30 @@ public class MapGridFase : ScriptableObject
 
     public void ChargedLoad(){
 
-        for (int i = 0; i < GetNivel().Count; i++) {
+        for (int i = 0; i < GetFormationsList().Count; i++) {
             LoadTogglesFromPrefs(i);
         }
     }
 
-    public List<bool[,]> GetNivel(){
+    public List<bool[,]> GetFormationsList(){
         return fase;
     }
 
-    public bool[,] GetFase(int i)
+    public bool[,] GeFormation(int i)
     {
         return fase[i];
     }
 
-    public void SetFase(int i, bool[,] fase)
+    public void SetFormation(int i, bool[,] fase)
     {
         this.fase[i] = fase;
     }
 
-    public bool GetWavePos(int i,int x,int y){
+    public bool GetFormationPos(int i,int x,int y){
         return fase[i][x,y];
     }
 
-    public void SetWavePos(int i,int x,int y, bool value){
+    public void SetFormationPos(int i,int x,int y, bool value){
         fase[i][x,y] = value;
     }
 
@@ -65,7 +65,7 @@ public class MapGridFase : ScriptableObject
             {
                 string key = PlayerPrefsKeyPrefix + nivel + "_" + x + "_" + y;
                 bool value = PlayerPrefs.GetInt(key, 0) != 0;
-                SetWavePos(nivel, x, y, value);
+                SetFormationPos(nivel, x, y, value);
             }
         }
     }
@@ -77,7 +77,7 @@ public class MapGridFase : ScriptableObject
             for (int x = 0; x < defaultWidth; x++)
             {
                 string key = PlayerPrefsKeyPrefix + nivel + "_" + x + "_" + y;
-                bool value = GetWavePos(nivel, x, y);
+                bool value = GetFormationPos(nivel, x, y);
                 PlayerPrefs.SetInt(key, value ? 1 : 0);
             }
         }

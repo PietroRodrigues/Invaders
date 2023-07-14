@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class Projetil : MonoBehaviour
 {
+   public bool isProjetilPlayer;
+
    public float distanceRadar;
    public GameObject meuEmisor;
    public Transform gumOrigen;
    [HideInInspector]public object especie;
-   public GameObject particulaColider;
+   [HideInInspector] public List<VisualEffect> myParticulesColider = new List<VisualEffect>();
+   [SerializeField] GameObject particulaColider;
    [SerializeField] float speed;
    [SerializeField] float speedRot;
    [SerializeField] float DanoProjetil;
@@ -55,65 +59,70 @@ public class Projetil : MonoBehaviour
    void AplicaDano(Collision other, float DanoAplicado)
    {
       GameObject ObjGame = other.collider.gameObject.transform.root.gameObject;
+      
       if(other.collider.gameObject.GetComponent<Bullet>() == null){
-         if (especie is Enemy && !jaColidio && ObjGame.GetComponent<Player>() != null)
-         {
+        
+         if (!jaColidio && !isProjetilPlayer)
+         {  
+            if(ObjGame.GetComponent<Player>() != null){
+               Player player = ObjGame.GetComponent<Player>();
 
-            Player player = ObjGame.GetComponent<Player>();
+               if (player.inventario.shild > 0)
+               {
+                  player.inventario.shild -= DanoAplicado;
+                  player.Ripples(rb.transform.position);
+                  
+                  if (player.inventario.shild < 0)
+                     player.inventario.shild = 0;
 
-            if (player.inventario.shild > 0)
-            {
-               player.inventario.shild -= DanoAplicado;
-               player.Ripples(rb.transform.position);
-               
-               if (player.inventario.shild < 0)
-                  player.inventario.shild = 0;
+               }
+               else if (player.hp > 0)
+               {
+                  player.hp -= DanoAplicado;
+                  if (player.hp < 0)
+                     player.hp = 0;
+               }
 
+               jaColidio = true;
             }
-            else if (player.hp > 0)
-            {
-               player.hp -= DanoAplicado;
-               if (player.hp < 0)
-                  player.hp = 0;
-            }
-
-            jaColidio = true;
 
          }
-         else if (especie is Player && !jaColidio && ObjGame.GetComponent<Enemy>() != null)
+         else if (!jaColidio && isProjetilPlayer)
          {
+            if(ObjGame.GetComponent<Enemy>() != null){
+               Enemy enemy = ObjGame.GetComponent<Enemy>();
 
-            Enemy enemy = ObjGame.GetComponent<Enemy>();
+               if (enemy.shild > 0)
+               {
+                  enemy.shild -= DanoAplicado;
+                  enemy.Ripples(rb.transform.position);
+                  
+                  if (enemy.shild < 0)
+                     enemy.shild = 0;
 
-            if (enemy.shild > 0)
-            {
-               enemy.shild -= DanoAplicado;
-               enemy.Ripples(rb.transform.position);
-               
-               if (enemy.shild < 0)
-                  enemy.shild = 0;
+               }
+               else if (enemy.hp > 0)
+               {
+                  enemy.hp -= DanoAplicado;
+                  if (enemy.hp < 0)
+                     enemy.hp = 0;
+               }
+
+               jaColidio = true;
 
             }
-            else if (enemy.hp > 0)
-            {
-               enemy.hp -= DanoAplicado;
-               if (enemy.hp < 0)
-                  enemy.hp = 0;
-            }
-
-            jaColidio = true;
          }
       }
 
    }
 
-
    void InstatiateParticle(Collision other)
    {  
       if(particulaColider != null){
-         GameObject particleObj = Instantiate(particulaColider);
-         particleObj.transform.position = other.contacts[0].point;
-         particleObj.transform.rotation = transform.rotation;
+         GameObject particle = Instantiate(particulaColider);
+         particle.transform.position = transform.position;
+         particle.GetComponent<VisualEffect>().Play();
+         Destroy(particle,Time.deltaTime * 20);
       }
    }
 
@@ -213,7 +222,5 @@ public class Projetil : MonoBehaviour
       AlvosPossiveis();
       EnableBullet();
    }
-
-
 
 }

@@ -28,11 +28,14 @@ public class PlayerFisics
 
    bool isGrounded;
 
-   public float SpeedRotation;
+   public float speedRotation;
 
    float distanciaRaio;
 
    bool rotacionar;
+
+   Quaternion previousDesiredRotation; 
+   float smoothFactor = 5f;
 
    public PlayerFisics(Rigidbody rb, Transform baseTank, HUD hud)
    {
@@ -44,122 +47,122 @@ public class PlayerFisics
 
    }
 
-   public void MoverAWSD(float x, float z, float speedMax, float distRaycast, float floatingHeight, float dashForce)
+   public void MoverAWSD(float x, float z, float speedMax, float distRaycast, float floatingHeight, float dashImpulse)
    {
       Vector3 moveAmount = Vector3.zero;
 
-      if(dashCooldown > 0f){
+      if (dashCooldown > 0f)
+      {
          dashCooldown -= Time.deltaTime;
       }
 
       if (dashTimer > 0f)
       {
          dashTimer -= Time.deltaTime;
-         
-      }else if(dashTimer <= 0){
-         dash = false;
       }
 
       if (x != 0 || z != 0)
       {
          currentDirection = Vector3.ProjectOnPlane(Camera.main.transform.forward * z + Camera.main.transform.right * x, Vector3.up);
-         
-         if(speed <= speedMax){
+
+         if (speed <= speedMax)
+         {
             speed = Mathf.Lerp(speed, speedMax * currentDirection.magnitude, acceleration * Time.deltaTime);
-         }else{
-           speed = Mathf.Lerp(speed, 0, deceleration * Time.deltaTime);
          }
-        
+
       }
       else
       {
          speed = Mathf.Lerp(speed, 0, deceleration * Time.deltaTime);
+         currentDirection = Vector3.zero;
       }
 
       moveAmount = Vector3.SmoothDamp(moveAmount, currentDirection, ref smootMoveSpeed, 0.15f);
 
-      movePos = (rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime));
+      movePos = rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime);
+      moveDirection = moveAmount.normalized;
 
-      moveDirection = new Vector3(movePos.x - rb.transform.position.x, 0f, movePos.z - rb.transform.position.z).normalized;
-
-      AlinharComSuperficie(distRaycast, floatingHeight);
-      moveRot = PlayerRotation(x, z, rot);
+      AlinharComSuperficie(x, z, currentDirection, distRaycast, floatingHeight);
+      moveRot = Quaternion.RotateTowards(moveRot, PlayerRotation(x, z), speedRotation * Time.deltaTime);
 
    }
 
    public void Dash(float x, float z,bool inputDash){
       if(x != 0 || z != 0){
-         if(inputDash && dashCooldown <= 0){         
-            if (dashTimer <= 0f)
-            {
-               dash = true;
-               dashTimer = 0.2f;
-            }
+         if(inputDash && dashCooldown <= 0){
+            dash = true;
             dashCooldown = 1;    
          }
       }
    }
 
-   void AlinharComSuperficie(float distRaycast, float floatingHeight)
+   void AlinharComSuperficie(float moveX, float moveZ, Vector3 currentDirection, float distRaycast, float floatingHeight)
    {
       RaycastHit hit;
       Quaternion currentRotation = rb.transform.rotation;
       rot = currentRotation;
 
-      bool see = Physics.Raycast(rb.transform.position, -rb.transform.up, out hit, distRaycast);
+      bool see = Physics.Raycast(rb.transform.position, -rb.transform.up, out hit, distRaycast);      
 
       if (see)
       {
          Vector3 incomingVec = hit.point - rb.transform.position;
-         Vector3 reflectVec = Vector3.Reflect(incomingVec, hit.normal);
 
-         Quaternion desiredRotation = Quaternion.FromToRotation(rb.transform.up, reflectVec) * rb.transform.rotation;
-         
-         if (Quaternion.Angle(currentRotation, desiredRotation) > 10f)
+         Vector3 adjustedMoveDirection = Vector3.RotateTowards(rb.transform.up, currentDirection, Mathf.Deg2Rad * 10, 0);
+
+         Quaternion desiredRotation = Quaternion.FromToRotation(rb.transform.up, Vector3.up) * Quaternion.FromToRotation(rb.transform.up, adjustedMoveDirection) * rb.transform.rotation;
+
+         desiredRotation = SmoothRotation(desiredRotation);
+         rot = SmoothRotation(rot);
+
+         if (moveX == 0 && moveZ == 0)
          {
-            rot = Quaternion.Slerp(rot, desiredRotation, Time.deltaTime * 2f);
-
+            previousDesiredRotation = rot;
          }
 
-         Vector3 limitPorpulsor = new Vector3(1, hit.point.y + floatingHeight,0);
+         Vector3 limitPropulsor = new Vector3(1, hit.point.y + floatingHeight, 0);
 
-         DistanceForce = Vector3.Distance(limitPorpulsor,new Vector3(1,rb.transform.position.y,0));
-         
-         if(rb.transform.position.y > limitPorpulsor.y)
+         DistanceForce = Vector3.Distance(limitPropulsor, new Vector3(1, rb.transform.position.y,0));
+
+         if (rb.transform.position.y > limitPropulsor.y)
+         {
             DistanceForce = 0;
-       
+         }
       }
-
    }
 
-   Quaternion PlayerRotation(float x, float z, Quaternion rotAlinhada)
+   Quaternion SmoothRotation(Quaternion targetRotation)
    {
+      targetRotation = Quaternion.Slerp(previousDesiredRotation, targetRotation, Time.deltaTime * smoothFactor);
+      previousDesiredRotation = targetRotation;
+      return targetRotation;
+   }
 
+   Quaternion PlayerRotation(float x, float z)
+   {
       float camY = Camera.main.transform.eulerAngles.y;
-      float currentRotation = rb.transform.eulerAngles.y;
-      Quaternion curentRotatin = rb.transform.rotation;
-      Quaternion dirRot = curentRotatin;
+      Quaternion dirRot = rb.transform.rotation;
 
-      Vector3 dirTarget = currentDirection - rb.transform.position;
+      dirRot = Quaternion.Slerp(dirRot, Quaternion.Euler(0, camY, 0), Time.deltaTime * ((x != 0 || z != 0) ? 8f : 3f));
 
-      dirRot = Quaternion.Slerp(dirRot, Quaternion.Euler(0, camY + rb.transform.rotation.y, 0), Time.deltaTime * ((x != 0 || z != 0) ? 8f : 3f ));
-      
       Vector3 dirEuler = dirRot.eulerAngles;
       dirRot = Quaternion.Euler(dirEuler);
 
       return dirRot;
-
    }
 
    public void AplicaMovemento(float powerPropulsor,float dashForce)
    {
-      rb.AddForce(moveDirection * (speed * (rb.mass)),ForceMode.Force);
+      if(!dash)
+         rb.AddForce(moveDirection * (speed * (rb.mass)),ForceMode.Force);
+      
+      if(dash){
+         rb.AddForce(moveDirection * (dashForce * (rb.mass)),ForceMode.Impulse);
+         dash = false;
+      }
       
       rb.AddForce(Vector3.up * (DistanceForce * (powerPropulsor * (rb.mass))), ForceMode.Force);
 
-      if(dash){
-         rb.AddForce(moveDirection * (dashForce * (rb.mass)),ForceMode.Impulse);
-      }
 
       rb.MoveRotation(Quaternion.Euler(rot.eulerAngles.x, moveRot.eulerAngles.y, rot.eulerAngles.z));
       

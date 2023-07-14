@@ -45,7 +45,7 @@ public class EnemyMoviment
 
    public void NewRotation(EnemyParamets parameters, int enemysActive)
    {
-      Vector3 tgLook = (Vector3.Distance(parameters.rb.transform.position, parameters.posDestination) > 5) ? parameters.posDestination : parameters.target.transform.position;
+      Vector3 tgLook = parameters.target.transform.position;
 
       if (enemysActive <= 5)
       {

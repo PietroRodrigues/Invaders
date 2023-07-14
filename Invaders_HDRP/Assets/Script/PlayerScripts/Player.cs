@@ -52,7 +52,7 @@ public class Player : Statos
    void Update()
    {
       playerAnimation.speedCanonAim = speedCanonAim;
-      playerFisics.SpeedRotation = speedRotation;
+      playerFisics.speedRotation = speedRotation;
 
       playerControler.GameInputs();
 
@@ -74,12 +74,12 @@ public class Player : Statos
 
       playerFisics.AplicaMovemento(powerPropulsor,dashForce);
 
-      dronesSetting.MovimentDrones(hud.hudComponentes.MouseAimPos,speedCanonAim,inventario);
+      dronesSetting.MovimentDrones(hud.hud_Aim.MouseAimPos,100,inventario);
    }
 
    private void LateUpdate()
    {
-      playerAnimation.AimCanon(hud.hudComponentes.MouseAimPos,minCanonX, maxCanonX);
+      playerAnimation.AimCanon(hud.hud_Aim.MouseAimPos,minCanonX, maxCanonX);
    }
 
    void AutoDestruir()

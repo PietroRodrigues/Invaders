@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using System.Threading;
 
 public class SpawnerEnemys : MonoBehaviour
 {
    [SerializeField] MapGridFase mapGridFase;
 
-   public List<GameObject> enemyesInScene;
+   public List<GameObject> enemyesInScene;   
    public int enemysActive;
    List<GameObject> enemyesCemiterio = new List<GameObject>();
    bool bossFight = false;
@@ -24,6 +25,7 @@ public class SpawnerEnemys : MonoBehaviour
 
    AlocationStage alocationStage;
 
+   [SerializeField] float delayBetweenEnemies;
    [SerializeField] Transform wavePos;
 
    [SerializeField] Vector2 raioMinMaxDistance;
@@ -56,7 +58,7 @@ public class SpawnerEnemys : MonoBehaviour
          }
       }
 
-      waveFormationIndc = Random.Range(0, mapGridFase.GetNivel().Count);
+      waveFormationIndc = Random.Range(0, mapGridFase.GetFormationsList().Count);
    }
 
    private void Start()
@@ -69,41 +71,9 @@ public class SpawnerEnemys : MonoBehaviour
 
       if (enemyesInScene.Count == 0)
       {
-
          if (!bossFight)
          {
-            for (int i = 0; i < waves[settings.waveIndc].enemyInfos.Length; i++)
-            {
-               GameObject enemy = null;
-
-               for (int j = 0; j < enemyesCemiterio.Count; j++)
-               {
-                  if (enemyesCemiterio[j].GetComponent<Enemy>().tipo == waves[settings.waveIndc].enemyInfos[i].tipo)
-                  {
-                     enemy = enemyesCemiterio[j];
-                     enemy.name = i + " Enemy";
-                     enemyesCemiterio.Remove(enemyesCemiterio[j]);
-                     Vector3 randomDirection = Random.insideUnitSphere;
-                     Vector3 randomPosition = randomDirection * radiusSpawnPont;
-                     enemy.transform.position = spawnerPoints[Random.Range(0, spawnerPoints.Length)].position + randomPosition;
-                     enemy.SetActive(true);
-                     enemy.GetComponent<Enemy>().ResetEnemy();
-                     j = enemyesCemiterio.Count;
-                  }
-               }
-
-               if (enemy == null)
-               {
-                  enemy = Instantiate(waves[settings.waveIndc].enemyInfos[i].enemy);
-                  enemy.GetComponent<Enemy>().proprerts.spawnerEnemys = this;
-                  enemy.name = i + " Enemy";
-                  Vector3 randomDirection = Random.insideUnitSphere;
-                  Vector3 randomPosition = randomDirection * radiusSpawnPont;
-                  enemy.transform.position = spawnerPoints[Random.Range(0, spawnerPoints.Length)].position + randomPosition;
-               }
-
-               enemyesInScene.Add(enemy);
-            }
+            StartCoroutine(SpawnEnemies());
          }
          else
          {
@@ -149,6 +119,44 @@ public class SpawnerEnemys : MonoBehaviour
 
             enemyesInScene.Clear();
          }
+      }
+   }
+
+   IEnumerator SpawnEnemies()
+   {
+      foreach (EnemyInfo enemyInfo in waves[settings.waveIndc].enemyInfos)
+      {
+         GameObject enemy = null;
+
+         for (int j = 0; j < enemyesCemiterio.Count; j++)
+         {
+            if (enemyesCemiterio[j].GetComponent<Enemy>().tipo == enemyInfo.tipo)
+            {
+               enemy = enemyesCemiterio[j];
+               enemy.name = "Enemy";
+               enemyesCemiterio.Remove(enemyesCemiterio[j]);
+               Vector3 randomDirection = Random.insideUnitSphere;
+               Vector3 randomPosition = randomDirection * radiusSpawnPont;
+               enemy.transform.position = spawnerPoints[Random.Range(0, spawnerPoints.Length)].position + randomPosition;
+               enemy.SetActive(true);
+               enemy.GetComponent<Enemy>().ResetEnemy();
+               j = enemyesCemiterio.Count;
+            }
+         }
+
+         if (enemy == null)
+         {
+            enemy = Instantiate(enemyInfo.enemy);
+            enemy.GetComponent<Enemy>().proprerts.spawnerEnemys = this;
+            enemy.name = "Enemy";
+            Vector3 randomDirection = Random.insideUnitSphere;
+            Vector3 randomPosition = randomDirection * radiusSpawnPont;
+            enemy.transform.position = spawnerPoints[Random.Range(0, spawnerPoints.Length)].position + randomPosition;
+         }
+
+         enemyesInScene.Add(enemy);
+
+         yield return new WaitForSeconds(delayBetweenEnemies);
       }
    }
 
@@ -205,7 +213,7 @@ public class SpawnerEnemys : MonoBehaviour
       if (cronometro[0].CronometroPorSeg(enemysActive))
       {
          enemyesInScene = enemyesInScene.OrderBy(x => Random.value).ToList();
-         waveFormationIndc = Random.Range(0, mapGridFase.GetNivel().Count);
+         waveFormationIndc = Random.Range(0, mapGridFase.GetFormationsList().Count);
          cronometro[0].Reset();
       }
 
@@ -301,6 +309,7 @@ public class SpawnerEnemys : MonoBehaviour
 
       alocationStage.Draw(wavePos, waveFormationIndc, settings);
    }
+
 
 }
 

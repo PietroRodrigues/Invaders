@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d02cb590c8656164f8a7b2a0e2a71426, type: 3}
-  m_Name: Fase
+  m_Name: WavesPos
   m_EditorClassIdentifier: 
-  tamanho: 10
+  tamanho: 6

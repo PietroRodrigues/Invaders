@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 4204966052774999203}
   - component: {fileID: 4204966052774999205}
   m_Layer: 2
-  m_Name: Bullet
+  m_Name: Missel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -176,7 +176,8 @@ MonoBehaviour:
   distanceRadar: 0
   meuEmisor: {fileID: 0}
   gumOrigen: {fileID: 0}
-  particulaColider: {fileID: 0}
+  particulaColider: {fileID: 1599176421659175414, guid: 4135bcbe87ca1274f921c5c6b27f7691,
+    type: 3}
   speed: 40
   speedRot: 0
   DanoProjetil: 10
