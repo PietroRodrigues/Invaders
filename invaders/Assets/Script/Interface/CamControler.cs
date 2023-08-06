@@ -28,7 +28,6 @@ public class CamControler : MonoBehaviour
     //Hud hud;
     Vector3 LockAtTarget;
     [SerializeField] Vector3 rotationSmoothSpeed;
-    [SerializeField] Vector3 suportPosSmoothSpeed;
     RaycastHit hit;
     Vector3 rotationAtual;
 
@@ -40,11 +39,6 @@ public class CamControler : MonoBehaviour
     float y;
     float xMause;
     float yMause;
-
-
-    private void Awake() {
-        //Application.targetFrameRate = 60;
-    }
 
     void Start(){    
         playerTarget.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");

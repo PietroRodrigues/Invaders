@@ -67,13 +67,13 @@ public class Projetil : MonoBehaviour
             if(ObjGame.GetComponent<Player>() != null){
                Player player = ObjGame.GetComponent<Player>();
 
-               if (player.inventario.shild > 0)
+               if (player.inventario.shield > 0)
                {
-                  player.inventario.shild -= DanoAplicado;
+                  player.inventario.shield -= DanoAplicado;
                   player.Ripples(rb.transform.position);
                   
-                  if (player.inventario.shild < 0)
-                     player.inventario.shild = 0;
+                  if (player.inventario.shield < 0)
+                     player.inventario.shield = 0;
 
                }
                else if (player.hp > 0)

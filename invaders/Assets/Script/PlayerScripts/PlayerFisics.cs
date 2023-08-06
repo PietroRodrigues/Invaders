@@ -22,6 +22,7 @@ public class PlayerFisics
    float dashCooldown = 2f;
    float dashTimer = 0f;
    bool dash;
+   [HideInInspector]public bool recuo;
 
    float motorInput;
    float breakInput;
@@ -101,7 +102,6 @@ public class PlayerFisics
       }
    }
 
-
    void AlinharComSuperficie(float moveX, float moveZ, Vector3 currentDirection, float distRaycast, float floatingHeight)
    {
       RaycastHit hit;
@@ -172,7 +172,7 @@ public class PlayerFisics
       return dirRot;
    }
 
-   public void AplicaMovemento(float powerPropulsor,float dashForce)
+   public void AplicaMovemento(float powerPropulsor,float dashForce,float recuoForce,Vector3 recuoDir)
    {
       if(!dash)
          rb.AddForce(moveDirection * (speed * (rb.mass)),ForceMode.Force);
@@ -180,6 +180,11 @@ public class PlayerFisics
       if(dash){
          rb.AddForce(moveDirection * (dashForce * (rb.mass)),ForceMode.Impulse);
          dash = false;
+      }
+
+      if(recuo){
+         rb.AddForce(recuoDir * (recuoForce * (rb.mass)),ForceMode.Impulse);
+         recuo = false;
       }
       
       rb.AddForce(Vector3.up * (DistanceForce * (powerPropulsor * (rb.mass))), ForceMode.Force);

@@ -49,7 +49,7 @@ public class Drones
          }
    }
 
-   public void MovimentDrones(Vector3 target,float speedAim,Inventario inventario)
+   public void MovementDrones(Vector3 target,float speedAim,Inventario inventario)
    {      
       for (int i = 0; i < inventario.drones; i++)
       {

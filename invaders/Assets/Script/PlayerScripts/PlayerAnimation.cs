@@ -36,7 +36,7 @@ public class PlayerAnimation
 
         // aplica a rotação 
         // **CANHÃO DEVE SER SEMPRE ANTES DA TORRE**
-        parts.canon.rotation = Quaternion.RotateTowards(parts.canon.rotation,canonRot,(speedCanonAim * 2)  * Time.deltaTime);
+        parts.canon.rotation = Quaternion.RotateTowards(parts.canon.rotation,canonRot,speedCanonAim * 2 * Time.deltaTime);
         parts.beseTower.rotation = Quaternion.RotateTowards(parts.canon.rotation,torreRot,speedCanonAim * Time.deltaTime);
 
         // --- angulo maximo e angulo minimo de rotação do canhão --- //

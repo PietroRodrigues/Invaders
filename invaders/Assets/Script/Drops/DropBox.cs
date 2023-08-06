@@ -56,8 +56,8 @@ public class DropBox : Drop
    }
 
    void ShildDrop(Player player){
-      player.ShildCharger();
-      player.inventario.shild = player.inventario.ShildMax;
+      player.ShieldCharger();
+      player.inventario.shield = player.inventario.ShieldMax;
    }
 
    void DroneDrop(Player player){

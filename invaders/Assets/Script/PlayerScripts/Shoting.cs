@@ -17,7 +17,7 @@ public class Shotting
 
    }
 
-   public void MissileShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset)
+   public void MissileShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset, PlayerFisics playerFisics)
    {
       if (attack)
       {
@@ -25,7 +25,7 @@ public class Shotting
 
          if (primeroTiro)
          {
-            FireBullet(shottingSettings.cxBalasMissel,shottingSettings.Missel);
+            FireBullet(shottingSettings.cxBalasMissel,shottingSettings.Missel, playerFisics);
             primeroTiro = false;
          }
       }
@@ -47,7 +47,7 @@ public class Shotting
       return mirar;
    }
 
-   void FireBullet(Transform cxBalas,GameObject bullet)
+   void FireBullet(Transform cxBalas,GameObject bullet,PlayerFisics playerFisics)
    {
       if (cxBalas.childCount == 0)
       {
@@ -70,7 +70,7 @@ public class Shotting
       }
 
       AnimationStart();
-
+      playerFisics.recuo = true;
    }
 
    void bulletReturn(Vector3 pos, float maxDistanceReset)
@@ -95,6 +95,7 @@ public class Shotting
    {
      shottingSettings.particleCanon.Play();
    }
+
 }
 
 [System.Serializable]
@@ -106,4 +107,5 @@ public struct ShottingSettings
    [HideInInspector] public Transform cxBalasMissel;
    public GameObject Missel;
    [HideInInspector] public float speedBody;
+   [HideInInspector] public bool recuo;
 }

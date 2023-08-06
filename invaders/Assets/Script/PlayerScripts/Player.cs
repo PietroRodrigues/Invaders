@@ -8,7 +8,7 @@ public class Player : Statos
    [SerializeField] Rigidbody rb;
    [SerializeField] HUD hud;
    [SerializeField] CamControler camControler;
-   [SerializeField] Transform shildParticle;
+   [SerializeField] Transform shieldParticle;
    [SerializeField] Transform drones;
    [SerializeField] VisualEffect poeira;
 
@@ -22,7 +22,8 @@ public class Player : Statos
 
    [SerializeField] float speedMax;
    [SerializeField] float dashForce;
-   [SerializeField] float powerPropulsor;
+   [SerializeField] float recuoForce;
+   [SerializeField] float powerPropulsion;
    [Range(1, 360)][SerializeField] float speedRotation = 1f;
    
 
@@ -38,8 +39,7 @@ public class Player : Statos
    [SerializeField] ShottingSettings shotingSettings;
    [SerializeField] ShottingDroneSettings[] shottingDroneSettings;
    
-
-   private void Awake()
+   void Awake()
    {
       hp = hpMax;
       inventario = new Inventario(100);
@@ -50,9 +50,6 @@ public class Player : Statos
       dronesSetting = new Drones(drones,rb,shottingDroneSettings);
    }
 
-   void Start(){
-      
-   }
 
    void Update()
    {
@@ -65,21 +62,20 @@ public class Player : Statos
 
       playerFisics.Dash(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,playerControler.inputsControl.jumpInput);
 
-      AutoDestruir();
-
+      AutoDestroyer();
    }
 
    void FixedUpdate()
    {
-      bool lookMissel = shotting.LockingMissile(playerControler.inputsControl.mirar);
-
-      shotting.MissileShotting(playerControler.inputsControl.disparar, 0, transform.position, maxDistanceBullets);
+      //bool lookMissel = shotting.LockingMissile(playerControler.inputsControl.mirar);
+      shotting.MissileShotting(playerControler.inputsControl.disparar, 0, transform.position, maxDistanceBullets,playerFisics);
 
       dronesSetting.Fire(playerControler.inputsControl.disparar, maxDistanceBullets);
 
-      playerFisics.AplicaMovemento(powerPropulsor,dashForce);
+      playerFisics.AplicaMovemento(powerPropulsion,dashForce,recuoForce,-partsTank.canon.forward);
 
-      dronesSetting.MovimentDrones(hud.hud_Aim.MouseAimPos,100,inventario);
+      dronesSetting.MovementDrones(hud.hud_Aim.MouseAimPos,100,inventario);
+
    }
 
    private void LateUpdate()
@@ -87,7 +83,7 @@ public class Player : Statos
       playerAnimation.AimCanon(hud.hud_Aim.MouseAimPos,minCanonX, maxCanonX);
    }
 
-   void AutoDestruir()
+   void AutoDestroyer()
    {
       if (hp <= 0)
       {
@@ -97,7 +93,7 @@ public class Player : Statos
 
    public void Ripples(Vector3 posBullet){
       
-      VisualEffect ripples = shildParticle.Find("ShieldRipples").GetComponent<VisualEffect>();
+      VisualEffect ripples = shieldParticle.Find("ShieldRipples").GetComponent<VisualEffect>();
 
       Vector3 direction = posBullet - ripples.transform.position;
 
@@ -110,11 +106,11 @@ public class Player : Statos
 
    }
 
-   public void ShildCharger(){
+   public void ShieldCharger(){
       
-      VisualEffect shild = shildParticle.Find("Shield").GetComponent<VisualEffect>();
+      VisualEffect shield = shieldParticle.Find("Shield").GetComponent<VisualEffect>();
       
-      shild.Play();
+      shield.Play();
 
    }
 
@@ -124,13 +120,13 @@ public class Player : Statos
 public struct Inventario{
    
    [HideInInspector]public int drones;
-   [HideInInspector] public float shild;
-   public float ShildMax;
+   [HideInInspector] public float shield;
+   public float ShieldMax;
 
-  public Inventario (float shildMax){
+  public Inventario (float shieldMax){
       this.drones = 0;
-      this.shild = 0;
-      this.ShildMax = shildMax;
+      this.shield = 0;
+      this.ShieldMax = shieldMax;
   }
    
 }
