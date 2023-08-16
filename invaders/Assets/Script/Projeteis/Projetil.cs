@@ -11,7 +11,7 @@ public class Projetil : MonoBehaviour
    public GameObject meuEmisor;
    public Transform gumOrigen;
    [HideInInspector]public object especie;
-   [HideInInspector] public List<VisualEffect> myParticulesColider = new List<VisualEffect>();
+   [HideInInspector] public List<VisualEffect> myParticulesColider = new();
    [SerializeField] GameObject particulaColider;
    [SerializeField] float speed;
    [SerializeField] float speedRot;

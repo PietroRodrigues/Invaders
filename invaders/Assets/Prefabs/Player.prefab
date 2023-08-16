@@ -736,6 +736,9 @@ VisualEffect:
       - m_Value: 4
         m_Name: Size
         m_Overridden: 1
+      - m_Value: 1.5
+        m_Name: Scale
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -778,7 +781,7 @@ VFXRenderer:
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 257
-  m_RendererPriority: 0
+  m_RendererPriority: 2
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1932,20 +1935,21 @@ MonoBehaviour:
   rb: {fileID: 6451465023834177629}
   hud: {fileID: 0}
   camControler: {fileID: 0}
-  shildParticle: {fileID: 6451465023920931388}
+  shieldParticle: {fileID: 6451465023920931388}
   drones: {fileID: 6451465024641810492}
   poeira: {fileID: 1427836862}
   inventario:
     drones: 0
-    shild: 0
-    ShildMax: 0
+    shield: 0
+    ShieldMax: 0
   partsTank:
     beseTower: {fileID: 6451465025293979099}
     canon: {fileID: 6451465025469813717}
     cabine: {fileID: 6774130993422534777}
-  speedMax: 18
-  dashForce: 18
-  powerPropulsor: 10
+  speedMax: 25
+  dashForce: 25
+  recuoForce: 5
+  powerPropulsion: 0
   speedRotation: 100
   speedCanonAim: 100
   minCanonX: 20
@@ -1961,6 +1965,7 @@ MonoBehaviour:
     Missel: {fileID: 2594043982423449287, guid: 7e1e89dd60e125848bd4745c150534e3,
       type: 3}
     speedBody: 0
+    recuo: 0
   shottingDroneSettings:
   - cannon: {fileID: 6451465025444367448}
     bullet: {fileID: 1811112200188236616, guid: 67863498918f7614bb7f9e7b385670e2,

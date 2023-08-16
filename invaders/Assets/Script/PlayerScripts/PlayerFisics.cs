@@ -6,8 +6,8 @@ using UnityEngine.VFX;
 public class PlayerFisics
 {
    Rigidbody rb;
-   Transform baseTank;
-   HUD hud;
+   readonly Transform baseTank;
+   readonly HUD hud;
    Vector3 currentDirection;
    public float speed;
    float acceleration = 10;
@@ -118,7 +118,7 @@ public class PlayerFisics
          Vector3 adjustedMoveDirection = Vector3.RotateTowards(rb.transform.up, currentDirection, Mathf.Deg2Rad * 10, 0);
 
          poeira.transform.position = hit.point;
-         poeiraRot = Quaternion.FromToRotation(poeira.transform.up, hit.normal);
+         poeiraRot = Quaternion.FromToRotation(poeira.transform.up, Vector3.up);
 
          Quaternion desiredRotation = Quaternion.FromToRotation(rb.transform.up, Vector3.up) * Quaternion.FromToRotation(rb.transform.up, adjustedMoveDirection) * rb.transform.rotation;
 

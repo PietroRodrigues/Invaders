@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class HUD : MonoBehaviour
 {   
-    [SerializeField] public HudComponents hud_Components;
-    [SerializeField] public HudAim hud_Aim;
+    public HudComponents hud_Components;
+    public HudAim hud_Aim;
     [HideInInspector] public Player player;
     
     HUDReticula hud_reticula;

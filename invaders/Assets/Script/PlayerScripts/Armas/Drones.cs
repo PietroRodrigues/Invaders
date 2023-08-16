@@ -4,14 +4,12 @@ using UnityEngine;
 
 public class Drones
 {
-   Transform dronesTransform;
-   Rigidbody rb;
-   int cont;
-   Player player;
+   readonly Transform dronesTransform;
+   readonly Rigidbody rb;
+   readonly Player player;
+   readonly DroneStatos[] drones;
 
-   DroneStatos[] drones;
-
-   float speed = 5;
+   readonly float speed = 5;
 
    public Drones(Transform dronesTransform, Rigidbody rb,ShottingDroneSettings[] shottingDroneSettings)
    {
