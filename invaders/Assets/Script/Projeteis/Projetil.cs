@@ -10,16 +10,16 @@ public class Projetil : MonoBehaviour
    public float distanceRadar;
    public GameObject meuEmisor;
    public Transform gumOrigen;
-   [HideInInspector]public object especie;
+   [SerializeField] Explosive explosive = new Explosive();
+   [HideInInspector] public object especie;
    [HideInInspector] public List<VisualEffect> myParticulesColider = new();
-   [SerializeField] GameObject particulaColider;
    [SerializeField] float speed;
    [SerializeField] float speedRot;
    [SerializeField] float DanoProjetil;
    [SerializeField] float spread;
    Rigidbody rb;
    float speedBody;
-   
+
 
    bool jaColidio = false;
    SpawnerEnemys spawnerEnemys;
@@ -28,6 +28,11 @@ public class Projetil : MonoBehaviour
    [SerializeField] List<Enemy> allEnemy;
 
    TrailRenderer trailRenderer;
+
+   private void Awake()
+   {
+      explosive.meuObjeto = this.gameObject;
+   }
 
    private void Update()
    {
@@ -50,28 +55,29 @@ public class Projetil : MonoBehaviour
       if (!other.collider.isTrigger && !jaColidio)
       {
          AplicaDano(other, DanoProjetil);
-         InstatiateParticle(other);
+         explosive.Collision(other);
          BulletOrigen();
-
       }
    }
 
    void AplicaDano(Collision other, float DanoAplicado)
    {
-      GameObject ObjGame = other.collider.gameObject.transform.root.gameObject;
-      
-      if(other.collider.gameObject.GetComponent<Bullet>() == null){
-        
+      GameObject ObjGame = other.collider.gameObject;
+
+      if (other.collider.gameObject.GetComponent<Bullet>() == null)
+      {
+
          if (!jaColidio && !isProjetilPlayer)
-         {  
-            if(ObjGame.GetComponent<Player>() != null){
-               Player player = ObjGame.GetComponent<Player>();
+         {
+            if (ObjGame.GetComponentInParent<Player>() != null)
+            {
+               Player player = ObjGame.GetComponentInParent<Player>();
 
                if (player.inventario.shield > 0)
                {
                   player.inventario.shield -= DanoAplicado;
                   player.Ripples(rb.transform.position);
-                  
+
                   if (player.inventario.shield < 0)
                      player.inventario.shield = 0;
 
@@ -89,14 +95,15 @@ public class Projetil : MonoBehaviour
          }
          else if (!jaColidio && isProjetilPlayer)
          {
-            if(ObjGame.GetComponent<Enemy>() != null){
-               Enemy enemy = ObjGame.GetComponent<Enemy>();
+            if (ObjGame.GetComponentInParent<Enemy>() != null)
+            {
+               Enemy enemy = ObjGame.GetComponentInParent<Enemy>();
 
                if (enemy.shild > 0)
                {
                   enemy.shild -= DanoAplicado;
                   enemy.Ripples(rb.transform.position);
-                  
+
                   if (enemy.shild < 0)
                      enemy.shild = 0;
 
@@ -111,16 +118,8 @@ public class Projetil : MonoBehaviour
                jaColidio = true;
 
             }
-         }
-      }
-   }
 
-   void InstatiateParticle(Collision other)
-   {  
-      if(particulaColider != null){
-         GameObject particle = Instantiate(particulaColider);
-         particle.transform.position = transform.position;
-         particle.GetComponent<VisualEffect>().Play();
+         }
       }
    }
 
@@ -133,14 +132,15 @@ public class Projetil : MonoBehaviour
       meuEmisor = transform.root.gameObject;
       transform.localPosition = new Vector3(0, 0, 0);
       Vector3 direction = gumOrigen.forward;
-      direction.x += Random.Range(-spread,spread);
-      direction.y += Random.Range(-spread,spread);
+      direction.x += Random.Range(-spread, spread);
+      direction.y += Random.Range(-spread, spread);
       Quaternion rot = Quaternion.identity;
       rot.SetLookRotation(direction);
       transform.rotation = rot;
       this.gameObject.SetActive(false);
-   
-      if(this.transform.GetComponent<TrailRenderer>() != null){
+
+      if (this.transform.GetComponent<TrailRenderer>() != null)
+      {
          trailRenderer = GetComponent<TrailRenderer>();
          trailRenderer.Clear();
       }

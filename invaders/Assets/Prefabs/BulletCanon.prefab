@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4098543727554962499}
   - component: {fileID: 2594043982423449282}
   - component: {fileID: 2594043982423449284}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: BulletCanon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,6 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2594043982423449287}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.3864839, y: 2.068, z: 3.232}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -33,7 +34,6 @@ Transform:
   m_Children:
   - {fileID: 6104848536772628523}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &4098543727554962499
 Rigidbody:
@@ -42,10 +42,21 @@ Rigidbody:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2594043982423449287}
-  serializedVersion: 2
+  serializedVersion: 4
   m_Mass: 0.01
   m_Drag: 0
   m_AngularDrag: 0
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -67,10 +78,15 @@ MonoBehaviour:
   distanceRadar: 0
   meuEmisor: {fileID: 0}
   gumOrigen: {fileID: 0}
+  explosive:
+    meuObjeto: {fileID: 0}
+    particle: {fileID: 1599176421659175414, guid: 4135bcbe87ca1274f921c5c6b27f7691,
+      type: 3}
+    triggerForce: 0.5
+    explosionRadius: 5
+    explosionForce: 4000
   myParticulesColider: []
-  particulaColider: {fileID: 1599176421659175414, guid: 4135bcbe87ca1274f921c5c6b27f7691,
-    type: 3}
-  speed: 200
+  speed: 100
   speedRot: 0
   DanoProjetil: 10
   spread: 0
@@ -84,8 +100,17 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2594043982423449287}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
+  serializedVersion: 2
   m_Radius: 0.09949131
   m_Height: 0.40640062
   m_Direction: 2
@@ -101,7 +126,7 @@ GameObject:
   - component: {fileID: 6104848536772628523}
   - component: {fileID: 6104848536772628522}
   - component: {fileID: 6104848536772628525}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,13 +140,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6104848536772628524}
+  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2594043982423449285}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!2083052967 &6104848536772628522
 VisualEffect:
@@ -136,6 +161,7 @@ VisualEffect:
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
   m_ResetSeedOnPlay: 1
+  m_AllowInstancing: 1
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
@@ -152,7 +178,7 @@ VisualEffect:
       - m_Value: 300
         m_Name: NoiseScale
         m_Overridden: 1
-      - m_Value: 1
+      - m_Value: 2
         m_Name: Size
         m_Overridden: 1
     m_Vector2f:

@@ -55,18 +55,18 @@ public struct HudAim
     {
         get
         {   return (canon == null) ? Camera.main.transform.forward * aimCanonDistance
-            : canon.transform.forward * Vector3.Distance(canon.transform.position, AimCast(canon.transform.position,(canon.transform.forward * aimCanonDistance) + canon.transform.position)) + canon.transform.position;
+            : canon.transform.forward * aimCanonDistance + canon.transform.position;
         }
 
     }
-    
+
     public Vector3 MouseAimPos
     {
         get
-        {           
+        {
             if (mouseAim != null)
             {          
-                return AimCast(mouseAim.position,mouseAim.position + (mouseAim.forward * aimDistance));
+                return mouseAim.position + (mouseAim.forward * aimDistance);// AimCast(mouseAim.position,mouseAim.position + (mouseAim.forward * aimDistance));
             }
             else
             {
@@ -75,19 +75,19 @@ public struct HudAim
         }
     }
 
-    Vector3 AimCast(Vector3 referencePoint, Vector3 target){
+    // Vector3 AimCast(Vector3 referencePoint, Vector3 target){
 
-        RaycastHit hit;
+    //     RaycastHit hit;
         
-        Ray ray = new Ray(referencePoint, target - referencePoint);
+    //     Ray ray = new Ray(referencePoint, target - referencePoint);
         
-        bool see = Physics.Raycast(ray,out hit,Vector3.Distance(referencePoint,target),1,QueryTriggerInteraction.Ignore);
+    //     bool see = Physics.Raycast(ray,out hit,Vector3.Distance(referencePoint,target),1,QueryTriggerInteraction.Ignore);
 
-        if(see){
-            return hit.point;
-        }else{
-            return target;
-        }
+    //     if(see){
+    //         return hit.point;
+    //     }else{
+    //         return target;
+    //     }
 
-    }
+    // }
 }

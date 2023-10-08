@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 572507384}
   - component: {fileID: 572507386}
   - component: {fileID: 572507385}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ShieldRipples
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -301,7 +301,7 @@ GameObject:
   - component: {fileID: 888705153}
   - component: {fileID: 888705152}
   - component: {fileID: 888705151}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -412,7 +412,7 @@ GameObject:
   - component: {fileID: 1012355180}
   - component: {fileID: 1012355182}
   - component: {fileID: 1012355181}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PropulsorEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -690,7 +690,7 @@ GameObject:
   - component: {fileID: 1427836860}
   - component: {fileID: 1427836862}
   - component: {fileID: 1427836861}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: AirDirection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -706,7 +706,7 @@ Transform:
   m_GameObject: {fileID: 1427836859}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -1.424, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1023,7 +1023,7 @@ GameObject:
   - component: {fileID: 1826864842}
   - component: {fileID: 1826864844}
   - component: {fileID: 1826864843}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: MuzzleMissl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1390,7 +1390,7 @@ GameObject:
   - component: {fileID: 4941843574435560474}
   - component: {fileID: 761558362968354431}
   - component: {fileID: 3974234161249291771}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1584,7 +1584,7 @@ GameObject:
   - component: {fileID: 3708901107511388457}
   - component: {fileID: 6471748813490332470}
   - component: {fileID: 4135541146553339751}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1730,14 +1730,14 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.7675006, y: 0.7242603, z: 1.9557022}
-  m_Center: {x: 0, y: 0.14318672, z: 0}
+  m_Size: {x: 1.7675006, y: 0.5475166, z: 1.9557022}
+  m_Center: {x: 0, y: 0.054814875, z: 0}
 --- !u!1 &6372942715233082522
 GameObject:
   m_ObjectHideFlags: 0
@@ -1949,10 +1949,10 @@ MonoBehaviour:
   speedMax: 25
   dashForce: 25
   recuoForce: 5
-  powerPropulsion: 0
+  powerPropulsion: 10
   speedRotation: 100
   speedCanonAim: 100
-  minCanonX: 20
+  minCanonX: 15
   maxCanonX: 40
   maxDistanceBullets: 60
   distRaycast: 10
@@ -2307,7 +2307,7 @@ Transform:
   m_GameObject: {fileID: 6451465024999855685}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.689}
+  m_LocalPosition: {x: 0, y: 0, z: 0.867}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2360,7 +2360,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -2442,6 +2442,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6451465025469813717}
+  - component: {fileID: 7837700759192329058}
   m_Layer: 2
   m_Name: Canon
   m_TagString: Untagged
@@ -2467,6 +2468,27 @@ Transform:
   - {fileID: 6451465024999855682}
   m_Father: {fileID: 6451465025293979099}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7837700759192329058
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6451465025469813716}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.24569872, y: 0.26168844, z: 1.2097359}
+  m_Center: {x: 0, y: 0, z: 0.6299}
 --- !u!1 &6451465025490600928
 GameObject:
   m_ObjectHideFlags: 0
