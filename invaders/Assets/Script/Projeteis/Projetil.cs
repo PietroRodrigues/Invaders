@@ -15,7 +15,7 @@ public class Projetil : MonoBehaviour
    [HideInInspector] public List<VisualEffect> myParticulesColider = new();
    [SerializeField] float speed;
    [SerializeField] float speedRot;
-   [SerializeField] float DanoProjetil;
+   [SerializeField] public float DanoProjetil;
    [SerializeField] float spread;
    Rigidbody rb;
    float speedBody;

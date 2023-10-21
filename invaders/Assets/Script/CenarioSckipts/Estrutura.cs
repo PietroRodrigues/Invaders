@@ -42,7 +42,7 @@ public class Estrutura : MonoBehaviour
 
       private void OnCollisionEnter(Collision other)
       {
-            breakable.Conlision(other,components.estruturaSetada);
+            breakable.Conlision(other,components.estruturaSetada,other);
       }
 
 }

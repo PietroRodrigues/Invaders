@@ -33,7 +33,7 @@ public class TanqueCombustivel : IEstrutura
 
       int cont = 0;
 
-      int furosAtivos = Mathf.CeilToInt(componentes.particulas.childCount - (hpPorcentagen / 100 * componentes.particulas.childCount));
+      int furosAtivos = Mathf.CeilToInt(componentes.particulas.childCount - ((hpPorcentagen + 10) / 100 * componentes.particulas.childCount));
      
       foreach (Transform furo in componentes.particulas)
       {   

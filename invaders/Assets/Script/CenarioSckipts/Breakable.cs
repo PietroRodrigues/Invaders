@@ -13,7 +13,7 @@ public class Breakable
         this.components = components;
     }
 
-    public void Conlision(Collision collision, IEstrutura intetace) {
+    public void Conlision(Collision collision, IEstrutura intetace, Collision other) {
         
         if(broken) return;
         
@@ -21,7 +21,10 @@ public class Breakable
                 
             if (components.hp > 0)
             {
-                components.hp -= 10;
+                if(other.gameObject.GetComponent<Bullet>() == null)
+                    components.hp -= 1;
+                else
+                    components.hp -= other.gameObject.GetComponent<Bullet>().DanoProjetil;
 
                 if (components.hp < 0)
                     components.hp = 0;
