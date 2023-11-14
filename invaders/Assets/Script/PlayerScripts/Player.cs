@@ -7,25 +7,23 @@ public class Player : Statos
 {
    [SerializeField] Rigidbody rb;
    [SerializeField] HUD hud;
-   [SerializeField] CamControler camControler;
    [SerializeField] Transform shieldParticle;
-   [SerializeField] Transform drones;
    [SerializeField] VisualEffect poeira;
+   [SerializeField] Transform dashEffects;
 
    [HideInInspector] public PlayerControler playerControler;
    [HideInInspector] public Inventario inventario;
    PlayerFisics playerFisics;
    Shotting shotting;
    PlayerAnimation playerAnimation;
-   Drones dronesSetting;
    [SerializeField] PartsTank partsTank;
 
    [SerializeField] float speedMax;
    [SerializeField] float dashForce;
+   [SerializeField] float jumpForce;
    [SerializeField] float recuoForce;
    [SerializeField] float powerPropulsion;
-   [Range(1, 360)][SerializeField] float speedRotation = 1f;
-   
+   [Range(1, 360)][SerializeField] float speedRotation = 1f;   
 
    [Range(1, 360)][SerializeField] float speedCanonAim = 1f;
    [SerializeField] float minCanonX = 0;
@@ -37,17 +35,21 @@ public class Player : Statos
    [SerializeField] float floatingHeight;
 
    [SerializeField] ShottingSettings shotingSettings;
-   [SerializeField] ShottingDroneSettings[] shottingDroneSettings;
    
+   [HideInInspector] public Drone drone;
+   [SerializeField] DroneSettingsShot droneSettingsShot;
+   [SerializeField] DroneStatos droneStatos;
+
    void Awake()
    {
       hp = hpMax;
       inventario = new Inventario(100);
       playerControler = new PlayerControler();
-      playerFisics = new PlayerFisics(rb, partsTank.cabine, hud,poeira);
+      playerFisics = new PlayerFisics(rb,poeira,dashEffects);
       shotting = new Shotting(shotingSettings);
       playerAnimation = new PlayerAnimation(partsTank);
-      dronesSetting = new Drones(drones,rb,shottingDroneSettings);
+      drone = new Drone(transform,droneStatos,droneSettingsShot);
+
    }
 
 
@@ -58,11 +60,18 @@ public class Player : Statos
 
       playerControler.GameInputs();
 
-      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,speedMax,distRaycast,floatingHeight,dashForce);
+      playerFisics.MoverAWSD(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,speedMax);
 
-      playerFisics.Dash(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,playerControler.inputsControl.jumpInput);
+      playerFisics.Propulsor(distRaycast,floatingHeight);
+
+      playerFisics.Jump(playerControler.inputsControl.jumpInput);
+
+      playerFisics.Dash(playerControler.inputsControl.xInput, playerControler.inputsControl.zInput,playerControler.inputsControl.Dash);
+
+      playerFisics.RotationDirection();
 
       AutoDestroyer();
+
    }
 
    void FixedUpdate()
@@ -70,11 +79,11 @@ public class Player : Statos
       //bool lookMissel = shotting.LockingMissile(playerControler.inputsControl.mirar);
       shotting.MissileShotting(playerControler.inputsControl.disparar, 0, transform.position, maxDistanceBullets,playerFisics);
 
-      dronesSetting.Fire(playerControler.inputsControl.disparar, maxDistanceBullets);
-
-      playerFisics.AplicaMovemento(powerPropulsion,dashForce,recuoForce,-partsTank.canon.forward);
-
-      dronesSetting.MovementDrones(hud.hud_Aim.MouseAimPos,100,inventario);
+      playerFisics.AplicaMovemento(dashForce,jumpForce,recuoForce,-partsTank.canon.forward);
+      playerFisics.AplicaFlutuadores(powerPropulsion);
+      
+      drone.MovementDrones(hud.hud_Aim.MouseAimPos,100);
+      drone.Fire(playerControler.inputsControl.disparar, maxDistanceBullets);
 
    }
 
@@ -114,19 +123,28 @@ public class Player : Statos
 
    }
 
+
+   private void OnDrawGizmos(){
+      if(playerFisics != null){
+         Gizmos.color = Color.green;
+         Gizmos.DrawWireSphere(playerFisics.currentDirection, 0.5f);
+      }
+   }
+
 }
 
 [System.Serializable]
 public struct Inventario{
+
+   public bool droneActive;
    
-   [HideInInspector]public int drones;
    [HideInInspector] public float shield;
    public float ShieldMax;
 
   public Inventario (float shieldMax){
-      this.drones = 0;
       this.shield = 0;
       this.ShieldMax = shieldMax;
+      this.droneActive = false;
   }
    
 }

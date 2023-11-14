@@ -1,87 +1,131 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder;
 
 public class CamControler : MonoBehaviour
 {
-    [SerializeField] Camera mainCam;
+    [SerializeField] bool showDebugInfo;
+    [SerializeField] bool cameraFixa;
     
+    [SerializeField] Camera mainCam;
+    [SerializeField] Transform mouseAim;
     [SerializeField] Transform playerTarget;
-    [SerializeField] Vector3 focoPos;
 
-    [Range(1,500)][SerializeField]
-    float SpeedCamSwith = 5;
+    [SerializeField] Vector3 focoPos;
+    [SerializeField] float aimDistance;
+
+    [Range(1,100)][SerializeField] float camSmoothSpeed = 5;
+    [Range(1,100)][SerializeField] float RootCamSmoothSpeed = 5;
+    [Range(1,100)][SerializeField] float camRotateSmoothSpeed = 5;
 
     [SerializeField]
-    float mouseSensivity = 8;
+    float mouseSensitivity = 8;
     
     [Header("Position Cam")]
-    [SerializeField] float distance = 25;
-    [SerializeField] float altura = 0; 
+    [SerializeField] float distance = 8;
+    [SerializeField] float altura = 0;
+    [SerializeField] float pan = 0;
 
     float camDistance = 0; 
     float camAltura = 0;
     float camPan = 0;
 
+    Vector3 camPos;
+
     [SerializeField] Vector2 yMinMax = new Vector2(-75, 75);
 
-    //Hud hud;
-    Vector3 LockAtTarget;
-    [SerializeField] Vector3 rotationSmoothSpeed;
+    [SerializeField] HUD hud;
+    Vector3 target;
+    Vector3 rotationSmoothSpeed;
+    Vector3 velocity;
+    Vector3 velocityRoot;
     RaycastHit hit;
     Vector3 rotationAtual;
 
-    [HideInInspector] public bool cursorVisible = true;
+    [HideInInspector] public bool cursorVisible = false;
 
-    PlayerControler playerControler;
+    PlayerControler playerInputs;
 
     float x;
     float y;
-    float xMause;
-    float yMause;
+    float mouseX;
+    float mouseY;
+
+    private void Awake()
+    {
+        transform.parent = null;
+
+    }
 
     void Start(){    
         playerTarget.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        playerControler = playerTarget.GetComponent<Player>().playerControler;
-       
+        playerInputs = playerTarget.GetComponent<Player>().playerControler;       
     }
 
     void Update(){
 
         if(Input.GetKeyDown(KeyCode.LeftAlt))
-            cursorVisible = !cursorVisible;        
-
-        xMause = playerControler.inputsControl.xMause;
-        yMause = playerControler.inputsControl.yMause;
-
-        if(cursorVisible)
-           Cursor.lockState = CursorLockMode.None;
-        else
-           Cursor.lockState = CursorLockMode.Locked;
-
+            cursorVisible = !cursorVisible;
+        
         Cursor.visible = cursorVisible;
+        if(!cursorVisible)
+           Cursor.lockState = CursorLockMode.Locked;
+        else
+           Cursor.lockState = CursorLockMode.None;
+       
+
+        mouseX = playerInputs.inputsControl.xMause * mouseSensitivity;
+        mouseY = playerInputs.inputsControl.yMause * mouseSensitivity;
 
         if(playerTarget != null){
-            LockAtTarget = focoPos + playerTarget.position;
+            
+            target = focoPos + (cameraFixa? playerTarget.position : transform.position);
 
-            transform.localEulerAngles = CamRotationOrbital(xMause,yMause);
+            mouseAim.localEulerAngles = MouseAimRotation(mouseX,mouseY);
+
+            Vector3 upVec = (Mathf.Abs(mouseAim.forward.y) > 0.9f) ? transform.up : Vector3.up;
+
+            mainCam.transform.localRotation = Damp(mainCam.transform.localRotation,Quaternion.LookRotation(mouseAim.forward,upVec),camRotateSmoothSpeed,Time.deltaTime);      
+
+            mouseAim.localPosition = mainCam.transform.localPosition;
+
+            camPos = CamPos();
+
+        }
+         
+    }
+
+    private void FixedUpdate()
+    {
+        if(playerTarget != null){
+
+            transform.position = Vector3.SmoothDamp(transform.position , playerTarget.position, ref velocityRoot,  RootCamSmoothSpeed * Time.deltaTime);
+        }
+        
+    }
+
+    void LateUpdate()
+    {
+        if(playerTarget != null){
+        
+            Vector3 targetCamPos = Vector3.Lerp(mainCam.transform.position, camPos, camSmoothSpeed * 10 * Time.deltaTime);
+
+            mainCam.transform.position = Vector3.SmoothDamp(mainCam.transform.position, targetCamPos, ref velocity, camSmoothSpeed * Time.deltaTime);
+        
         }
     }
 
-    // Update is called once per frame
-   void LateUpdate()
+    private Quaternion Damp(Quaternion a, Quaternion b, float lambda, float dt)
     {
-        if(playerTarget != null)
-            transform.position = Vector3.Lerp(transform.position,  CamPos(),SpeedCamSwith * Time.deltaTime);
+        return Quaternion.Slerp(a, b, 1 - Mathf.Exp(-lambda * dt));
     }
 
-    Vector3 CamRotationOrbital(float eixoX, float eixoY){
+    Vector3 MouseAimRotation(float eixoX, float eixoY){
 
         if(cursorVisible)
             return rotationAtual;
 
-        x += eixoX * mouseSensivity ;
-        y -= eixoY * mouseSensivity ;
+        x += eixoX;
+        y -= eixoY;
         
         y = Mathf.Clamp(y , yMinMax.x , yMinMax.y);
         
@@ -89,10 +133,26 @@ public class CamControler : MonoBehaviour
 
         return rotationAtual;
     }
+   
+    Vector3 CamPos(){
+
+        Vector3 distanceCam = mainCam.transform.forward * CamDistance();
+        Vector3 alturaCam = mainCam.transform.up * CamAltura();
+        Vector3 panCam = mainCam.transform.right * CamPan();
+
+        Vector3 posCam = target + (alturaCam - distanceCam + panCam);
+
+        bool see = Physics.Linecast(target,posCam, out hit,1,QueryTriggerInteraction.Ignore);
+
+        Debug.DrawLine(target,mainCam.transform.position,Color.yellow);
+
+        return see? hit.point + (target - posCam) * 0.12f : posCam;
+
+    }
 
     float CamDistance(){
 
-        camDistance = Mathf.MoveTowards(camDistance,distance,SpeedCamSwith * Time.deltaTime);
+        camDistance = Mathf.MoveTowards(camDistance,distance,camSmoothSpeed * Time.deltaTime);
 
         return camDistance;
        
@@ -100,7 +160,7 @@ public class CamControler : MonoBehaviour
 
     float CamAltura(){
 
-        camAltura = Mathf.MoveTowards(camAltura,altura,SpeedCamSwith * Time.deltaTime);
+        camAltura = Mathf.MoveTowards(camAltura,altura,camSmoothSpeed * Time.deltaTime);       
 
         return camAltura;
 
@@ -108,42 +168,34 @@ public class CamControler : MonoBehaviour
 
     float CamPan(){
 
-        camPan = Mathf.MoveTowards(camPan,0,(SpeedCamSwith/4) * Time.deltaTime);
+        camPan = Mathf.MoveTowards(camPan,pan,camSmoothSpeed * Time.deltaTime);
 
         return camPan;
     }
 
-    Vector3 CamPos(){
+    private void OnDrawGizmos()
+    {
+        if (showDebugInfo == true)
+        {
+            Color oldColor = Gizmos.color;
 
-        Vector3 distance =  transform.forward * CamDistance();
+            // Draw the boresight position.
+            if (playerTarget != null)
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireSphere(hud.hud_Aim.MouseAimPos, 0.5f);
+            }
 
-        Vector3 altura =  transform.up * CamAltura();
+            if (mouseAim != null)
+            {
+                // Draw the position of the mouse aim position.
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(target,0.5f);
 
-        Vector3 pam =  transform.right * CamPan();
+            }
 
-        Vector3 camPos = (LockAtTarget + altura) - (distance + pam);
-
-        bool see = Physics.Linecast(LockAtTarget,camPos, out hit,1,QueryTriggerInteraction.Ignore);
-
-        return (see)? hit.point + (LockAtTarget - camPos) * 0.12f : camPos;
-
-    }
-
-    Vector3 CamColider(){
-        
-        Vector3 pos = Vector3.zero;
-        Vector3 camPos = CamPos();  
-        
-        bool see = Physics.Linecast(LockAtTarget,camPos, out hit,1,QueryTriggerInteraction.Ignore);
-
-        if(see){
-            pos = hit.point + (LockAtTarget - camPos) * 0.12f;
-        }else{
-            pos = camPos;
+            Gizmos.color = oldColor;
         }
-
-        return pos;
-
     }
 
 }

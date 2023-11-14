@@ -61,17 +61,23 @@ public class DropBox : Drop
    }
 
    void DroneDrop(Player player){
-      if(player.inventario.drones < 3){
-         player.inventario.drones++;
-      }
+               
+      player.drone.settingsShot.ammon += 500;
+         
+      if(player.drone.settingsShot.ammon > player.drone.settingsShot.maxAmmon)
+         player.drone.settingsShot.ammon = player.drone.settingsShot.maxAmmon;     
+
    }
 
    void MissilesDrop(Player player){
+
+      Debug.Log("Pego Missel!");
 
    }
 
    void SpecialDrop(Player player){
 
+      Debug.Log("Pego Special (CompletoCargas)!");
 
    }
    

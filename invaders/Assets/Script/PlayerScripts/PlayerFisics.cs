@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -6,54 +5,46 @@ using UnityEngine.VFX;
 public class PlayerFisics
 {
    Rigidbody rb;
-   readonly Transform baseTank;
-   readonly HUD hud;
-   Vector3 currentDirection;
+   public Vector3 currentDirection;
    public float speed;
    float acceleration = 10;
    float deceleration = 5;
    Vector3 smootMoveSpeed;
 
-   Vector3 movePos;
    Vector3 moveDirection;
    float DistanceForce;
    Quaternion moveRot;
    Quaternion rot;
-   float dashCooldown = 2f;
-   float dashTimer = 0f;
+   float dashCooldown;
    bool dash;
-   [HideInInspector]public bool recuo;
+   public bool recuo;
 
-   float motorInput;
-   float breakInput;
-   float steeringInput;
-
-   bool isGrounded;
+   bool jump;
+   bool inGround;
+   float jumpCooldown = 2f;
 
    public float speedRotation;
-
-   float distanciaRaio;
-
-   bool rotacionar;
 
    Quaternion previousDesiredRotation; 
    float smoothFactor = 5f;
 
    VisualEffect poeira;
+   Dictionary<string,VisualEffect> EffectsVFX = new Dictionary<string, VisualEffect>();
 
-   public PlayerFisics(Rigidbody rb, Transform baseTank, HUD hud,VisualEffect poeira)
+   public PlayerFisics(Rigidbody rb,VisualEffect poeira,  Transform EffectsVFX)
    {
       this.rb = rb;
-      this.hud = hud;
-      this.baseTank = baseTank;
-
       rot = rb.transform.rotation;
-
       this.poeira = poeira;
+
+      foreach (Transform effects in EffectsVFX)
+      {
+         this.EffectsVFX.Add(effects.gameObject.name,effects.GetComponent<VisualEffect>());
+      }
 
    }
 
-   public void MoverAWSD(float x, float z, float speedMax, float distRaycast, float floatingHeight, float dashImpulse)
+   public void MoverAWSD(float x, float z, float speedMax)
    {
       Vector3 moveAmount = Vector3.zero;
 
@@ -62,9 +53,10 @@ public class PlayerFisics
          dashCooldown -= Time.deltaTime;
       }
 
-      if (dashTimer > 0f)
-      {
-         dashTimer -= Time.deltaTime;
+      if(jumpCooldown > 0f){
+
+         jumpCooldown -= Time.deltaTime;
+
       }
 
       if (x != 0 || z != 0)
@@ -85,71 +77,102 @@ public class PlayerFisics
 
       moveAmount = Vector3.SmoothDamp(moveAmount, currentDirection, ref smootMoveSpeed, 0.15f);
 
-      movePos = rb.position + moveAmount.normalized * (speed * Time.fixedDeltaTime);
       moveDirection = moveAmount.normalized;
 
-      AlinharComSuperficie(x, z, currentDirection, distRaycast, floatingHeight);
-      moveRot = Quaternion.RotateTowards(moveRot, PlayerRotation(x, z), speedRotation * Time.deltaTime);
-
    }
 
-   public void Dash(float x, float z,bool inputDash){
-      if(x != 0 || z != 0){
-         if(inputDash && dashCooldown <= 0){
-            dash = true;
-            dashCooldown = 1;    
+   public void Jump(bool JumpImput){
+      
+      if(inGround && jumpCooldown <= 0){
+         if(JumpImput){
+            jump = true;
+            EffectsVFX["Jump"].Play();
+            jumpCooldown = 1f;
          }
       }
+
+      if(jumpCooldown <= 0){
+         EffectsVFX["Jump"].Stop();
+      }      
    }
 
-   void AlinharComSuperficie(float moveX, float moveZ, Vector3 currentDirection, float distRaycast, float floatingHeight)
+   public void Propulsor(float distRaycast, float floatingHeight)
    {
-      RaycastHit hit;
-      Quaternion currentRotation = rb.transform.rotation;
-      rot = currentRotation;
-      Quaternion poeiraRot = poeira.transform.localRotation;
+      RaycastHit hitBox;
+      RaycastHit hitRay;
+      rot = rb.transform.rotation;      
 
-      bool see = Physics.Raycast(rb.transform.position, -rb.transform.up, out hit, distRaycast);      
+      float height = (currentDirection != Vector3.zero)? floatingHeight + 0.3f : floatingHeight;        
 
-      if (see)
+      bool seeBox = Physics.BoxCast(rb.transform.position, new Vector3(2f, 0.1f, 2f), -Vector3.up, out hitBox, Quaternion.identity, distRaycast);
+
+      bool seeRay = Physics.Raycast(rb.transform.position, -Vector3.up, out hitRay, distRaycast);
+
+      inGround = seeBox;
+
+      if(seeRay){
+
+         Vector3 poeiraPos = new Vector3(rb.transform.position.x, hitRay.point.y,rb.transform.position.z);
+
+         Quaternion poeiraRot = Quaternion.FromToRotation(Vector3.up, hitRay.normal);
+         
+         poeira.transform.position = poeiraPos;         
+         poeira.transform.rotation = poeiraRot;
+      
+      }              
+
+      if (seeBox)
       {
-         Vector3 incomingVec = hit.point - rb.transform.position;
+         Vector3 limitPropulsor = new Vector3(0, hitBox.point.y + height, 0);
 
-         Vector3 adjustedMoveDirection = Vector3.RotateTowards(rb.transform.up, currentDirection, Mathf.Deg2Rad * 10, 0);
-
-         poeira.transform.position = hit.point;
-         poeiraRot = Quaternion.FromToRotation(poeira.transform.up, Vector3.up);
-
-         Quaternion desiredRotation = Quaternion.FromToRotation(rb.transform.up, Vector3.up) * Quaternion.FromToRotation(rb.transform.up, adjustedMoveDirection) * rb.transform.rotation;
-
-         desiredRotation = SmoothRotation(desiredRotation);
-         rot = SmoothRotation(rot);
-
-         if (moveX == 0 && moveZ == 0)
-         {
-            previousDesiredRotation = rot;
-         }
-
-         Vector3 limitPropulsor = new Vector3(1, hit.point.y + floatingHeight, 0);
-
-         DistanceForce = Vector3.Distance(limitPropulsor, new Vector3(1, rb.transform.position.y,0));
-
-         if (rb.transform.position.y > limitPropulsor.y)
-         {
-            DistanceForce = 0;
-         }
-
+         DistanceForce = Vector3.Distance(limitPropulsor, new Vector3(0, rb.transform.position.y,0));
+         
       }
-
-      poeira.transform.rotation = poeiraRot;
-
-      if(DistanceForce > .7f){
+         
+      if(inGround){
          poeira.Play();
       }else{
          poeira.Stop();
       }
+   }
 
+   public void RotationDirection(){
 
+      moveRot = Quaternion.RotateTowards(moveRot, PlayerRotation(rb.velocity.normalized.x, rb.velocity.normalized.z), speedRotation * Time.deltaTime);
+      
+      Vector3 adjustedRotationDirection = Vector3.RotateTowards(rb.transform.up, currentDirection, Mathf.Deg2Rad * 12, 0);      
+
+      Quaternion desiredRotation = Quaternion.FromToRotation(rb.transform.up, Vector3.up) * Quaternion.FromToRotation(rb.transform.up, adjustedRotationDirection) * rb.transform.rotation;
+
+      rot = SmoothRotation(desiredRotation);
+
+   }   
+
+   public void Dash(float x, float z, bool inputDash){
+      if(currentDirection != Vector3.zero){
+         if(inputDash && dashCooldown <= 0){
+            dash = true;
+
+            if(x > 0)
+               EffectsVFX["Right"].Play();
+            else if(x < 0)
+               EffectsVFX["Left"].Play();;
+            
+            if(z > 0)
+               EffectsVFX["Back"].Play();
+            else if(z < 0)
+               EffectsVFX["Front"].Play();
+
+            dashCooldown = 1;
+         }
+      }
+
+      if(dashCooldown <= 0){
+         EffectsVFX["Right"].Stop();          
+         EffectsVFX["Left"].Stop();        
+         EffectsVFX["Back"].Stop();    
+         EffectsVFX["Front"].Stop();
+      }
    }
 
    Quaternion SmoothRotation(Quaternion targetRotation)
@@ -172,26 +195,34 @@ public class PlayerFisics
       return dirRot;
    }
 
-   public void AplicaMovemento(float powerPropulsor,float dashForce,float recuoForce,Vector3 recuoDir)
+   public void AplicaMovemento(float dashForce,float jumpForce,float recuoForce,Vector3 recuoDir)
    {
       if(!dash)
-         rb.AddForce(moveDirection * (speed * (rb.mass)),ForceMode.Force);
+         rb.AddForce(moveDirection * (speed * rb.mass),ForceMode.Force);
       
       if(dash){
-         rb.AddForce(moveDirection * (dashForce * (rb.mass)),ForceMode.Impulse);
+         rb.AddForce(moveDirection * (dashForce * rb.mass),ForceMode.Impulse);
          dash = false;
       }
 
       if(recuo){
-         rb.AddForce(recuoDir * (recuoForce * (rb.mass)),ForceMode.Impulse);
+         rb.AddForce(recuoDir * (recuoForce * rb.mass),ForceMode.Impulse);
          recuo = false;
       }
+
+      if(jump){
+         rb.AddForce(rb.transform.up *(jumpForce * rb.mass), ForceMode.Impulse);
+         jump = false;
+      }
       
-      rb.AddForce(Vector3.up * (DistanceForce * (powerPropulsor * (rb.mass))), ForceMode.Force);
-
-
       rb.MoveRotation(Quaternion.Euler(rot.eulerAngles.x, moveRot.eulerAngles.y, rot.eulerAngles.z));
       
    }
 
+   public void AplicaFlutuadores(float powerPropulsor){
+      
+      rb.AddForce((inGround ? Vector3.up : -Vector3.up) * (DistanceForce * 
+      powerPropulsor * rb.mass), ForceMode.Force);
+   
+   }
 }

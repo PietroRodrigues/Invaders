@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HUDReticula
-{
+{    
     public HudAim hudAim;
     Player player;
 
@@ -16,27 +16,27 @@ public class HUDReticula
    public void ReticulasUpdatePos(){
 
         if(player.gameObject != null){
-            hudAim.miraVeiculo.gameObject.SetActive(true);
-            hudAim.mousePos.gameObject.SetActive(true);
+            hudAim.miraVeiculoRect.gameObject.SetActive(true);
+            hudAim.mousePosRect.gameObject.SetActive(true);
             attPos();
         }else{
-            hudAim.miraVeiculo.gameObject.SetActive(false);
-            hudAim.mousePos.gameObject.SetActive(false);
+            hudAim.miraVeiculoRect.gameObject.SetActive(false);
+            hudAim.mousePosRect.gameObject.SetActive(false);
         }
    }
 
    void attPos(){
         
-        if (hudAim.miraVeiculo != null)
+        if (hudAim.miraVeiculoRect != null)
         {
-            hudAim.miraVeiculo.position = Vector3.Lerp(hudAim.miraVeiculo.position, Camera.main.WorldToScreenPoint(hudAim.MiraVeiculo),0.12f);
-            hudAim.miraVeiculo.gameObject.SetActive(hudAim.miraVeiculo.position.z > 1f);
+            hudAim.miraVeiculoRect.position = Vector3.Lerp(hudAim.miraVeiculoRect.position, Camera.main.WorldToScreenPoint(hudAim.MiraVeiculo),0.12f);
+            hudAim.miraVeiculoRect.gameObject.SetActive(hudAim.miraVeiculoRect.position.z > 1f);
         }
 
-        if (hudAim.mousePos != null)
+        if (hudAim.mousePosRect != null)
         {
-            hudAim.mousePos.position = Vector3.Lerp(hudAim.mousePos.position,Camera.main.WorldToScreenPoint(hudAim.MouseAimPos),0.12f);
-            hudAim.mousePos.gameObject.SetActive(hudAim.mousePos.position.z > 1);
+            hudAim.mousePosRect.position = Vector3.Lerp(hudAim.mousePosRect.position,Camera.main.WorldToScreenPoint(hudAim.MouseAimPos),0.12f);
+            hudAim.mousePosRect.gameObject.SetActive(hudAim.mousePosRect.position.z > 1);
         }
     }
 }
@@ -47,8 +47,8 @@ public struct HudAim
     public float aimDistance;
     public float aimCanonDistance;
     public Transform canon;
-    public RectTransform miraVeiculo;
-    public RectTransform mousePos;
+    public RectTransform miraVeiculoRect;
+    public RectTransform mousePosRect;
     public Transform mouseAim;
 
     public Vector3 MiraVeiculo

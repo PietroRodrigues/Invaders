@@ -15,6 +15,7 @@ public class PlayerControler
             inputsControl.xMause = Input.GetAxis("Mouse X");
             inputsControl.yMause = Input.GetAxis("Mouse Y");
             inputsControl.jumpInput =  Input.GetKey(KeyCode.Space);
+            inputsControl.Dash =  Input.GetKey(KeyCode.LeftShift);
             inputsControl.special = Input.GetKey(KeyCode.R);
             inputsControl.disparar = Input.GetMouseButton(0);
             inputsControl.mirar = Input.GetMouseButton(1);
@@ -23,7 +24,8 @@ public class PlayerControler
 
             inputsControl.xInput = 0;
             inputsControl.zInput = 0;
-            inputsControl.jumpInput =  false;            
+            inputsControl.jumpInput =  false;
+            inputsControl.Dash = false;         
             inputsControl.mirar = false;
         }
     
@@ -35,7 +37,7 @@ public class PlayerControler
         public float xMause;
         public float yMause;
         public bool jumpInput;
-        public bool correrInput;
+        public bool Dash;
         public bool mirar;
         public bool disparar;
         public bool special;

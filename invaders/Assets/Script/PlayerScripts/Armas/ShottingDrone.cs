@@ -1,34 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.VFX;
 
 public class ShottingDrone
 {
-   public ShottingDroneSettings shottingDroneSettings;
    Chronometry chronometry = new Chronometry();
    bool primeroTiro = true;
-   VisualEffect muzzleGun;
 
-   public ShottingDrone(ShottingDroneSettings settings)
-   {
-      shottingDroneSettings = settings;
-      muzzleGun = shottingDroneSettings.cannon.Find("Particle").GetComponentInChildren<VisualEffect>();
-      shottingDroneSettings.cxBalasGun = shottingDroneSettings.cannon.Find("CxBalas");
-
-   }
-
-   public void GunShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset,DroneStatos drone)
+   public void GunShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset, DroneSettingsShot settingsShot)
    {
       if (attack)
       {
-         shottingDroneSettings.speedBody = speed;
+         settingsShot.speedBody = speed;
 
          if (primeroTiro)
          {
-            muzzleGun.Play();
-            FireBullet(shottingDroneSettings.cxBalasGun,shottingDroneSettings.bullet);
-            drone.shotting.shottingDroneSettings.ammon--;
+            settingsShot.muzzleGun.Play();
+            FireBullet(settingsShot);
+            settingsShot.ammon--;
             primeroTiro = false;
          }
       }
@@ -42,71 +29,49 @@ public class ShottingDrone
          }
       }
 
-      bulletReturn(pos, maxDistanceReset);
+      bulletReturn(pos, maxDistanceReset,settingsShot);
 
    }
 
-   void FireBullet(Transform cxBalas,GameObject bullet)
+   void FireBullet(DroneSettingsShot settingsShot)
    {
-      if (cxBalas.childCount == 0)
+      if (settingsShot.cxBalasGun.childCount == 0)
       {
-         GameObject bala = GameObject.Instantiate(bullet);
-         bala.name = "Bullet " + cxBalas.root.name;
-         bala.GetComponent<Bullet>().gumOrigen = cxBalas;
-         bala.GetComponent<Bullet>().especie = shottingDroneSettings.cannon.root.GetComponent<Player>();
+         GameObject bala = GameObject.Instantiate(settingsShot.bullet);
+         bala.name = "Bullet " + settingsShot.cxBalasGun.root.name;
+         bala.GetComponent<Bullet>().gumOrigen = settingsShot.cxBalasGun;
+         bala.GetComponent<Bullet>().especie = settingsShot.cannon.root.GetComponent<Player>();
          bala.GetComponent<Bullet>().BulletOrigen();
-         shottingDroneSettings.BoxBullet.Add(bala);
+         settingsShot.BoxBullet.Add(bala);
       }
 
-      if (cxBalas.childCount != 0)
+      if (settingsShot.cxBalasGun.childCount != 0)
       {
-         GameObject projetil = cxBalas.GetChild(0).gameObject;
+         GameObject projetil = settingsShot.cxBalasGun.GetChild(0).gameObject;
 
          if (!projetil.activeSelf)
          {
-            projetil.GetComponent<Bullet>().Disparate(shottingDroneSettings.speedBody);
+            settingsShot.muzzleGun.Play();
+            projetil.GetComponent<Bullet>().Disparate(settingsShot.speedBody);
          }
       }
-
-
    }
 
-   void bulletReturn(Vector3 pos, float maxDistanceReset)
+   void bulletReturn(Vector3 pos, float maxDistanceReset, DroneSettingsShot settingsShot)
    {
-      for (int i = 0; i < shottingDroneSettings.BoxBullet.Count; i++)
+      for (int i = 0; i < settingsShot.BoxBullet.Count; i++)
       {
-         GameObject bullet = shottingDroneSettings.BoxBullet[i];
+         GameObject bullet = settingsShot.BoxBullet[i];
 
          if (bullet.activeSelf)
          {
             if (Vector3.Distance(bullet.transform.position, pos) >= maxDistanceReset)
             {
                bullet.GetComponent<Bullet>().BulletOrigen();
-               i = shottingDroneSettings.BoxBullet.Capacity;
+               i = settingsShot.BoxBullet.Capacity;
             }
          }
 
       }
    }
-
-   void AnimationStart()
-   {
-      ParticleSystem p = shottingDroneSettings.particleCanon.GetComponent<ParticleSystem>();
-      var main = p.main;
-      main.loop = false;
-      p.Play();
-   }
-}
-
-[System.Serializable]
-public struct ShottingDroneSettings
-{
-   public Transform cannon;
-   public GameObject bullet;
-   public int maxAmmon;
-   [HideInInspector] public int ammon;
-   [HideInInspector] public float speedBody;
-   [HideInInspector] public List<GameObject> BoxBullet;
-   [HideInInspector] public Transform particleCanon;
-   [HideInInspector] public Transform cxBalasGun;
 }
