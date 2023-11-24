@@ -45,7 +45,7 @@ public class Player : Statos
       hp = hpMax;
       inventario = new Inventario(100);
       playerControler = new PlayerControler();
-      playerFisics = new PlayerFisics(rb,poeira,dashEffects);
+      playerFisics = new PlayerFisics(rb,partsTank.cabine.GetComponent<BoxCollider>(),poeira,dashEffects);
       shotting = new Shotting(shotingSettings);
       playerAnimation = new PlayerAnimation(partsTank);
       drone = new Drone(transform,droneStatos,droneSettingsShot);
@@ -123,13 +123,18 @@ public class Player : Statos
 
    }
 
+   private void OnCollisionEnter(Collision other)
+   {
+      if (!other.collider.isTrigger)
+      {
+         Vector3 forcaImpact = other.relativeVelocity;
 
-   private void OnDrawGizmos(){
-      if(playerFisics != null){
-         Gizmos.color = Color.green;
-         Gizmos.DrawWireSphere(playerFisics.currentDirection, 0.5f);
+         float magnitudeImpact = forcaImpact.magnitude; 
+         
+         playerFisics.ImpactForceReaction(other.contacts[0].normal,1.2f + magnitudeImpact/4);
       }
    }
+
 
 }
 

@@ -50,6 +50,8 @@ public class CamControler : MonoBehaviour
     float mouseX;
     float mouseY;
 
+    Vector3 initialCamPosition;
+
     private void Awake()
     {
         transform.parent = null;
@@ -58,7 +60,10 @@ public class CamControler : MonoBehaviour
 
     void Start(){    
         playerTarget.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        playerInputs = playerTarget.GetComponent<Player>().playerControler;       
+        playerInputs = playerTarget.GetComponent<Player>().playerControler;
+
+        initialCamPosition = mainCam.transform.position;
+        
     }
 
     void Update(){
@@ -171,31 +176,6 @@ public class CamControler : MonoBehaviour
         camPan = Mathf.MoveTowards(camPan,pan,camSmoothSpeed * Time.deltaTime);
 
         return camPan;
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (showDebugInfo == true)
-        {
-            Color oldColor = Gizmos.color;
-
-            // Draw the boresight position.
-            if (playerTarget != null)
-            {
-                Gizmos.color = Color.white;
-                Gizmos.DrawWireSphere(hud.hud_Aim.MouseAimPos, 0.5f);
-            }
-
-            if (mouseAim != null)
-            {
-                // Draw the position of the mouse aim position.
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(target,0.5f);
-
-            }
-
-            Gizmos.color = oldColor;
-        }
     }
 
 }

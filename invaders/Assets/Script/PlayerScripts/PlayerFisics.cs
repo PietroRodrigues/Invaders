@@ -1,6 +1,8 @@
+using System.Net.Http.Headers;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
+using UnityEngine.UIElements;
 
 public class PlayerFisics
 {
@@ -27,15 +29,17 @@ public class PlayerFisics
 
    Quaternion previousDesiredRotation; 
    float smoothFactor = 5f;
+   BoxCollider boxCorpo;
 
    VisualEffect poeira;
    Dictionary<string,VisualEffect> EffectsVFX = new Dictionary<string, VisualEffect>();
 
-   public PlayerFisics(Rigidbody rb,VisualEffect poeira,  Transform EffectsVFX)
+   public PlayerFisics(Rigidbody rb,BoxCollider boxCorpo,VisualEffect poeira,  Transform EffectsVFX)
    {
       this.rb = rb;
       rot = rb.transform.rotation;
       this.poeira = poeira;
+      this.boxCorpo = boxCorpo;
 
       foreach (Transform effects in EffectsVFX)
       {
@@ -102,13 +106,13 @@ public class PlayerFisics
       RaycastHit hitRay;
       rot = rb.transform.rotation;      
 
-      float height = (currentDirection != Vector3.zero)? floatingHeight + 0.3f : floatingHeight;        
+      float height = (currentDirection != Vector3.zero)? floatingHeight + 0.2f : floatingHeight;        
 
-      bool seeBox = Physics.BoxCast(rb.transform.position, new Vector3(2f, 0.1f, 2f), -Vector3.up, out hitBox, Quaternion.identity, distRaycast);
+      bool seeBox = Physics.BoxCast(rb.transform.position, new Vector3(boxCorpo.size.x, .1f,boxCorpo.size.z) / 2, -Vector3.up, out hitBox, Quaternion.Euler(0, rb.transform.rotation.eulerAngles.y, 0), distRaycast,1,QueryTriggerInteraction.Ignore);
 
-      bool seeRay = Physics.Raycast(rb.transform.position, -Vector3.up, out hitRay, distRaycast);
+      bool seeRay = Physics.Raycast(rb.transform.position, -Vector3.up, out hitRay, distRaycast,1,QueryTriggerInteraction.Ignore);
 
-      inGround = seeBox;
+      inGround = seeBox || seeRay;
 
       if(seeRay){
 
@@ -125,7 +129,7 @@ public class PlayerFisics
       {
          Vector3 limitPropulsor = new Vector3(0, hitBox.point.y + height, 0);
 
-         DistanceForce = Vector3.Distance(limitPropulsor, new Vector3(0, rb.transform.position.y,0));
+         DistanceForce = Vector3.Distance(new Vector3(0, rb.transform.position.y,0),limitPropulsor);
          
       }
          
@@ -219,10 +223,15 @@ public class PlayerFisics
       
    }
 
+   public void ImpactForceReaction(Vector3 hitNormal,float impactForce){
+      rb.AddForce(hitNormal * (impactForce * rb.mass),ForceMode.Impulse);
+   }
+
    public void AplicaFlutuadores(float powerPropulsor){
+
+      Vector3 force = inGround? Vector3.up * (DistanceForce * powerPropulsor * rb.mass): -Vector3.up * (DistanceForce * (powerPropulsor * .5f) * rb.mass);
+
+      rb.AddForce(force,ForceMode.Force);
       
-      rb.AddForce((inGround ? Vector3.up : -Vector3.up) * (DistanceForce * 
-      powerPropulsor * rb.mass), ForceMode.Force);
-   
    }
 }

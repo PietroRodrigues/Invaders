@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1811112200188236619}
   m_Layer: 8
   m_Name: BulletGum
-  m_TagString: Untagged
+  m_TagString: ProjetilPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -175,7 +175,7 @@ VisualEffect:
       - m_Value: 0.55
         m_Name: Mult
         m_Overridden: 1
-      - m_Value: 0.4
+      - m_Value: 0.2
         m_Name: Size
         m_Overridden: 1
     m_Vector2f:

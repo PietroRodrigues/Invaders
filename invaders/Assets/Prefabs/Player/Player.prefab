@@ -1546,16 +1546,16 @@ MonoBehaviour:
     cabine: {fileID: 6774130993422534777}
   speedMax: 15
   dashForce: 15
-  jumpForce: 10
+  jumpForce: 20
   recuoForce: 5
-  powerPropulsion: 15
+  powerPropulsion: 20
   speedRotation: 100
   speedCanonAim: 100
   minCanonX: 15
   maxCanonX: 40
-  maxDistanceBullets: 53
-  distRaycast: 15
-  floatingHeight: 2
+  maxDistanceBullets: 100
+  distRaycast: 1.5
+  floatingHeight: 1.5
   shotingSettings:
     cannon: {fileID: 6451465025469813717}
     BoxBullet: []

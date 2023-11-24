@@ -9,6 +9,7 @@ public class TestDummy : MonoBehaviour
     [SerializeField] VisualEffect poeira;
     [SerializeField] Transform dashEffects;
     PlayerFisics fisica;
+    [SerializeField] PartsTank partsTank;
 
     [SerializeField] float powerPropulsion = 15;
     [SerializeField] float distRaycast = 15;
@@ -19,7 +20,7 @@ public class TestDummy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        fisica = new PlayerFisics(rb,poeira,dashEffects);
+        fisica = new PlayerFisics(rb,partsTank.cabine.GetComponent<BoxCollider>(),poeira,dashEffects);
     }
 
     // Update is called once per frame
