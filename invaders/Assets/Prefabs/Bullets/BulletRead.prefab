@@ -154,7 +154,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6078212784775380766}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: 5c154cb17a962d84d9b20c5c41194edb, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: b3de82593f0676a4eba1af64ebe6b3bb, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -164,9 +164,9 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 0.3
+      - m_Value: 0.75
         m_Name: Size
-        m_Overridden: 1
+        m_Overridden: 0
       - m_Value: 1
         m_Name: TrailLifeTime
         m_Overridden: 1

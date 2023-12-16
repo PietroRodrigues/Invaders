@@ -40,6 +40,8 @@ public class Player : Statos
    [SerializeField] DroneSettingsShot droneSettingsShot;
    [SerializeField] DroneStatos droneStatos;
 
+   [HideInInspector] public Vector3 alvoPos;
+
    void Awake()
    {
       hp = hpMax;
@@ -82,8 +84,10 @@ public class Player : Statos
       playerFisics.AplicaMovemento(dashForce,jumpForce,recuoForce,-partsTank.canon.forward);
       playerFisics.AplicaFlutuadores(powerPropulsion);
       
-      drone.MovementDrones(hud.hud_Aim.MouseAimPos,100);
-      drone.Fire(playerControler.inputsControl.disparar, maxDistanceBullets);
+
+      drone.MovementDrones();
+      drone.LookDroneTarget(alvoPos,100);
+      drone.FireDrone(playerControler.inputsControl.disparar, maxDistanceBullets);
 
    }
 
@@ -134,7 +138,6 @@ public class Player : Statos
          playerFisics.ImpactForceReaction(other.contacts[0].normal,1.2f + magnitudeImpact/4);
       }
    }
-
 
 }
 

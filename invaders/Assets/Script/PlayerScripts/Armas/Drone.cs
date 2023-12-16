@@ -19,11 +19,16 @@ public class Drone
    }
 
    void ActiveDrone()
-   {     
+   {  
       statos.drone.SetActive(statos.active);
+
+      if (!statos.drone.activeSelf)
+      {
+         targetPosition = statos.drone.transform.position;
+      }
    }
    
-   public void Fire(bool attack, float maxDistanceReset){
+   public void FireDrone(bool attack, float maxDistanceReset){
      
          if (statos.drone.gameObject.activeSelf)
          {
@@ -35,11 +40,12 @@ public class Drone
          }
    }
 
-   public void MovementDrones(Vector3 target,float speedAim)
+   public void MovementDrones()
    {      
       if (settingsShot.ammon <= 0)
       {
          statos.active = false;
+
       }
       else
       {
@@ -55,12 +61,10 @@ public class Drone
          pontReference.y += 2f;
 
          if(Vector3.Distance(targetPosition , pontReference) > 2)
-            targetPosition = Vector3.Lerp(targetPosition,pontReference, statos.speed * Time.deltaTime);
-         
+            targetPosition = Vector3.Lerp(targetPosition,pontReference, statos.speed * Time.deltaTime);         
 
          Vector3 pos = Vector3.Lerp(statos.drone.gameObject.transform.position,targetPosition, statos.speed * Time.deltaTime);         
          
-         LookAlvo(statos.drone.transform, target,speedAim * 2);
          PosDrone(pos);
 
          if(statos.drone.transform.root != null)
@@ -74,11 +78,11 @@ public class Drone
       }
    }
 
-   void LookAlvo(Transform drone, Vector3 target,float speedAim)
+   public void LookDroneTarget(Vector3 target,float speedAim)
    {
-      Quaternion lookAtDrone = Quaternion.LookRotation(target - drone.position, Vector3.up);
+      Quaternion lookAtDrone = Quaternion.LookRotation(target - statos.drone.transform.position, Vector3.up);
       
-      drone.transform.rotation = Quaternion.RotateTowards(drone.transform.rotation, lookAtDrone, speedAim * 2 * Time.deltaTime);
+      statos.drone.transform.rotation = Quaternion.RotateTowards(statos.drone.transform.rotation, lookAtDrone, speedAim * 4 * Time.deltaTime);
 
    }
 

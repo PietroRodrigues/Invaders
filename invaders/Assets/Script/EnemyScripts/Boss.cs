@@ -1,20 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
 
 public class Boss : BossStatos
-{
+{   
+
     void Start(){
         
     }
 
     void Update(){
-        DiferencialMecanic();
+        Diferencial();
     }
 
-   public override void DiferencialMecanic()
+   public override void Diferencial()
    {
-      base.DiferencialMecanic();
+        if(bossActive){
+           
+            base.Diferencial();
+    
+        }
    }
 
 }

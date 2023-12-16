@@ -22,7 +22,7 @@ public class Projetil : MonoBehaviour
 
 
    bool jaColidio = false;
-   SpawnerEnemys spawnerEnemys;
+   AlocationStage alocationStage;
 
    [SerializeField] GameObject alvoTermico;
    [SerializeField] List<Enemy> allEnemy;
@@ -194,12 +194,12 @@ public class Projetil : MonoBehaviour
    {
       if (meuEmisor.GetComponent<Player>() != null)
       {
-         if (spawnerEnemys == null)
-            spawnerEnemys = FindObjectOfType<SpawnerEnemys>();
+         if (alocationStage == null)
+            alocationStage = FindObjectOfType<AlocationStage>();
 
          allEnemy.Clear();
 
-         foreach (GameObject enemy in spawnerEnemys.enemyesInScene)
+         foreach (GameObject enemy in alocationStage.enemyesInScene)
          {
             if (enemy.activeSelf)
                allEnemy.Add(enemy.GetComponent<Enemy>());
@@ -217,7 +217,7 @@ public class Projetil : MonoBehaviour
    public void Disparate(float speedBody)
    {
       this.speedBody = speedBody;
-      AlvosPossiveis();
+      //AlvosPossiveis();
       EnableBullet();
    }
 

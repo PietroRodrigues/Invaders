@@ -11,17 +11,17 @@ public class HUDReticula
 
         this.player = player;
         this.hudAim = hudAim;
+
     }
 
    public void ReticulasUpdatePos(){
 
         if(player.gameObject != null){
-            hudAim.miraVeiculoRect.gameObject.SetActive(true);
-            hudAim.mousePosRect.gameObject.SetActive(true);
             attPos();
         }else{
             hudAim.miraVeiculoRect.gameObject.SetActive(false);
             hudAim.mousePosRect.gameObject.SetActive(false);
+            hudAim.droneReticulePosRect.gameObject.SetActive(false);
         }
    }
 
@@ -29,14 +29,29 @@ public class HUDReticula
         
         if (hudAim.miraVeiculoRect != null)
         {
+            hudAim.miraVeiculoRect.gameObject.SetActive(true);
             hudAim.miraVeiculoRect.position = Vector3.Lerp(hudAim.miraVeiculoRect.position, Camera.main.WorldToScreenPoint(hudAim.MiraVeiculo),0.12f);
             hudAim.miraVeiculoRect.gameObject.SetActive(hudAim.miraVeiculoRect.position.z > 1f);
         }
 
         if (hudAim.mousePosRect != null)
         {
+            hudAim.mousePosRect.gameObject.SetActive(true);
             hudAim.mousePosRect.position = Vector3.Lerp(hudAim.mousePosRect.position,Camera.main.WorldToScreenPoint(hudAim.MouseAimPos),0.12f);
-            hudAim.mousePosRect.gameObject.SetActive(hudAim.mousePosRect.position.z > 1);
+            hudAim.mousePosRect.gameObject.SetActive(hudAim.mousePosRect.position.z > 1f);
+        }
+
+        if(hudAim.droneReticulePosRect != null){
+        
+            hudAim.droneReticulePosRect.gameObject.SetActive(player.drone.statos.active);
+            
+            hudAim.droneReticulePosRect.position = Camera.main.WorldToScreenPoint(player.alvoPos);
+
+            float distanceToTarget = Vector3.Distance(Camera.main.transform.position,player.alvoPos);
+
+            float scaleFactor = 160f / distanceToTarget ;
+            hudAim.droneReticulePosRect.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
+
         }
     }
 }
@@ -49,6 +64,7 @@ public struct HudAim
     public Transform canon;
     public RectTransform miraVeiculoRect;
     public RectTransform mousePosRect;
+    public RectTransform droneReticulePosRect;
     public Transform mouseAim;
 
     public Vector3 MiraVeiculo

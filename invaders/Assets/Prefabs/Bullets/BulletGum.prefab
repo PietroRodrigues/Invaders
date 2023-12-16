@@ -86,7 +86,7 @@ MonoBehaviour:
     explosionRadius: 2
     explosionForce: 1000
   myParticulesColider: []
-  speed: 100
+  speed: 80
   speedRot: 0
   DanoProjetil: 1
   spread: 0.05
@@ -111,8 +111,8 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.014250243
-  m_Height: 0.06745307
+  m_Radius: 0.04
+  m_Height: 0.15
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7954903780538654115
@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 7954903780538654116}
   - component: {fileID: 7954903780538654117}
   - component: {fileID: 7954903780538654114}
+  - component: {fileID: 6385896012686703409}
   m_Layer: 8
   m_Name: Bullet
   m_TagString: Untagged
@@ -175,7 +176,7 @@ VisualEffect:
       - m_Value: 0.55
         m_Name: Mult
         m_Overridden: 1
-      - m_Value: 0.2
+      - m_Value: 0.4
         m_Name: Size
         m_Overridden: 1
     m_Vector2f:
@@ -238,3 +239,116 @@ VFXRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!96 &6385896012686703409
+TrailRenderer:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7954903780538654115}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 257
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Time: 0.1
+  m_PreviewTimeScale: 1
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 0.06
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: -1.4814525
+        outSlope: -1.4814525
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.41121495
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 3.5, g: 2, b: 0.5, a: 1}
+      key1: {r: 1.25, g: 0.56, b: 0.12, a: 0.7764706}
+      key2: {r: 0.75, g: 0.15, b: 0, a: 1}
+      key3: {r: 0, g: 0, b: 0, a: 0.8862745}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 27563
+      ctime2: 45682
+      ctime3: 65535
+      ctime4: 65535
+      ctime5: 65535
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 65535
+      atime3: 39514
+      atime4: 65535
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_ColorSpace: 0
+      m_NumColorKeys: 4
+      m_NumAlphaKeys: 2
+    numCornerVertices: 90
+    numCapVertices: 90
+    alignment: 0
+    textureMode: 1
+    textureScale: {x: 1, y: 1}
+    shadowBias: 0
+    generateLightingData: 1
+  m_MinVertexDistance: 0.02
+  m_MaskInteraction: 0
+  m_Autodestruct: 0
+  m_Emitting: 1
+  m_ApplyActiveColorSpace: 1

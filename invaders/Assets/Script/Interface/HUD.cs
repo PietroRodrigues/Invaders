@@ -11,6 +11,7 @@ public class HUD : MonoBehaviour
     
     HUDReticula hud_reticula;
     HUDInventario hud_Inventario;
+    HUDRadar hud_Radar;
 
     private void Awake() {
         hud_Inventario = new HUDInventario();
@@ -20,6 +21,7 @@ public class HUD : MonoBehaviour
         player = FindObjectOfType<Player>();
         
         hud_reticula = new HUDReticula(player,hud_Aim);
+        hud_Radar = new HUDRadar();
 
         hud_Inventario.LoadInventario(hud_Components);
 
@@ -31,6 +33,8 @@ public class HUD : MonoBehaviour
         hud_Components.bars.transform.Find("ShildBar").GetComponent<Image>().fillAmount = (float) player.inventario.shield / player.inventario.ShieldMax;
 
         hud_Components.indcWelpom = hud_Inventario.UpdateIndicWelpon(hud_Components.indcWelpom);
+
+        player.alvoPos = hud_Radar.RadarScan(player.playerControler.inputsControl.switchTarget,hud_Aim.MouseAimPos);
     }
 
     void LateUpdate()

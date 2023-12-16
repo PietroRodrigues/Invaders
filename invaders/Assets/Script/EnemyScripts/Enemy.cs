@@ -11,31 +11,30 @@ public class Enemy : StatosEnemyes
 
    [HideInInspector] public EnemyMoviment moviment;
    [HideInInspector] public EnemyMecanics mecanics;
-   Chronometry cronometro = new Chronometry();
-
-   Vector3 posObjetive;
 
    private void Awake()
    {
-      hp = hpMax;
-      shild = ShildMax;
       proprerts.rb = GetComponent<Rigidbody>();
-      mecanics = new EnemyMecanics(proprerts);
+      mecanics = new EnemyMecanics();
       moviment = new EnemyMoviment();
+      ResetEnemy();
    }
 
    private void OnEnable()
    {
-      proprerts.target = FindObjectOfType<Player>().gameObject;
-      moviment.StartDestination(proprerts);
+      ResetEnemy();
    }
 
    void Update()
    {
       AutoDestruir();
-      moviment.NewRotation(proprerts, proprerts.spawnerEnemys.enemysActive);
-      moviment.MovimentaEnemy(proprerts);
+      mecanics.InAlerte(proprerts);
+   }
 
+   void FixedUpdate()
+   {
+      moviment.NewRotation(proprerts);
+      moviment.MovimentaEnemy(proprerts);
    }
 
    void AutoDestruir()
@@ -52,10 +51,11 @@ public class Enemy : StatosEnemyes
 
    }
 
-   public void ResetEnemy()
+   void ResetEnemy()
    {
       hp = hpMax;
       shild = ShildMax;
+      proprerts.posDestination = Vector3.zero;
       proprerts.rb.velocity = Vector3.zero;
       proprerts.rb.angularVelocity = Vector3.zero;
    }
@@ -71,8 +71,8 @@ public class Enemy : StatosEnemyes
 
       ripples.transform.rotation = Quaternion.Euler(ripplesEulerAngle);
 
-      ripples.Play();      
-
+      ripples.Play();
+            
    }
 
 }
@@ -80,7 +80,6 @@ public class Enemy : StatosEnemyes
 [System.Serializable]
 public struct EnemyParamets
 {
-   public SpawnerEnemys spawnerEnemys;
    public float speedRotation;
    public float speed;
    public Vector3 posDestination;
@@ -88,8 +87,8 @@ public struct EnemyParamets
 
    [Range(0.01f, 1f)] public float raioDistance;
    public float checkRadius;
-   [HideInInspector] public Rigidbody rb;
    public GameObject target;
+   [HideInInspector] public Rigidbody rb;
 
    [HideInInspector] public List<GameObject> BoxBullet;
    public Transform particleCanon;

@@ -6,7 +6,7 @@ public class PlayerControler
 {
     public InputsVar inputsControl;
 
-    public void GameInputs(){        
+    public void GameInputs(){
         
         if(!Cursor.visible){
         
@@ -17,6 +17,7 @@ public class PlayerControler
             inputsControl.jumpInput =  Input.GetKey(KeyCode.Space);
             inputsControl.Dash =  Input.GetKey(KeyCode.LeftShift);
             inputsControl.special = Input.GetKey(KeyCode.R);
+            inputsControl.switchTarget = Input.GetKeyDown(KeyCode.Tab);
             inputsControl.disparar = Input.GetMouseButton(0);
             inputsControl.mirar = Input.GetMouseButton(1);
 
@@ -27,6 +28,7 @@ public class PlayerControler
             inputsControl.jumpInput =  false;
             inputsControl.Dash = false;         
             inputsControl.mirar = false;
+            inputsControl.switchTarget = false;
         }
     
     }
@@ -41,6 +43,7 @@ public class PlayerControler
         public bool mirar;
         public bool disparar;
         public bool special;
+        public bool switchTarget;
     }
 
 }

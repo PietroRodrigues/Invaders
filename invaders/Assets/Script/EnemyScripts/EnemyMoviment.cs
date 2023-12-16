@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class EnemyMoviment
 {
-   Vector3 newPosition;
-   Vector3 currentDirection;
    Vector3 destino;
 
    Chronometry cronometro = new Chronometry();
@@ -28,28 +26,20 @@ public class EnemyMoviment
 
       if (destino != Vector3.zero)
       {
-         if (Vector3.Distance(parameters.rb.transform.position, destino) > parameters.raioDistance)
+         if (Vector3.Distance(parameters.rb.transform.position, parameters.waveTransform.position + destino) > parameters.raioDistance)
          {
-            parameters.rb.transform.position = Vector3.Lerp(parameters.rb.transform.position, destino, parameters.speed * Time.deltaTime);
+            parameters.rb.transform.position = Vector3.Lerp(parameters.rb.transform.position, parameters.waveTransform.position + destino, parameters.speed * Time.deltaTime);
          }
          else
          {
-            parameters.rb.transform.position = Vector3.MoveTowards(parameters.rb.transform.position, destino, parameters.speed * Time.deltaTime);
+            parameters.rb.transform.position = Vector3.MoveTowards(parameters.rb.transform.position, parameters.waveTransform.position + destino, parameters.speed * Time.deltaTime);
          }
       }
-
-      Debug.DrawLine(parameters.rb.transform.position, destino, Color.green);
-
    }
 
-   public void NewRotation(EnemyParamets parameters, int enemysActive)
+   public void NewRotation(EnemyParamets parameters)
    {
       Vector3 tgLook = parameters.target.transform.position;
-
-      if (enemysActive <= 5)
-      {
-         tgLook = parameters.target.transform.position;
-      }
 
       Vector3 direction = tgLook - parameters.rb.transform.position;
 
@@ -60,7 +50,7 @@ public class EnemyMoviment
 
       float speedRot = parameters.speedRotation / (Vector3.Distance(parameters.rb.transform.position, parameters.posDestination) / 4);
 
-      parameters.rb.transform.rotation = Quaternion.RotateTowards(parameters.rb.transform.rotation, enemyRotation, speedRot * Time.deltaTime);
+      parameters.rb.transform.rotation = Quaternion.Slerp(parameters.rb.transform.rotation, enemyRotation, speedRot * Time.deltaTime);
 
    }
 

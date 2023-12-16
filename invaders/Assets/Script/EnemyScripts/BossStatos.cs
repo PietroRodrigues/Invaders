@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,9 @@ public class BossStatos : MonoBehaviour
 {
     public bool bossActive;
 
-    [SerializeField] StatosBaseBoss statos;
+    public GameObject bossGameObject;
+
+    [SerializeField] public StatosBaseBoss statos;
     [SerializeField] bool baseMecanicActive = true;
     [SerializeField] bool baseMovimentActive = true;
 
@@ -14,7 +17,7 @@ public class BossStatos : MonoBehaviour
     public BossMecanics bossMecanics;
 
     private void Awake() {
-        
+
         if(baseMovimentActive)
             bossMovimet = new BossMovimet();
 
@@ -23,7 +26,7 @@ public class BossStatos : MonoBehaviour
         
     }
 
-    public virtual void DiferencialMecanic(){
+    public virtual void Diferencial(){
         Base();
     }
 
@@ -38,11 +41,11 @@ public class BossStatos : MonoBehaviour
     }
 
     void BaseMovement(){
-        
+        Debug.Log("Rodando Movimento Base");
     }
 
     void BaseMecanic(){
-
+        Debug.Log("Rodando Mecanica Base");
     }
 }
 

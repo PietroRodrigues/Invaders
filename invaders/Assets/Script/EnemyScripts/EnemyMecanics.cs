@@ -4,88 +4,76 @@ using UnityEngine;
 
 public class EnemyMecanics
 {
-   EnemyParamets parameters;
-
-   float lastUsedTime = -Mathf.Infinity;
-
    Chronometry cronometro = new Chronometry();
 
    public bool attack;
 
-   public EnemyMecanics(EnemyParamets parameters)
-   {
-      this.parameters = parameters;
-   }
+   public void InAlerte(EnemyParamets paramets){
 
-   public void Attack()
-   {   
-      ShotBullet(parameters.rb.transform.position, 50);   
-   }
+      if(paramets.target != null){
+         
+         RaycastHit hit;
 
-   float ForwardCheck(Transform elementTransform, Vector3 pontVerific, int anguloLimit)
-   {
+         bool see = Physics.Linecast(paramets.rb.transform.position,paramets.target.transform.position,out hit,1,QueryTriggerInteraction.Ignore);
+         
+         bool Aggressive = Vector3.Distance(paramets.rb.transform.position,paramets.target.transform.position) < 60;
+        
+         Debug.DrawLine(paramets.rb.transform.position,see? hit.point : paramets.target.transform.position,Aggressive? (see? Color.blue: Color.red) : Color.green);
+        
 
-      Vector3 direction = (new Vector3(pontVerific.x, elementTransform.position.y, pontVerific.z) - elementTransform.position).normalized;
-
-      float dot = Vector3.Dot(elementTransform.forward, direction);
-
-      float limit = Mathf.Sin(anguloLimit * Mathf.Deg2Rad);
-
-      if (dot > limit)
-      {
-         return 1;
-      }
-      else
-      {
-         return 0;
+         if(!see){
+            if(Aggressive){
+               if(cronometro.CronometroPorSeg(Random.Range(10,41))){
+                  ShotBullet(paramets.rb.transform.position, 50, paramets);
+                  cronometro.Reset();
+               }
+            }
+         }
       }
    }
 
-   void ShotBullet(Vector3 pos, float maxDistanceReset)
+   void ShotBullet(Vector3 pos, float maxDistanceReset, EnemyParamets paramets)
    {
 
-      if (parameters.cxBalas.childCount == 0)
+      if (paramets.cxBalas.childCount == 0)
       {
-         GameObject bala = GameObject.Instantiate(parameters.bullet);
-         bala.name = parameters.cxBalas.root.name + " Bullet";
-         bala.GetComponent<Bullet>().gumOrigen = parameters.cxBalas;
-         bala.GetComponent<Bullet>().especie = parameters.rb.GetComponent<Enemy>();
+         GameObject bala = GameObject.Instantiate(paramets.bullet);
+         bala.name = paramets.cxBalas.root.name + " Bullet";
+         bala.GetComponent<Bullet>().gumOrigen = paramets.cxBalas;
+         bala.GetComponent<Bullet>().especie = paramets.rb.GetComponent<Enemy>();
          bala.GetComponent<Bullet>().BulletOrigen();
-         parameters.BoxBullet.Add(bala);
+         paramets.BoxBullet.Add(bala);
       }
 
-      if (parameters.cxBalas.childCount != 0)
+      if (paramets.cxBalas.childCount != 0)
       {
 
-         GameObject bullet = parameters.cxBalas.GetChild(0).gameObject;
+         GameObject bullet = paramets.cxBalas.GetChild(0).gameObject;
 
          if (!bullet.activeSelf)
          {
-            bullet.GetComponent<Bullet>().Disparate(parameters.speedBody);
-            lastUsedTime = Time.time;
-
+            bullet.GetComponent<Bullet>().Disparate(paramets.speedBody);
          }
       }
 
-      bulletReturn(pos, maxDistanceReset);
+      bulletReturn(pos, maxDistanceReset, paramets);
 
    }
 
-   void bulletReturn(Vector3 pos, float maxDistanceReset)
+   void bulletReturn(Vector3 pos, float maxDistanceReset, EnemyParamets paramets)
    {
-      for (int i = 0; i < parameters.BoxBullet.Count; i++)
+      for (int i = 0; i < paramets.BoxBullet.Count; i++)
       {
-         GameObject bullet = parameters.BoxBullet[i];
+         GameObject bullet = paramets.BoxBullet[i];
 
          if (bullet.activeSelf)
          {
             if (Vector3.Distance(bullet.transform.position, pos) >= maxDistanceReset)
             {
                bullet.GetComponent<Bullet>().BulletOrigen();
-               i = parameters.BoxBullet.Capacity;
+               i = paramets.BoxBullet.Capacity;
             }
          }
-
       }
    }
 }
