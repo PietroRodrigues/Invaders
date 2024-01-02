@@ -5,19 +5,17 @@ using UnityEngine;
 public class HUDReticula
 {    
     public HudAim hudAim;
-    Player player;
 
-    public HUDReticula(Player player,HudAim hudAim){
+    public HUDReticula(HudAim hudAim){
 
-        this.player = player;
         this.hudAim = hudAim;
 
     }
 
-   public void ReticulasUpdatePos(){
+   public void ReticulasUpdatePos(Player player){
 
-        if(player.gameObject != null){
-            attPos();
+        if(player.gameObject != null || player.gameObject.activeSelf){
+            attPos(player);
         }else{
             hudAim.miraVeiculoRect.gameObject.SetActive(false);
             hudAim.mousePosRect.gameObject.SetActive(false);
@@ -25,7 +23,7 @@ public class HUDReticula
         }
    }
 
-   void attPos(){
+   void attPos(Player player){
         
         if (hudAim.miraVeiculoRect != null)
         {
@@ -42,15 +40,21 @@ public class HUDReticula
         }
 
         if(hudAim.droneReticulePosRect != null){
-        
-            hudAim.droneReticulePosRect.gameObject.SetActive(player.drone.statos.active);
             
-            hudAim.droneReticulePosRect.position = Camera.main.WorldToScreenPoint(player.alvoPos);
+            if(player.droneStatos.active){
+            
+                hudAim.droneReticulePosRect.gameObject.SetActive(Spawner.enemyesInStage.alive.Count > 0);
+                
+                hudAim.droneReticulePosRect.position = Camera.main.WorldToScreenPoint(player.alvoPos);
 
-            float distanceToTarget = Vector3.Distance(Camera.main.transform.position,player.alvoPos);
+                float distanceToTarget = Vector3.Distance(Camera.main.transform.position,player.alvoPos);
 
-            float scaleFactor = 160f / distanceToTarget ;
-            hudAim.droneReticulePosRect.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
+                float scaleFactor = 160f / distanceToTarget ;
+                hudAim.droneReticulePosRect.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
+
+            }else{
+                hudAim.droneReticulePosRect.gameObject.SetActive(false);
+            }
 
         }
     }

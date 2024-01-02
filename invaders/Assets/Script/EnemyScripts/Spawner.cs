@@ -68,7 +68,6 @@ public class Spawner : MonoBehaviour
                 if(boss.statos.hp <= 0){
                     Debug.Log("Fim De jogo!!!");
                 }
-                Debug.Log("Boss Naceu!!!!" );
             }
         
         }else{

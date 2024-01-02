@@ -8,7 +8,7 @@ public class CamControler : MonoBehaviour
     
     [SerializeField] Camera mainCam;
     [SerializeField] Transform mouseAim;
-    [SerializeField] Transform playerTarget;
+    [SerializeField] Player player;
 
     [SerializeField] Vector3 focoPos;
     [SerializeField] float aimDistance;
@@ -18,7 +18,7 @@ public class CamControler : MonoBehaviour
     [Range(1,100)][SerializeField] float camRotateSmoothSpeed = 5;
 
     [SerializeField]
-    float mouseSensitivity = 8;
+    public float mouseSensitivity = 3;
     
     [Header("Position Cam")]
     [SerializeField] float distance = 8;
@@ -43,7 +43,7 @@ public class CamControler : MonoBehaviour
 
     [HideInInspector] public bool cursorVisible = false;
 
-    PlayerControler playerInputs;
+    [HideInInspector] public PlayerControler playerInputs;
 
     float x;
     float y;
@@ -58,16 +58,20 @@ public class CamControler : MonoBehaviour
 
     }
 
-    void Start(){    
-        playerTarget.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-        playerInputs = playerTarget.GetComponent<Player>().playerControler;
+    void Start(){
 
-        initialCamPosition = mainCam.transform.position;
+        player = FindObjectOfType<Player>();
+
+        if(player != null){
+            player.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");        
+            playerInputs = new PlayerControler();
+            initialCamPosition = mainCam.transform.position;
+        }
         
     }
 
     void Update(){
-
+        
         if(Input.GetKeyDown(KeyCode.LeftAlt))
             cursorVisible = !cursorVisible;
         
@@ -76,14 +80,16 @@ public class CamControler : MonoBehaviour
            Cursor.lockState = CursorLockMode.Locked;
         else
            Cursor.lockState = CursorLockMode.None;
-       
-
-        mouseX = playerInputs.inputsControl.xMause * mouseSensitivity;
-        mouseY = playerInputs.inputsControl.yMause * mouseSensitivity;
-
-        if(playerTarget != null){
+        
+        
+        if(player != null){
             
-            target = focoPos + (cameraFixa? playerTarget.position : transform.position);
+            playerInputs.GameInputs(player);
+            
+            mouseX = playerInputs.inputsControl.xMause * mouseSensitivity;
+            mouseY = playerInputs.inputsControl.yMause * mouseSensitivity;
+
+            target = focoPos + (cameraFixa? player.transform.position : transform.position);
 
             mouseAim.localEulerAngles = MouseAimRotation(mouseX,mouseY);
 
@@ -101,16 +107,16 @@ public class CamControler : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(playerTarget != null){
+        if(player != null){
 
-            transform.position = Vector3.SmoothDamp(transform.position , playerTarget.position, ref velocityRoot,  RootCamSmoothSpeed * Time.deltaTime);
+            transform.position = Vector3.SmoothDamp(transform.position , player.transform.position, ref velocityRoot,  RootCamSmoothSpeed * Time.deltaTime);
         }
         
     }
 
     void LateUpdate()
     {
-        if(playerTarget != null){
+        if(player != null){
         
             Vector3 targetCamPos = Vector3.Lerp(mainCam.transform.position, camPos, camSmoothSpeed * 10 * Time.deltaTime);
 

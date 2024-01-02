@@ -139,12 +139,12 @@ public class Projetil : MonoBehaviour
       transform.rotation = rot;
       this.gameObject.SetActive(false);
 
-      if (this.transform.GetComponent<TrailRenderer>() != null)
-      {
-         trailRenderer = GetComponent<TrailRenderer>();
-         trailRenderer.Clear();
-      }
+      TrailRenderer[] trailRenderers =  GetComponentsInChildren<TrailRenderer>(true);
 
+      foreach (TrailRenderer trail in trailRenderers)
+      {
+         trail.Clear();
+      }
    }
 
    void EnableBullet()

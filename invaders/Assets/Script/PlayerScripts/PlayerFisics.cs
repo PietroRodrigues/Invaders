@@ -32,6 +32,7 @@ public class PlayerFisics
    BoxCollider boxCorpo;
 
    VisualEffect poeira;
+   VisualEffect poeiraJump;
    Dictionary<string,VisualEffect> EffectsVFX = new Dictionary<string, VisualEffect>();
 
    public PlayerFisics(Rigidbody rb,BoxCollider boxCorpo,VisualEffect poeira,  Transform EffectsVFX)
@@ -39,6 +40,7 @@ public class PlayerFisics
       this.rb = rb;
       rot = rb.transform.rotation;
       this.poeira = poeira;
+      poeiraJump = poeira.transform.GetChild(0).GetComponent<VisualEffect>();
       this.boxCorpo = boxCorpo;
 
       foreach (Transform effects in EffectsVFX)
@@ -216,6 +218,7 @@ public class PlayerFisics
 
       if(jump){
          rb.AddForce(rb.transform.up *(jumpForce * rb.mass), ForceMode.Impulse);
+         poeiraJump.Play();
          jump = false;
       }
       

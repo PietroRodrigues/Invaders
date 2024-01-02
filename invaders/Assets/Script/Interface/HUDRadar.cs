@@ -7,7 +7,7 @@ public class HUDRadar
     GameObject alvo = null;
     int indcAlvo = 0;
 
-    public Vector3 RadarScan(bool switchTarget, Vector3 mouseAimPos)
+    public GameObject RadarScan(bool switchTarget)
     {
         List<GameObject> alive = Spawner.enemyesInStage.alive;
 
@@ -26,12 +26,13 @@ public class HUDRadar
 
             indcAlvo %= alive.Count;
             alvo = alive[indcAlvo];
+
         }
         else
         {
             alvo = null;
         }
 
-        return alvo != null ? alvo.transform.position : mouseAimPos;
+        return alvo;
     }
 }

@@ -8,14 +8,30 @@ public class Shotting
    ShottingSettings shottingSettings;
    Chronometry chronometry = new Chronometry();
    bool primeroTiro = true;
+   Camera cam;
+   float mouseSensitivitySeted;
 
-   public Shotting(ShottingSettings settings)
+   public Shotting(ShottingSettings settings, float mouseSensitivity)
    {
+      cam = Camera.main;
       shottingSettings = settings;
+      shottingSettings.fieldOfViewAim = cam.fieldOfView;
       shottingSettings.particleCanon = shottingSettings.cannon.Find("ParticleCanon").GetComponentInChildren<VisualEffect>();
       shottingSettings.cxBalasMissel = shottingSettings.cannon.Find("CxBalas");
+      mouseSensitivitySeted = mouseSensitivity;
 
    }
+
+   public void Aim(bool inputPress, CamControler camControler){
+
+        if(inputPress){
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 20, 0.12f);
+            camControler.mouseSensitivity = mouseSensitivitySeted / 4;
+        }else{
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, shottingSettings.fieldOfViewAim, 0.12f);
+            camControler.mouseSensitivity = mouseSensitivitySeted;
+        }
+    }
 
    public void MissileShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset, PlayerFisics playerFisics)
    {
@@ -101,6 +117,7 @@ public class Shotting
 [System.Serializable]
 public struct ShottingSettings
 {
+   [HideInInspector] public float fieldOfViewAim;
    public Transform cannon;
    [HideInInspector] public List<GameObject> BoxBullet;
    [HideInInspector] public VisualEffect particleCanon;

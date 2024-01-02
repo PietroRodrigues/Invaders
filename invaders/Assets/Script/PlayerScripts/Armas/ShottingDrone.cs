@@ -5,17 +5,17 @@ public class ShottingDrone
    Chronometry chronometry = new Chronometry();
    bool primeroTiro = true;
 
-   public void GunShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset, DroneSettingsShot settingsShot)
+   public void GunShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset, Player player)
    {
       if (attack)
       {
-         settingsShot.speedBody = speed;
+         player.droneStatos.droneSettingsShot.speedBody = speed;
 
          if (primeroTiro)
          {
-            settingsShot.muzzleGun.Play();
-            FireBullet(settingsShot);
-            settingsShot.ammon--;
+            player.droneStatos.droneSettingsShot.muzzleGun.Play();           
+            FireBullet(player);
+            player.droneStatos.droneSettingsShot.ammon--;
             primeroTiro = false;
          }
       }
@@ -29,30 +29,30 @@ public class ShottingDrone
          }
       }
 
-      bulletReturn(pos, maxDistanceReset,settingsShot);
+      bulletReturn(pos, maxDistanceReset,player.droneStatos.droneSettingsShot);
 
    }
 
-   void FireBullet(DroneSettingsShot settingsShot)
+   void FireBullet(Player player)
    {
-      if (settingsShot.cxBalasGun.childCount == 0)
+      if (player.droneStatos.droneSettingsShot.cxBalasGun.childCount == 0)
       {
-         GameObject bala = GameObject.Instantiate(settingsShot.bullet);
-         bala.name = "Bullet " + settingsShot.cxBalasGun.root.name;
-         bala.GetComponent<Bullet>().gumOrigen = settingsShot.cxBalasGun;
-         bala.GetComponent<Bullet>().especie = settingsShot.cannon.root.GetComponent<Player>();
+         GameObject bala = GameObject.Instantiate(player.droneStatos.droneSettingsShot.bullet);
+         bala.name = "Bullet " + player.droneStatos.droneSettingsShot.cxBalasGun.root.name;
+         bala.GetComponent<Bullet>().gumOrigen = player.droneStatos.droneSettingsShot.cxBalasGun;
+         bala.GetComponent<Bullet>().especie = player.droneStatos.droneSettingsShot.cannon.root.GetComponent<Player>();
          bala.GetComponent<Bullet>().BulletOrigen();
-         settingsShot.BoxBullet.Add(bala);
+         player.droneStatos.droneSettingsShot.BoxBullet.Add(bala);
       }
 
-      if (settingsShot.cxBalasGun.childCount != 0)
+      if (player.droneStatos.droneSettingsShot.cxBalasGun.childCount != 0)
       {
-         GameObject projetil = settingsShot.cxBalasGun.GetChild(0).gameObject;
+         GameObject projetil = player.droneStatos.droneSettingsShot.cxBalasGun.GetChild(0).gameObject;
 
          if (!projetil.activeSelf)
          {
-            settingsShot.muzzleGun.Play();
-            projetil.GetComponent<Bullet>().Disparate(settingsShot.speedBody);
+            player.droneStatos.droneSettingsShot.muzzleGun.Play();
+            projetil.GetComponent<Bullet>().Disparate(player.droneStatos.droneSettingsShot.speedBody);
          }
       }
    }

@@ -6,8 +6,6 @@ public class CubeBossNucleo : MonoBehaviour
 {
     Boss bossStatos;
 
-    int hitLifeForNucleo = 3;
-
     void Start()
     {
         bossStatos = transform.root.GetComponent<Boss>();
@@ -18,10 +16,9 @@ public class CubeBossNucleo : MonoBehaviour
         if(!other.collider.isTrigger){
             if(other.gameObject.GetComponent<Bullet>() != null){
                 if(other.gameObject.GetComponent<Bullet>().DanoProjetil >= 20){
-                    hitLifeForNucleo--;
-                    
-                    if(hitLifeForNucleo <= 0){
-                        bossStatos.statos.hp -= 10;
+                    bossStatos.statos.hp -= other.gameObject.GetComponent<Bullet>().DanoProjetil;
+
+                    if(bossStatos.statos.hp <= 0){                        
                         this.gameObject.SetActive(false);
                     }
                 }

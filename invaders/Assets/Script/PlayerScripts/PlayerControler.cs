@@ -6,9 +6,9 @@ public class PlayerControler
 {
     public InputsVar inputsControl;
 
-    public void GameInputs(){
+    public void GameInputs(Player player){
         
-        if(!Cursor.visible){
+        if(!Cursor.visible || player.hp > 0){
         
             inputsControl.xInput = Input.GetAxisRaw("Horizontal");
             inputsControl.zInput = Input.GetAxisRaw("Vertical");
@@ -19,7 +19,7 @@ public class PlayerControler
             inputsControl.special = Input.GetKey(KeyCode.R);
             inputsControl.switchTarget = Input.GetKeyDown(KeyCode.Tab);
             inputsControl.disparar = Input.GetMouseButton(0);
-            inputsControl.mirar = Input.GetMouseButton(1);
+            inputsControl.Aim = Input.GetMouseButton(1);
 
         }else{
 
@@ -27,7 +27,7 @@ public class PlayerControler
             inputsControl.zInput = 0;
             inputsControl.jumpInput =  false;
             inputsControl.Dash = false;         
-            inputsControl.mirar = false;
+            inputsControl.Aim = false;
             inputsControl.switchTarget = false;
         }
     
@@ -40,7 +40,7 @@ public class PlayerControler
         public float yMause;
         public bool jumpInput;
         public bool Dash;
-        public bool mirar;
+        public bool Aim;
         public bool disparar;
         public bool special;
         public bool switchTarget;

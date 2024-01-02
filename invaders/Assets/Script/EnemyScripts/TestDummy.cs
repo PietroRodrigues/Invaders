@@ -28,7 +28,7 @@ public class TestDummy : MonoBehaviour
     {
         fisica.Propulsor(distRaycast,floatingHeight);
 
-        fisica.RotationDirection();
+        //fisica.RotationDirection();
         
     }
 

@@ -4,59 +4,37 @@ using UnityEngine.VFX;
 
 public class Drone
 {
-   public DroneStatos statos;
-   public DroneSettingsShot settingsShot;
    public ShottingDrone shotting = new ShottingDrone();
 
-   Vector3 targetPosition = Vector3.zero;
+   Vector3 targetPosition = Vector3.zero;  
 
-   public Drone(Transform player,DroneStatos statos, DroneSettingsShot settingsShot){
-
-      this.statos = statos;
-      this.settingsShot = settingsShot;
-      this.statos.player = player;
-      this.statos.posDrone = Vector3.zero;
-   }
-
-   void ActiveDrone()
+   void ActiveDrone(DroneStatos statos)
    {  
       statos.drone.SetActive(statos.active);
 
       if (!statos.drone.activeSelf)
-      {
+      {         
          targetPosition = statos.drone.transform.position;
       }
    }
    
-   public void FireDrone(bool attack, float maxDistanceReset){
-     
+   void FireDrone(bool attack, float maxDistanceReset,DroneStatos statos){
+         
          if (statos.drone.gameObject.activeSelf)
          {
-            if(settingsShot.ammon > 0){
-               shotting.GunShotting(attack,statos.speed,statos.drone.transform.position,maxDistanceReset,settingsShot);
-            }else{
-               statos.active = false;
+            if(statos.droneSettingsShot.ammon > 0){
+               shotting.GunShotting(attack,statos.speed,statos.drone.transform.position,maxDistanceReset,statos.player);
             }
          }
    }
 
-   public void MovementDrones()
+   public void MovementDrones(ref DroneStatos statos)
    {      
-      if (settingsShot.ammon <= 0)
-      {
-         statos.active = false;
-
-      }
-      else
-      {
-         statos.active = true;
-      }
-
-      ActiveDrone();
+      statos.active = statos.droneSettingsShot.ammon > 0;
       
-      if (statos.drone.activeSelf)
+      if (statos.active)
       {  
-         Vector3 pontReference = statos.player.position + statos.player.TransformDirection(statos.posDrone);
+         Vector3 pontReference = statos.player.transform.position + statos.player.transform.TransformDirection(statos.posDrone);
          
          pontReference.y += 2f;
 
@@ -65,28 +43,39 @@ public class Drone
 
          Vector3 pos = Vector3.Lerp(statos.drone.gameObject.transform.position,targetPosition, statos.speed * Time.deltaTime);         
          
-         PosDrone(pos);
+         PosDrone(pos,statos);
 
          if(statos.drone.transform.root != null)
             statos.drone.transform.SetParent(null);
 
-      }else{
+      }else
+      {
          if(statos.drone.transform.root == null){
             statos.drone.transform.SetParent(statos.droneBeg);
             statos.drone.transform.localPosition = statos.posDrone;
          }
       }
+
+      ActiveDrone(statos);
+    
    }
 
-   public void LookDroneTarget(Vector3 target,float speedAim)
-   {
-      Quaternion lookAtDrone = Quaternion.LookRotation(target - statos.drone.transform.position, Vector3.up);
+   public void LookDroneTarget(Vector3 target,Vector3 miraVeiculo,float speedAim,DroneStatos statos)
+   {  
+      bool lostTarget = Vector3.Distance(statos.player.transform.position,target) > 45;    
+      
+
+      Quaternion lookAtDrone = Quaternion.LookRotation((lostTarget ? miraVeiculo : target) - statos.drone.transform.position, Vector3.up);
+      
       
       statos.drone.transform.rotation = Quaternion.RotateTowards(statos.drone.transform.rotation, lookAtDrone, speedAim * 4 * Time.deltaTime);
 
+      if(Spawner.enemyesInStage.alive.Count > 0)
+         FireDrone(!lostTarget,50,statos);
+
    }
 
-   void PosDrone(Vector3 tg)
+   void PosDrone(Vector3 tg,DroneStatos statos)
    {    
       statos.rb.MovePosition(tg);
    }
@@ -96,12 +85,13 @@ public class Drone
 [System.Serializable]
 public struct DroneStatos{
    public bool active;
+   public Player player;
    public GameObject drone;
    public Transform droneBeg;
    public Rigidbody rb;
    public float speed;
-   [HideInInspector]public Transform player;
    [HideInInspector] public Vector3 posDrone;
+   public DroneSettingsShot droneSettingsShot;
 }
 
 [System.Serializable]

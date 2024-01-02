@@ -113,7 +113,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureBorder:
-        m_Texture: {fileID: 2800000, guid: 46ddc88d13d71ad4cb25ad4f46e98333, type: 3}
+        m_Texture: {fileID: 2800000, guid: 726a21250f2648d418ca8e756324b664, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ThicknessMap:
@@ -217,7 +217,7 @@ Material:
     - _PPDMinSamples: 5
     - _PPDPrimitiveLength: 1
     - _PPDPrimitiveWidth: 1
-    - _PowerPolar: 0
+    - _PowerPolar: -1.08
     - _RayTracing: 0
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
@@ -272,7 +272,7 @@ Material:
     - _Color: {r: 1, g: 0, b: 0, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DotsColor: {r: 2, g: 0.6645142, b: 0, a: 1}
-    - _DotsTilling: {r: 5, g: 5, b: 0, a: 0}
+    - _DotsTilling: {r: 50, g: 50, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
