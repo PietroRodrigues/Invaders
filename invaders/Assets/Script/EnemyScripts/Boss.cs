@@ -4,7 +4,7 @@ public class Boss : BossStatos
 {   
 
     void Start(){
-        
+        statos.target = FindObjectOfType<Player>().gameObject;
     }
 
     void Update(){

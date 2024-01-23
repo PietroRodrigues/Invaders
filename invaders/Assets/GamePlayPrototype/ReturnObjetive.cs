@@ -22,7 +22,8 @@ public class ReturnObjetive : MonoBehaviour
                 used = false;
 
             if(!used){
-
+                
+                    player.inventario.shield = 0;
                     player.hp -= danoInPlayer;
                     
                 if(isBoss){

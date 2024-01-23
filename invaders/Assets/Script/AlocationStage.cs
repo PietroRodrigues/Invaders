@@ -105,7 +105,7 @@ public class AlocationStage : MonoBehaviour
       Vector3 waveRotAngle = waveRot.eulerAngles;
       waveRot = Quaternion.Euler(waveRotAngle);
 
-      float speedRotate = 0;
+      float speedRotate;
 
       if (ForwardCheck(wavePos, player.transform.position, settings.anguloVision) == 0)
       {

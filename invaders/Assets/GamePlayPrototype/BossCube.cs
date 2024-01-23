@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -24,7 +25,7 @@ public class BossCube : MonoBehaviour
    float timerRechard = 0;
    float deleyShot = 0;
    [SerializeField] float timerMax = 1;
-   [SerializeField] float timerRechardMax = 2;
+   [SerializeField] float timerRechardMax = 15;
    float widthLayser = 0.5f;
 
    [SerializeField] Vector2 grid = new Vector2(0, 0);
@@ -32,7 +33,10 @@ public class BossCube : MonoBehaviour
    [SerializeField] int limitY = 8;
 
    VisualEffect vfxLayser;
+   VisualEffect vfxLayserImpact;
    LineRenderer lineLayser;
+   
+   CapsuleCollider capsuleLayser;
 
    void Start()
    {
@@ -40,7 +44,9 @@ public class BossCube : MonoBehaviour
       {
          boss = GetComponent<Boss>();
          vfxLayser = layser.GetComponent<VisualEffect>();
+         vfxLayserImpact = layser.transform.GetChild(0).GetComponent<VisualEffect>();
          lineLayser = layser.GetComponent<LineRenderer>();
+         capsuleLayser = layser.GetComponent<CapsuleCollider>();
       }
    }
 
@@ -166,13 +172,25 @@ public class BossCube : MonoBehaviour
 
       if (isMoving) return;
 
+      if(boss.statos.hp <= 0){
+         Death();
+         return;
+      }
+
       if (!recharger)
       {
          timerRechard += Time.deltaTime;
 
          if (timerRechard >= timerRechardMax)
          {
-            recharger = true;
+            float dotProduct = Vector3.Dot(layser.transform.forward, Vector3.up);
+
+            bool eyeSize = RandoPosAttcks(dotProduct);
+
+            if(eyeSize)
+               recharger = true;
+            else
+               timerRechard = 0;
          }
 
       }
@@ -181,17 +199,25 @@ public class BossCube : MonoBehaviour
          Ray ray = new Ray(transform.position, layser.transform.forward);
          float rayDistance = 100;
          RaycastHit hit;
-
+      
          bool see = Physics.Raycast(ray, out hit, rayDistance, 1, QueryTriggerInteraction.Ignore);
 
-         lineLayser.SetPosition(1, see ? layser.transform.InverseTransformPoint(hit.point) : layser.transform.InverseTransformPoint(layser.transform.position + layser.transform.forward * rayDistance));
+         Vector3 posImpactRay = see ? layser.transform.InverseTransformPoint(hit.point) : layser.transform.InverseTransformPoint(layser.transform.position + layser.transform.forward * rayDistance);
+
+         Vector3 posImpactLayser = posImpactRay + (0.1f * ray.origin.normalized); 
+
+         vfxLayserImpact.transform.localPosition = posImpactLayser;
+
+         lineLayser.SetPosition(1, posImpactLayser);
 
          if (!attacked)
          {
-            Attack();
+            if(boss.statos.hp > 0)
+               Attack();
          }
 
          lineLayser.startWidth = Mathf.Lerp(lineLayser.startWidth, widthLayser, 2f * Time.deltaTime);
+         vfxLayserImpact.SetFloat("Scale",lineLayser.startWidth);
 
          if (lineLayser.startWidth < 0.1f)
             lineLayser.enabled = false;
@@ -203,12 +229,20 @@ public class BossCube : MonoBehaviour
 
          if (lineLayser.enabled)
          {
-            if (vfxLayser.aliveParticleCount == 0)
+            if (vfxLayser.aliveParticleCount == 0){
                vfxLayser.Play();
+               
+               if(see){
+                  Quaternion layserImpactRot = Quaternion.FromToRotation(ray.origin - hit.point,-hit.normal);
+                  vfxLayserImpact.transform.localRotation = layserImpactRot;
+                  vfxLayserImpact.Play();
+               }
+            }
          }
          else
          {
             vfxLayser.Stop();
+            vfxLayserImpact.Stop();
          }
 
          if (attacked && vfxLayser.aliveParticleCount == 0)
@@ -217,33 +251,25 @@ public class BossCube : MonoBehaviour
             recharger = false;
             attacked = false;
          }
+
       }
 
-      if (boss.statos.hp <= 0)
-      {
-         cubeBlue.localScale = Vector3.MoveTowards(cubeBlue.localScale, Vector3.one * 10, 10f * Time.deltaTime);
-         cubeRed.localScale = Vector3.MoveTowards(cubeRed.localScale, Vector3.one * 5, 10f * Time.deltaTime);
-      }
-      else
-      {
-         cubeBlue.localScale = Vector3.MoveTowards(cubeBlue.localScale, Vector3.one * (recharger ? 10 : 5), 10f * Time.deltaTime);
-         cubeRed.localScale = Vector3.MoveTowards(cubeRed.localScale, Vector3.one * (recharger ? 5 : 10), 10f * Time.deltaTime);
-      }
+      cubeBlue.localScale = Vector3.MoveTowards(cubeBlue.localScale, Vector3.one * (recharger ? 10 : 5), 10f * Time.deltaTime);
+      cubeRed.localScale = Vector3.MoveTowards(cubeRed.localScale, Vector3.one * (recharger ? 5 : 10), 10f * Time.deltaTime);
+      
    }
 
    void Attack()
    {
-
       if (cubeBlue.localScale.x == 10)
       {
-
          if (!fire)
          {
 
             widthLayser = 0.2f;
-            deleyShot += Time.deltaTime;
+            deleyShot += Time.deltaTime * 2;
 
-            if (deleyShot > 2)
+            if (deleyShot > 4 && boss.statos.hp > 0)
             {
                fire = true;
             }
@@ -262,8 +288,34 @@ public class BossCube : MonoBehaviour
                deleyShot = 0;
             }
          }
+
+         capsuleLayser.enabled = fire;
       }
 
+   }
+
+   bool RandoPosAttcks(float dotProduct){
+      
+      if (dotProduct > 0.9f || dotProduct < -0.9f)  
+      {         
+         return false;
+      }
+      else
+      {
+         return true;
+      }
+   }
+
+   void Death(){
+      
+      vfxLayser.Stop();
+      vfxLayserImpact.Stop();
+      lineLayser.enabled = false;
+      capsuleLayser.enabled  = false;
+
+      cubeBlue.localScale = Vector3.MoveTowards(cubeBlue.localScale, Vector3.one * 10, 10f * Time.deltaTime);
+      cubeRed.localScale = Vector3.MoveTowards(cubeRed.localScale, Vector3.one * 5, 10f * Time.deltaTime);
+      
    }
 
    int SortNewDirection()
