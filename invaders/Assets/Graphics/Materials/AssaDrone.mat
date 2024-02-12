@@ -39,6 +39,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _DotsSize: 1
+    - _DstBlend2: 10
     - _NoiseScale: 7
     - _PowerPolar: 3
     m_Colors:
@@ -46,6 +47,7 @@ Material:
     - _DotsTilling: {r: 15, g: 30, b: 0, a: 0}
     - _NoiseSpeed: {r: 0, g: -0.4, b: 0, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!114 &4647128430347476003
 MonoBehaviour:
   m_ObjectHideFlags: 11
