@@ -73,6 +73,8 @@ public class Projetil : MonoBehaviour
             {
                Player player = ObjGame.GetComponentInParent<Player>();
 
+               player.hud.rankScore -= DanoAplicado;
+
                if (player.inventario.shield > 0)
                {
                   player.inventario.shield -= DanoAplicado;
@@ -98,6 +100,8 @@ public class Projetil : MonoBehaviour
             if (ObjGame.GetComponentInParent<Enemy>() != null)
             {
                Enemy enemy = ObjGame.GetComponentInParent<Enemy>();
+
+               enemy.proprerts.target.hud.rankScore += DanoAplicado;
 
                if (enemy.shild > 0)
                {
@@ -168,7 +172,7 @@ public class Projetil : MonoBehaviour
       {
          if (meuEmisor.GetComponent<Enemy>() != null)
          {
-            alvoTermico = meuEmisor.GetComponent<Enemy>().proprerts.target;
+            alvoTermico = meuEmisor.GetComponent<Enemy>().proprerts.target.gameObject;
          }
          else if (meuEmisor.GetComponent<Player>() != null)
          {
@@ -195,7 +199,7 @@ public class Projetil : MonoBehaviour
       if (meuEmisor.GetComponent<Player>() != null)
       {
          if (alocationStage == null)
-            alocationStage = FindObjectOfType<AlocationStage>();
+            alocationStage = FindFirstObjectByType<AlocationStage>();
 
          allEnemy.Clear();
 

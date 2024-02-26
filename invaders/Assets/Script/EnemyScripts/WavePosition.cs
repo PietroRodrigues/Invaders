@@ -6,7 +6,6 @@ using UnityEngine.UIElements;
 public class WavePosition 
 {
 
-    Player player;
     Transform waveTransform;
     Chronometry cronometroWavePos;
     Chronometry cronometroEnemyPos;
@@ -19,10 +18,9 @@ public class WavePosition
 
     bool allMap;
 
-    public WavePosition(Player player, Transform waveTransform, bool allMap){
+    public WavePosition(Transform waveTransform, bool allMap){
 
         this.allMap = allMap;
-        this.player = player;
         this.waveTransform = waveTransform;
         cronometroWavePos = new Chronometry();
         cronometroEnemyPos = new Chronometry();

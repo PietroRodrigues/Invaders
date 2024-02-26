@@ -6,7 +6,7 @@ using UnityEngine.VFX;
 public class Player : Statos
 {
    [SerializeField] Rigidbody rb;
-   [SerializeField] HUD hud;
+   [SerializeField] public HUD hud;
    [SerializeField] Transform shieldParticle;
    [SerializeField] VisualEffect poeira;
    [SerializeField] public VisualEffect explosionPlayer;
@@ -45,12 +45,14 @@ public class Player : Statos
 
    [HideInInspector] public CamControler camControler;
 
+   bool travaReset;
+
    void Awake()
    {
       hp = hpMax;
       bodies = bodiesMax;
-      hud = FindObjectOfType<HUD>();
-      camControler = FindObjectOfType<CamControler>();
+      hud = FindFirstObjectByType<HUD>();
+      camControler = FindFirstObjectByType<CamControler>();
       inventario = new Inventario(100);
       playerFisics = new PlayerFisics(rb,partsTank.cabine.GetComponent<BoxCollider>(),poeira,dashEffects);
       shotting = new Shotting(shotingSettings,camControler.mouseSensitivity);
@@ -118,8 +120,10 @@ public class Player : Statos
          droneStatos.drone.transform.SetParent(droneStatos.droneBeg);
          droneStatos.drone.transform.localPosition = droneStatos.posDrone;
          inventario.shield = 0;
+         bodies--;
          this.gameObject.SetActive(false);
       }
+         
    }
 
    public void Ripples(Vector3 posBullet){

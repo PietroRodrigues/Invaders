@@ -5,7 +5,6 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     [Header("Components WavePosition")]
-    [SerializeField] Player player;
     [SerializeField] Transform WaveTransform;
     [SerializeField] bool allMap = true;
     [SerializeField] float waveSpeed;
@@ -17,6 +16,7 @@ public class Spawner : MonoBehaviour
 
     [Space(1)]
     [Header("Components Spawner")]
+    [SerializeField] Player player;
     [SerializeField] Boss boss;
     [SerializeField] List<GameObject> thePhasePrefabs;
 
@@ -31,14 +31,12 @@ public class Spawner : MonoBehaviour
 
     WavePosition wavePosition;
 
-    Chronometry chronometryAttack = new Chronometry();
-
     private void Awake()
     {
         enemyesInStage = new EnemyesInStage();
 
         if(waveList.Count > 0){
-            wavePosition = new WavePosition(player,WaveTransform,allMap);
+            wavePosition = new WavePosition(WaveTransform,allMap);
         }
         
         foreach (WaveStage wave in waveList)
@@ -117,7 +115,7 @@ public class Spawner : MonoBehaviour
         
         GameObject enemy = Instantiate(enemyInfo.enemy);
         enemy.GetComponent<Enemy>().proprerts.waveTransform = WaveTransform;
-        enemy.GetComponent<Enemy>().proprerts.target = player.gameObject;
+        enemy.GetComponent<Enemy>().proprerts.target = player;
         enemy.name = "Enemy";
         SetPositionEnemySpawn(enemy);
         

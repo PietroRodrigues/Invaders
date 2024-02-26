@@ -5,12 +5,15 @@ using UnityEngine.VFX;
 
 public class Enemy : StatosEnemyes
 {
+   [SerializeField] int scorePoint;
+
    [SerializeField] public EnemyParamets proprerts;
    [SerializeField] GameObject particleExplosion;
    [SerializeField] Transform shildParticle;
 
    [HideInInspector] public EnemyMoviment moviment;
    [HideInInspector] public EnemyMecanics mecanics;
+   
 
    private void Awake()
    {
@@ -43,6 +46,7 @@ public class Enemy : StatosEnemyes
       if (hp <= 0)
       {
          this.gameObject.SetActive(false);
+         proprerts.target.GetComponent<Player>().hud.score += scorePoint;
          GameObject particleObj = Instantiate(particleExplosion);
          particleObj.transform.position = transform.position;
          particleObj.transform.rotation = transform.rotation;
@@ -87,7 +91,7 @@ public struct EnemyParamets
 
    [Range(0.01f, 1f)] public float raioDistance;
    public float checkRadius;
-   public GameObject target;
+   public Player target;
    [HideInInspector] public Rigidbody rb;
 
    [HideInInspector] public List<GameObject> BoxBullet;

@@ -60,7 +60,7 @@ public class CamControler : MonoBehaviour
 
     void Start(){
 
-        player = FindObjectOfType<Player>();
+        player = FindFirstObjectByType<Player>();
 
         if(player != null){
             player.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");        
