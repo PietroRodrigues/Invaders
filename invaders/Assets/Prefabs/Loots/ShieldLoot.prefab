@@ -389,12 +389,12 @@ PrefabInstance:
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.x
-      value: 0.57008934
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[2].m_Value.y
-      value: 0
+      value: 0.94952226
       objectReference: {fileID: 0}
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
@@ -409,17 +409,17 @@ PrefabInstance:
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[3].m_Value.x
-      value: 1.554319
+      value: 0.19915041
       objectReference: {fileID: 0}
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[3].m_Value.y
-      value: 0.1943753
+      value: 3.0198584
       objectReference: {fileID: 0}
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[3].m_Value.z
-      value: 3.169811
+      value: 3.1698105
       objectReference: {fileID: 0}
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
@@ -429,12 +429,12 @@ PrefabInstance:
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[4].m_Value.x
-      value: 47.24366
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}
       propertyPath: m_PropertySheet.m_Vector4f.m_Array.Array.data[4].m_Value.y
-      value: 0
+      value: 85.53928
       objectReference: {fileID: 0}
     - target: {fileID: 7892332849951620137, guid: 262c276dacf6d3948916653dcfea441b,
         type: 3}

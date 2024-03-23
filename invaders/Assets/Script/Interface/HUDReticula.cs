@@ -41,16 +41,18 @@ public class HUDReticula
 
         if(hudAim.droneReticulePosRect != null){
             
-            if(player.droneStatos.active){
+            if(player.buffs.buffDrone){
             
-                hudAim.droneReticulePosRect.gameObject.SetActive(Spawner.enemyesInStage.alive.Count > 0);
+                hudAim.droneReticulePosRect.gameObject.SetActive(player.alvo != null);
                 
-                hudAim.droneReticulePosRect.position = Camera.main.WorldToScreenPoint(player.alvoPos);
+                if(player.alvo != null){
+                    hudAim.droneReticulePosRect.position = Camera.main.WorldToScreenPoint(player.alvo.transform.position);
 
-                float distanceToTarget = Vector3.Distance(Camera.main.transform.position,player.alvoPos);
+                    float distanceToTarget = Vector3.Distance(Camera.main.transform.position,player.alvo.transform.position);
 
-                float scaleFactor = 160f / distanceToTarget ;
-                hudAim.droneReticulePosRect.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
+                    float scaleFactor = 160f / distanceToTarget ;
+                    hudAim.droneReticulePosRect.localScale = new Vector3(scaleFactor, scaleFactor, 1f);
+                }
 
             }else{
                 hudAim.droneReticulePosRect.gameObject.SetActive(false);

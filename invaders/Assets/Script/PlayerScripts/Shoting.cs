@@ -33,7 +33,7 @@ public class Shotting
         }
     }
 
-   public void MissileShotting(bool attack, float speed, Vector3 pos, float maxDistanceReset, PlayerFisics playerFisics)
+   public void ShotMissile(bool attack, float speed, Vector3 pos, float maxDistanceReset, PlayerFisics playerFisics,bool buffFastShot)
    {
       if (attack)
       {
@@ -48,7 +48,7 @@ public class Shotting
 
       if (primeroTiro == false)
       {
-         if (chronometry.CronometryPorMiles(1000))
+         if (chronometry.CronometryPorMiles(buffFastShot ? 500 : 1000))
          {
             chronometry.Reset();
             primeroTiro = true;
@@ -57,10 +57,6 @@ public class Shotting
 
       bulletReturn(pos, maxDistanceReset);
 
-   }
-
-   public bool LockingMissile(bool mirar){
-      return mirar;
    }
 
    void FireBullet(Transform cxBalas,GameObject bullet,PlayerFisics playerFisics)

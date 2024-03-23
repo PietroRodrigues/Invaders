@@ -25,12 +25,12 @@ public class Chronometry
             seg++;
             miliseg = 0;
 
-            if (seg > 59)
+            if (seg >= 60)
             {
                 min++;
                 seg = 0;
 
-                if (min > minLimite)
+                if (min >= minLimite)
                 {
                     limitTimer = true;
                     min = 0;
@@ -55,7 +55,7 @@ public class Chronometry
             seg++;
             miliseg = 0;
 
-            if (seg > segLimite)
+            if (seg >= segLimite)
             {
                 limitTimer = true;
                 seg = 0;
@@ -74,7 +74,7 @@ public class Chronometry
 
         miliseg += (int)(Time.deltaTime * 1000);
 
-        if (miliseg > milisegLimite) {
+        if (miliseg >= milisegLimite) {
 
             limitTimer = true;
             miliseg = 0;

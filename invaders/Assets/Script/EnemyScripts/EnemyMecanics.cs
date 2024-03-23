@@ -18,7 +18,7 @@ public class EnemyMecanics
          
          bool Aggressive = Vector3.Distance(paramets.rb.transform.position,paramets.target.transform.position) < 60;
         
-         Debug.DrawLine(paramets.rb.transform.position,see? hit.point : paramets.target.transform.position,Aggressive? (see? Color.blue: Color.red) : Color.green);
+         // Debug.DrawLine(paramets.rb.transform.position,see? hit.point : paramets.target.transform.position,Aggressive? (see? Color.blue: Color.red) : Color.green);
         
 
          if(!see){

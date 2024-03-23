@@ -29,11 +29,17 @@ public class DropBox : Drop
                   case DropsTipos.Shild:
                      ShildDrop(player);
                      break;
-                  case DropsTipos.Drones:
+                  case DropsTipos.Drone:
                      DroneDrop(player);
                      break;
-                  case DropsTipos.Missiles:
-                     MissilesDrop(player);
+                  case DropsTipos.MissilGuiado:
+                     MissilGuiadoDrop(player);
+                     break;
+                  case DropsTipos.FastShot:
+                     FastShotDrop(player);
+                     break;
+                  case DropsTipos.buff2X:
+                     Buff2XDrop(player);
                      break;
                   case DropsTipos.Special:
                      SpecialDrop(player);
@@ -68,19 +74,38 @@ public class DropBox : Drop
    void DroneDrop(Player player)
    {
 
-      player.droneStatos.droneSettingsShot.ammon += 500;
+      player.buffs.TimerDroneLife += 60;
 
-      if (player.droneStatos.droneSettingsShot.ammon > player.droneStatos.droneSettingsShot.maxAmmon)
-         player.droneStatos.droneSettingsShot.ammon = player.droneStatos.droneSettingsShot.maxAmmon;
+      if (player.buffs.TimerDroneLife > player.buffs.MaxTimerDroneLife)
+         player.buffs.TimerDroneLife = player.buffs.MaxTimerDroneLife;
+
+   }
+   
+   void FastShotDrop(Player player)
+   {
+      player.buffs.TimerFastShot += 60;
+
+      if (player.buffs.TimerFastShot > player.buffs.MaxTimerFastShot)
+         player.buffs.TimerFastShot = player.buffs.MaxTimerFastShot;
 
    }
 
-   void MissilesDrop(Player player)
+   void Buff2XDrop(Player player)
+   {
+      player.buffs.Time2X += 60;
+
+      if (player.buffs.Time2X > player.buffs.MaxTimer2X)
+         player.buffs.Time2X = player.buffs.MaxTimer2X;
+
+   }
+
+   void MissilGuiadoDrop(Player player)
    {
 
       Debug.Log("Pego Missel!");
 
    }
+
 
    void SpecialDrop(Player player)
    {

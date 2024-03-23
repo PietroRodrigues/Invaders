@@ -39,13 +39,11 @@ public class Player : Statos
    [SerializeField] public DroneStatos droneStatos;
    Drone drone;
 
-   [HideInInspector] public Vector3 alvoPos;
+   [HideInInspector] public GameObject alvo;
 
    [SerializeField] public Transform checkPoint;
 
    [HideInInspector] public CamControler camControler;
-
-   bool travaReset;
 
    void Awake()
    {
@@ -67,6 +65,8 @@ public class Player : Statos
       playerAnimation.speedCanonAim = speedCanonAim;
       playerFisics.speedRotation = speedRotation;
 
+      TimerBuffs();
+
       shotting.Aim(camControler.playerInputs.inputsControl.Aim, camControler);
 
       playerFisics.MoverAWSD(camControler.playerInputs.inputsControl.xInput, camControler.playerInputs.inputsControl.zInput,camControler.playerInputs.inputsControl.Aim ? speedMax / 2 : speedMax);
@@ -80,21 +80,22 @@ public class Player : Statos
       playerFisics.RotationDirection();
 
       AutoDestroyer();
+      
+      drone.LifeTimer(ref droneStatos,ref this.buffs);
+      alvo = drone.RadarScan(this,45);
 
    }
 
-
    void FixedUpdate()
    {
-      //bool lookMissel = shotting.LockingMissile(playerControler.inputsControl.mirar);
-      shotting.MissileShotting(camControler.playerInputs.inputsControl.disparar, 0, transform.position, maxDistanceBullets,playerFisics);
+      shotting.ShotMissile(camControler.playerInputs.inputsControl.disparar, 0, transform.position, maxDistanceBullets,playerFisics,buffs.buffFastShot);
 
       playerFisics.AplicaMovemento(dashForce,jumpForce,recuoForce,-partsTank.canon.forward);
       playerFisics.AplicaFlutuadores(powerPropulsion);
 
-      drone.MovementDrones(ref droneStatos);
+      drone.MovementDrones(ref droneStatos,buffs.buffDrone);
+      drone.LookDroneTarget(alvo,hud.hud_Aim.MiraVeiculo,45,droneStatos);
       
-      drone.LookDroneTarget(alvoPos,hud.hud_Aim.MiraVeiculo,100,droneStatos);
    }
 
    private void LateUpdate()
@@ -115,8 +116,8 @@ public class Player : Statos
       {
          explosionPlayer.transform.SetParent(null);
          explosionPlayer.Play();
-         droneStatos.droneSettingsShot.ammon = 0;
-         droneStatos.active = false;
+         buffs.TimerDroneLife = 0;
+         buffs.buffDrone = false;
          droneStatos.drone.transform.SetParent(droneStatos.droneBeg);
          droneStatos.drone.transform.localPosition = droneStatos.posDrone;
          inventario.shield = 0;
@@ -169,10 +170,9 @@ public struct Inventario{
    [HideInInspector] public float shield;
    public float ShieldMax;
 
-  public Inventario (float shieldMax){
+   public Inventario (float shieldMax){
       this.shield = 0;
       this.ShieldMax = shieldMax;
-      
-  }
+   }
    
 }

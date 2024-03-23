@@ -15,14 +15,14 @@ public class HUD : MonoBehaviour
     [HideInInspector] public Player player;
     
     HUDReticula hud_reticula;
-    HUDInventario hud_Inventario;
-    HUDRadar hud_Radar;
 
     float deleyRespaw;
 
     [HideInInspector] public int score;
     public float rankScore;
     public int rankNv;
+
+    [SerializeField] GameObject alvo;
 
     Dictionary<int,char> rank = new Dictionary<int,char>{
         {0,' '},
@@ -34,19 +34,12 @@ public class HUD : MonoBehaviour
         {6,'S'}
     };
 
-    private void Awake() {
-        hud_Inventario = new HUDInventario();
-    }
-
     void Start() {
         
         player = FindFirstObjectByType<Player>();
         
         hud_GameOver = new HudGameOver();
         hud_reticula = new HUDReticula(hud_Aim);
-        hud_Radar = new HUDRadar();
-
-        hud_Inventario.LoadInventario(hud_Components);
 
         Random.InitState((int)Time.time * 1000);
     }
@@ -62,14 +55,24 @@ public class HUD : MonoBehaviour
             hudGamePlay.gameObject.SetActive(true);
         }
 
-        hud_Components.bars.transform.Find("LifeBar").GetComponent<Image>().fillAmount = (float) player.hp / player.hpMax;
+        hud_Components.bars.transform.Find("BkLife").transform.GetChild(0).GetComponent<Image>().fillAmount = (float) player.hp / player.hpMax;
         
-        hud_Components.bars.transform.Find("ShildBar").GetComponent<Image>().fillAmount = (float) player.inventario.shield / player.inventario.ShieldMax;        
-       
-        hud_Components.indcWelpom = hud_Inventario.UpdateIndicWelpon(hud_Components.indcWelpom);
+        hud_Components.bars.transform.Find("BkShild").transform.GetChild(0).GetComponent<Image>().fillAmount = (float) player.inventario.shield / player.inventario.ShieldMax;
 
         hud_Components.bodys_txt.text = player.bodies.ToString() + "x";
-        
+
+        Transform buffDrone = hud_Components.Buffs.transform.Find("BuffDrone");
+        buffDrone.gameObject.SetActive(player.buffs.buffDrone);
+        buffDrone.Find("txt").GetComponent<TextMeshProUGUI>().text = player.buffs.TimerDroneLife.ToString();
+
+        Transform buff2X = hud_Components.Buffs.transform.Find("Buff2X");
+        buff2X.gameObject.SetActive(player.buffs.buff2X);
+        buff2X.Find("txt").GetComponent<TextMeshProUGUI>().text = player.buffs.Time2X.ToString();
+
+        Transform buffFastShot = hud_Components.Buffs.transform.Find("BuffFastShot");
+        buffFastShot.gameObject.SetActive(player.buffs.buffFastShot);
+        buffFastShot.Find("txt").GetComponent<TextMeshProUGUI>().text = player.buffs.TimerFastShot.ToString();        
+               
 
         if(rankNv > 6)
             rankNv = 6;
@@ -106,10 +109,6 @@ public class HUD : MonoBehaviour
         
 
         if(player != null){
-
-            GameObject alvo = hud_Radar.RadarScan(player.camControler.playerInputs.inputsControl.switchTarget);
-
-            player.alvoPos = (alvo != null)? alvo.transform.position : hud_Aim.MiraVeiculo;
         
             RespawPlayer();
             
@@ -138,7 +137,6 @@ public class HUD : MonoBehaviour
     void LateUpdate()
     {
         hud_reticula.ReticulasUpdatePos(player);
-        hud_Inventario.FlipWelpom(hud_Components);
     }
 
     public void GameOverBtns(bool exit){
@@ -156,7 +154,7 @@ public class HUD : MonoBehaviour
 public struct HudComponents
 {
     public GameObject bars;
-    public RectTransform inventario;
+    public RectTransform Buffs;
     public TextMeshProUGUI score_txt;
     public TextMeshProUGUI Rank_txt;
     public TextMeshProUGUI bodys_txt;

@@ -15,7 +15,6 @@ public class ShottingDrone
          {
             player.droneStatos.droneSettingsShot.muzzleGun.Play();           
             FireBullet(player);
-            player.droneStatos.droneSettingsShot.ammon--;
             primeroTiro = false;
          }
       }

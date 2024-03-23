@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Drop : MonoBehaviour
 {
-    public enum DropsTipos {Shild , Life, Drones, Missiles, Special}
+    public enum DropsTipos {Shild , Life, Drone, FastShot, buff2X, MissilGuiado, Special}
 
     public DropsTipos dropsTipos;
 
