@@ -88,7 +88,7 @@ public class Player : Statos
 
    void FixedUpdate()
    {
-      shotting.ShotMissile(camControler.playerInputs.inputsControl.disparar, 0, transform.position, maxDistanceBullets,playerFisics,buffs.buffFastShot);
+      shotting.ShotMissile(camControler.playerInputs.inputsControl.disparar, 0, transform.position, maxDistanceBullets,playerFisics,buffs.buffFastShot,buffs.buff2X);
 
       playerFisics.AplicaMovemento(dashForce,jumpForce,recuoForce,-partsTank.canon.forward);
       playerFisics.AplicaFlutuadores(powerPropulsion);

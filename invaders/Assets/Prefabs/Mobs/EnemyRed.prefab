@@ -478,8 +478,8 @@ MonoBehaviour:
   tipo: 0
   hp: 0
   shild: 0
-  hpMax: 10
-  ShildMax: 10
+  hpMax: 40
+  ShildMax: 0
   scorePoint: 100
   proprerts:
     speedRotation: 500

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.VFX;
 
@@ -53,8 +54,16 @@ public class Projetil : MonoBehaviour
    void OnCollisionEnter(Collision other)
    {
       if (!other.collider.isTrigger && !jaColidio)
-      {
-         AplicaDano(other, DanoProjetil);
+      {  
+         bool buff2X = false;
+
+         if(meuEmisor.GetComponent<Player>() != null)
+            buff2X = meuEmisor.GetComponent<Player>().buffs.buff2X;
+         
+
+         float dano = isProjetilPlayer? (buff2X? (DanoProjetil * 2): DanoProjetil): DanoProjetil;
+
+         AplicaDano(other, dano);
          explosive.Collision(other);
          BulletOrigen();
       }

@@ -33,7 +33,7 @@ public class Shotting
         }
     }
 
-   public void ShotMissile(bool attack, float speed, Vector3 pos, float maxDistanceReset, PlayerFisics playerFisics,bool buffFastShot)
+   public void ShotMissile(bool attack, float speed, Vector3 pos, float maxDistanceReset, PlayerFisics playerFisics,bool buffFastShot, bool buff2X)
    {
       if (attack)
       {
@@ -41,7 +41,7 @@ public class Shotting
 
          if (primeroTiro)
          {
-            FireBullet(shottingSettings.cxBalasMissel,shottingSettings.Missel, playerFisics);
+            FireBullet(shottingSettings.cxBalasMissel,shottingSettings.Missel, playerFisics,buff2X);
             primeroTiro = false;
          }
       }
@@ -59,7 +59,7 @@ public class Shotting
 
    }
 
-   void FireBullet(Transform cxBalas,GameObject bullet,PlayerFisics playerFisics)
+   void FireBullet(Transform cxBalas,GameObject bullet,PlayerFisics playerFisics , bool buff2X)
    {
       if (cxBalas.childCount == 0)
       {
