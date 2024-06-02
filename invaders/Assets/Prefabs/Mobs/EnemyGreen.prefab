@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2333320523453396404}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: ShildParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6467690285228296433}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Canon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 6467690285335977870}
   - component: {fileID: 6467690285335977871}
   - component: {fileID: 6467690285335977868}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,6 +127,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -182,7 +183,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6467690285664393340}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,9 +216,9 @@ GameObject:
   - component: {fileID: 6467690285884596229}
   - component: {fileID: 972758499713822459}
   - component: {fileID: 5554629165623717103}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EnemyGreen
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -258,8 +259,8 @@ MonoBehaviour:
   tipo: 1
   hp: 0
   shild: 0
-  hpMax: 10
-  ShildMax: 10
+  hpMax: 40
+  ShildMax: 0
   scorePoint: 100
   proprerts:
     speedRotation: 500
@@ -315,7 +316,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6467690286082747926}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CxBalas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -349,7 +350,7 @@ GameObject:
   - component: {fileID: 6467690286153635024}
   - component: {fileID: 6467690286153635025}
   - component: {fileID: 6467690286153635030}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -398,6 +399,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -456,7 +458,7 @@ GameObject:
   - component: {fileID: 6467690286311372167}
   - component: {fileID: 6467690286311372164}
   - component: {fileID: 6467690286311372165}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -505,6 +507,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -563,7 +566,7 @@ GameObject:
   - component: {fileID: 6467690286598097912}
   - component: {fileID: 6467690286598097913}
   - component: {fileID: 6467690286598097918}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -612,6 +615,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -669,7 +673,7 @@ GameObject:
   - component: {fileID: 7719466967871149059}
   - component: {fileID: 5825028878800774216}
   - component: {fileID: 4935889739775769425}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ShieldRipples
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -761,6 +765,7 @@ VFXRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_StaticBatchInfo:
@@ -794,7 +799,7 @@ GameObject:
   - component: {fileID: 2597912854147976729}
   - component: {fileID: 5500117870279033739}
   - component: {fileID: 2421220266567199917}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -889,6 +894,7 @@ VFXRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_StaticBatchInfo:

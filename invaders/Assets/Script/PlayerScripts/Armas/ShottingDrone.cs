@@ -13,7 +13,7 @@ public class ShottingDrone
 
          if (primeroTiro)
          {
-            player.droneStatos.droneSettingsShot.muzzleGun.Play();           
+            player.droneStatos.droneSettingsShot.muzzleGun.Play();
             FireBullet(player);
             primeroTiro = false;
          }
@@ -28,7 +28,7 @@ public class ShottingDrone
          }
       }
 
-      bulletReturn(pos, maxDistanceReset,player.droneStatos.droneSettingsShot);
+      bulletReturn(pos, maxDistanceReset, player.droneStatos.droneSettingsShot);
 
    }
 
@@ -70,7 +70,6 @@ public class ShottingDrone
                i = settingsShot.BoxBullet.Capacity;
             }
          }
-
       }
    }
 }

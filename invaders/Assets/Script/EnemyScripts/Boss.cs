@@ -1,23 +1,25 @@
 
 
 public class Boss : BossStatos
-{   
-
-    void Start(){
+{
+    void Start()
+    {
         statos.target = FindAnyObjectByType<Player>().gameObject;
     }
 
-    void Update(){
+    void Update()
+    {
         Diferencial();
     }
 
-   public override void Diferencial()
-   {
-        if(bossActive){
-           
+    public override void Diferencial()
+    {
+        if (bossActive)
+        {
+
             base.Diferencial();
-    
+
         }
-   }
+    }
 
 }

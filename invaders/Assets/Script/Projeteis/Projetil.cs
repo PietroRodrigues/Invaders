@@ -7,7 +7,6 @@ using UnityEngine.VFX;
 public class Projetil : MonoBehaviour
 {
    public bool isProjetilPlayer;
-
    public float distanceRadar;
    public GameObject meuEmisor;
    public Transform gumOrigen;
@@ -20,7 +19,6 @@ public class Projetil : MonoBehaviour
    [SerializeField] float spread;
    Rigidbody rb;
    float speedBody;
-
 
    bool jaColidio = false;
    AlocationStage alocationStage;
@@ -37,10 +35,10 @@ public class Projetil : MonoBehaviour
 
    private void Update()
    {
-      SetAlvoTermico(distanceRadar);
+      //SetAlvoTermico(distanceRadar);
 
       if (rb != null)
-         rb.velocity = this.transform.forward * (speedBody + speed);
+         rb.linearVelocity = this.transform.forward * (speedBody + speed);
 
       if (alvoTermico != null)
       {
@@ -54,14 +52,15 @@ public class Projetil : MonoBehaviour
    void OnCollisionEnter(Collision other)
    {
       if (!other.collider.isTrigger && !jaColidio)
-      {  
+      {
          bool buff2X = false;
 
-         if(meuEmisor.GetComponent<Player>() != null)
+         if (meuEmisor.GetComponent<Player>() != null)
             buff2X = meuEmisor.GetComponent<Player>().buffs.buff2X;
-         
 
-         float dano = isProjetilPlayer? (buff2X? (DanoProjetil * 2): DanoProjetil): DanoProjetil;
+
+         float dano = isProjetilPlayer ? (buff2X ? (DanoProjetil * 2) : DanoProjetil) : DanoProjetil;
+
 
          AplicaDano(other, dano);
          explosive.Collision(other);
@@ -75,11 +74,11 @@ public class Projetil : MonoBehaviour
 
       if (other.collider.gameObject.GetComponent<Bullet>() == null)
       {
-
          if (!jaColidio && !isProjetilPlayer)
          {
             if (ObjGame.GetComponentInParent<Player>() != null)
             {
+               print("Player");
                Player player = ObjGame.GetComponentInParent<Player>();
 
                player.hud.rankScore -= DanoAplicado;
@@ -104,7 +103,8 @@ public class Projetil : MonoBehaviour
             }
 
          }
-         else if (!jaColidio && isProjetilPlayer)
+
+         if (!jaColidio && isProjetilPlayer)
          {
             if (ObjGame.GetComponentInParent<Enemy>() != null)
             {
@@ -140,7 +140,7 @@ public class Projetil : MonoBehaviour
    {
       allEnemy.Clear();
       if (rb != null)
-         rb.velocity = Vector3.zero;
+         rb.linearVelocity = Vector3.zero;
       this.transform.SetParent(gumOrigen);
       meuEmisor = transform.root.gameObject;
       transform.localPosition = new Vector3(0, 0, 0);
@@ -152,7 +152,7 @@ public class Projetil : MonoBehaviour
       transform.rotation = rot;
       this.gameObject.SetActive(false);
 
-      TrailRenderer[] trailRenderers =  GetComponentsInChildren<TrailRenderer>(true);
+      TrailRenderer[] trailRenderers = GetComponentsInChildren<TrailRenderer>(true);
 
       foreach (TrailRenderer trail in trailRenderers)
       {
@@ -217,7 +217,6 @@ public class Projetil : MonoBehaviour
             if (enemy.activeSelf)
                allEnemy.Add(enemy.GetComponent<Enemy>());
          }
-
       }
    }
 
@@ -230,7 +229,6 @@ public class Projetil : MonoBehaviour
    public void Disparate(float speedBody)
    {
       this.speedBody = speedBody;
-      //AlvosPossiveis();
       EnableBullet();
    }
 

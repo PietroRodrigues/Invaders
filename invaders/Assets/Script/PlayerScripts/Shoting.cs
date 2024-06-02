@@ -22,18 +22,22 @@ public class Shotting
 
    }
 
-   public void Aim(bool inputPress, CamControler camControler){
+   public void Aim(bool inputPress, CamControler camControler)
+   {
 
-        if(inputPress){
-            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 20, 0.12f);
-            camControler.mouseSensitivity = mouseSensitivitySeted / 4;
-        }else{
-            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, shottingSettings.fieldOfViewAim, 0.12f);
-            camControler.mouseSensitivity = mouseSensitivitySeted;
-        }
-    }
+      if (inputPress)
+      {
+         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 20, 0.12f);
+         camControler.mouseSensitivity = mouseSensitivitySeted / 4;
+      }
+      else
+      {
+         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, shottingSettings.fieldOfViewAim, 0.12f);
+         camControler.mouseSensitivity = mouseSensitivitySeted;
+      }
+   }
 
-   public void ShotMissile(bool attack, float speed, Vector3 pos, float maxDistanceReset, PlayerFisics playerFisics,bool buffFastShot, bool buff2X)
+   public void ShotMissile(bool attack, float speed, Vector3 pos, float maxDistanceReset, PlayerFisics playerFisics, bool buffFastShot, bool buff2X, bool buffTermico)
    {
       if (attack)
       {
@@ -41,7 +45,7 @@ public class Shotting
 
          if (primeroTiro)
          {
-            FireBullet(shottingSettings.cxBalasMissel,shottingSettings.Missel, playerFisics,buff2X);
+            FireBullet(shottingSettings.cxBalasMissel, shottingSettings.Missel, playerFisics, buff2X);
             primeroTiro = false;
          }
       }
@@ -59,7 +63,7 @@ public class Shotting
 
    }
 
-   void FireBullet(Transform cxBalas,GameObject bullet,PlayerFisics playerFisics , bool buff2X)
+   void FireBullet(Transform cxBalas, GameObject bullet, PlayerFisics playerFisics, bool buff2X)
    {
       if (cxBalas.childCount == 0)
       {
@@ -105,7 +109,7 @@ public class Shotting
 
    void AnimationStart()
    {
-     shottingSettings.particleCanon.Play();
+      shottingSettings.particleCanon.Play();
    }
 
 }

@@ -13,12 +13,16 @@ public class CubeBossNucleo : MonoBehaviour
 
     void OnCollisionEnter(Collision other)
     {
-        if(!other.collider.isTrigger){
-            if(other.gameObject.GetComponent<Bullet>() != null){
-                if(other.gameObject.GetComponent<Bullet>().DanoProjetil >= 20){
+        if (!other.collider.isTrigger)
+        {
+            if (other.gameObject.GetComponent<Bullet>() != null)
+            {
+                if (other.gameObject.GetComponent<Bullet>().isProjetilPlayer)
+                {
                     bossStatos.statos.hp -= other.gameObject.GetComponent<Bullet>().DanoProjetil;
 
-                    if(bossStatos.statos.hp <= 0){                        
+                    if (bossStatos.statos.hp <= 0)
+                    {
                         this.gameObject.SetActive(false);
                     }
                 }

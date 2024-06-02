@@ -13,7 +13,7 @@ public class Enemy : StatosEnemyes
 
    [HideInInspector] public EnemyMoviment moviment;
    [HideInInspector] public EnemyMecanics mecanics;
-   
+
 
    private void Awake()
    {
@@ -47,10 +47,12 @@ public class Enemy : StatosEnemyes
       {
          this.gameObject.SetActive(false);
          proprerts.target.GetComponent<Player>().hud.score += scorePoint;
-         GameObject particleObj = Instantiate(particleExplosion);
-         particleObj.transform.position = transform.position;
-         particleObj.transform.rotation = transform.rotation;
-
+         if (particleExplosion != null)
+         {
+            GameObject particleObj = Instantiate(particleExplosion);
+            particleObj.transform.position = transform.position;
+            particleObj.transform.rotation = transform.rotation;
+         }
       }
 
    }
@@ -60,23 +62,24 @@ public class Enemy : StatosEnemyes
       hp = hpMax;
       shild = ShildMax;
       proprerts.posDestination = Vector3.zero;
-      proprerts.rb.velocity = Vector3.zero;
+      proprerts.rb.linearVelocity = Vector3.zero;
       proprerts.rb.angularVelocity = Vector3.zero;
    }
 
-   public void Ripples(Vector3 posBullet){
-      
+   public void Ripples(Vector3 posBullet)
+   {
+
       VisualEffect ripples = shildParticle.Find("ShieldRipples").GetComponent<VisualEffect>();
 
       Vector3 direction = posBullet - ripples.transform.position;
 
-      Quaternion ripplesRotation = Quaternion.LookRotation(direction,Vector3.up);
+      Quaternion ripplesRotation = Quaternion.LookRotation(direction, Vector3.up);
       Vector3 ripplesEulerAngle = ripplesRotation.eulerAngles;
 
       ripples.transform.rotation = Quaternion.Euler(ripplesEulerAngle);
 
       ripples.Play();
-            
+
    }
 
 }

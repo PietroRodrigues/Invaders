@@ -82,10 +82,13 @@ Material:
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 2
     - _DstBlend: 1
+    - _DstBlend2: 10
     - _EnableBlendModePreserveSpecularLighting: 0
     - _EnableFogOnTransparent: 1
+    - _ExcludeFromTUAndAA: 0
     - _FresnelPower: 2
     - _OpaqueCullMode: 2
+    - _PerPixelSorting: 0
     - _RayTracing: 0
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
@@ -131,3 +134,4 @@ Material:
     - _SphereCenter: {r: 0, g: 0, b: 0, a: 0}
     - _VertexAmount: {r: 0.04, g: 0.04, b: 0.04, a: 0}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

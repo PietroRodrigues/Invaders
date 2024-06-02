@@ -75,7 +75,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isProjetilPlayer: 1
-  distanceRadar: 0
+  distanceRadar: 5
   meuEmisor: {fileID: 0}
   gumOrigen: {fileID: 0}
   explosive:
@@ -83,12 +83,12 @@ MonoBehaviour:
     particle: {fileID: 1599176421659175414, guid: 4135bcbe87ca1274f921c5c6b27f7691,
       type: 3}
     triggerForce: 0.5
-    explosionRadius: 3
-    explosionForce: 5000
+    explosionRadius: 5
+    explosionForce: 500
   myParticulesColider: []
-  speed: 70
-  speedRot: 0
-  DanoProjetil: 20
+  speed: 100
+  speedRot: 20
+  DanoProjetil: 10
   spread: 0
   alvoTermico: {fileID: 0}
   allEnemy: []
@@ -208,6 +208,9 @@ VFXRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_StaticBatchInfo:
@@ -248,6 +251,9 @@ TrailRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:

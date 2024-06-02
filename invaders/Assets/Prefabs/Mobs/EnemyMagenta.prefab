@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9199421224401972061}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: ShildParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 931567695738206298}
   - component: {fileID: 4103425568315598677}
   - component: {fileID: 2415682050635325636}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ShieldRipples
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,6 +136,7 @@ VFXRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_StaticBatchInfo:
@@ -169,7 +170,7 @@ GameObject:
   - component: {fileID: 7971617849504685944}
   - component: {fileID: 1400020445520856246}
   - component: {fileID: 2037556974565777322}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -264,6 +265,7 @@ VFXRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_StaticBatchInfo:
@@ -298,7 +300,7 @@ GameObject:
   - component: {fileID: 9001789003161892160}
   - component: {fileID: 9001789003161892161}
   - component: {fileID: 9001789003161892162}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,6 +349,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -402,7 +405,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9001789003747807554}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -436,7 +439,7 @@ GameObject:
   - component: {fileID: 9001789003809518453}
   - component: {fileID: 9001789003809518454}
   - component: {fileID: 9001789003809518455}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -485,6 +488,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -540,7 +544,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9001789004344275970}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CxBalas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -574,7 +578,7 @@ GameObject:
   - component: {fileID: 9001789004357669820}
   - component: {fileID: 9001789004357669821}
   - component: {fileID: 9001789004357669822}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -623,6 +627,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -680,9 +685,9 @@ GameObject:
   - component: {fileID: 9001789004552562150}
   - component: {fileID: 6608420017056298796}
   - component: {fileID: 3347889014454672369}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EnemyMagenta
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -723,8 +728,8 @@ MonoBehaviour:
   tipo: 2
   hp: 0
   shild: 0
-  hpMax: 10
-  ShildMax: 10
+  hpMax: 40
+  ShildMax: 0
   scorePoint: 100
   proprerts:
     speedRotation: 500
@@ -783,7 +788,7 @@ GameObject:
   - component: {fileID: 9001789004560474576}
   - component: {fileID: 9001789004560474577}
   - component: {fileID: 9001789004560474578}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -832,6 +837,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -887,7 +893,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9001789004634025494}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Canon
   m_TagString: Untagged
   m_Icon: {fileID: 0}

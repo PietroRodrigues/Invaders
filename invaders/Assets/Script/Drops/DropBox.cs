@@ -32,8 +32,8 @@ public class DropBox : Drop
                   case DropsTipos.Drone:
                      DroneDrop(player);
                      break;
-                  case DropsTipos.MissilGuiado:
-                     MissilGuiadoDrop(player);
+                  case DropsTipos.buffTermico:
+                     MisselTermico(player);
                      break;
                   case DropsTipos.FastShot:
                      FastShotDrop(player);
@@ -74,16 +74,16 @@ public class DropBox : Drop
    void DroneDrop(Player player)
    {
 
-      player.buffs.TimerDroneLife += 60;
+      player.buffs.TimerDroneLife += 120;
 
       if (player.buffs.TimerDroneLife > player.buffs.MaxTimerDroneLife)
          player.buffs.TimerDroneLife = player.buffs.MaxTimerDroneLife;
 
    }
-   
+
    void FastShotDrop(Player player)
    {
-      player.buffs.TimerFastShot += 60;
+      player.buffs.TimerFastShot += 120;
 
       if (player.buffs.TimerFastShot > player.buffs.MaxTimerFastShot)
          player.buffs.TimerFastShot = player.buffs.MaxTimerFastShot;
@@ -92,17 +92,19 @@ public class DropBox : Drop
 
    void Buff2XDrop(Player player)
    {
-      player.buffs.Time2X += 60;
+      player.buffs.Time2X += 120;
 
       if (player.buffs.Time2X > player.buffs.MaxTimer2X)
          player.buffs.Time2X = player.buffs.MaxTimer2X;
 
    }
 
-   void MissilGuiadoDrop(Player player)
+   void MisselTermico(Player player)
    {
+      player.buffs.TimerTermico += 120;
 
-      Debug.Log("Pego Missel!");
+      if (player.buffs.TimerTermico > player.buffs.MaxTimerTermico)
+         player.buffs.TimerTermico = player.buffs.MaxTimerTermico;
 
    }
 

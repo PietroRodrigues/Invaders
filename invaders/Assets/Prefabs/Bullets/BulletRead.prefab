@@ -84,10 +84,10 @@ MonoBehaviour:
       type: 3}
     triggerForce: 0.5
     explosionRadius: 5
-    explosionForce: 200
+    explosionForce: 500
   myParticulesColider: []
-  speed: 20
-  speedRot: 0
+  speed: 25
+  speedRot: 5
   DanoProjetil: 10
   spread: 0
   alvoTermico: {fileID: 0}
@@ -217,6 +217,9 @@ VFXRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_StaticBatchInfo:

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Drop : MonoBehaviour
 {
-    public enum DropsTipos {Shild , Life, Drone, FastShot, buff2X, MissilGuiado, Special}
+    public enum DropsTipos { Shild, Life, Drone, FastShot, buff2X, buffTermico, Special }
 
     public DropsTipos dropsTipos;
 
@@ -13,58 +13,69 @@ public class Drop : MonoBehaviour
     Rigidbody rb;
     public int stageTime = 60;
     [HideInInspector] public bool getDrop;
-    
 
-    private void Start() {
+
+    private void Start()
+    {
         rb = GetComponent<Rigidbody>();
     }
 
-    private void Update() {        
-        VFXDrop(getDrop,chronometry.CronometroPorSeg(stageTime));        
+    private void Update()
+    {
+        VFXDrop(getDrop, chronometry.CronometroPorSeg(stageTime));
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         FisicDrop();
     }
 
     void FisicDrop()
     {
-            Collider[] hitCollider = Physics.OverlapSphere(new Vector3(transform.position.x,transform.position.y -0.5f,transform.position.z),0.5f);
+        Collider[] hitCollider = Physics.OverlapSphere(new Vector3(transform.position.x, transform.position.y - 0.5f, transform.position.z), 0.5f);
 
-            int hits = 0;
+        int hits = 0;
 
-            for (int i = 0; i < hitCollider.Length; i++)
-            {
-                if(!hitCollider[i].isTrigger)
-                    hits++;            
-            }
-            
-            if( hits > 0){
-                rb.Sleep();
-            }else{
-                rb.WakeUp();
-            }
+        for (int i = 0; i < hitCollider.Length; i++)
+        {
+            if (!hitCollider[i].isTrigger)
+                hits++;
+        }
+
+        if (hits > 0)
+        {
+            rb.Sleep();
+        }
+        else
+        {
+            rb.WakeUp();
+        }
 
     }
 
-   void VFXDrop(bool getDrop, bool sumir)
-   {
-        if(sumir){
+    void VFXDrop(bool getDrop, bool sumir)
+    {
+        if (sumir)
+        {
             //roda particula de sumir o drop
-        }else if(getDrop){
+        }
+        else if (getDrop)
+        {
             //roda Particula de Pegar Drop
-        }else{
+        }
+        else
+        {
             //roda particula de Idle
         }
 
-   }
+    }
 
-   public virtual void MecanicDrop(Collider other)
-   {
+    public virtual void MecanicDrop(Collider other)
+    {
 
         getDrop = true;
-        Destroy(gameObject,1);
+        Destroy(gameObject, 1);
 
-   }
+    }
 
 }

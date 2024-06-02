@@ -144,7 +144,7 @@ public class PlayerFisics
 
    public void RotationDirection(){
 
-      moveRot = Quaternion.RotateTowards(moveRot, PlayerRotation(rb.velocity.normalized.x, rb.velocity.normalized.z), speedRotation * Time.deltaTime);
+      moveRot = Quaternion.RotateTowards(moveRot, PlayerRotation(rb.linearVelocity.normalized.x, rb.linearVelocity.normalized.z), speedRotation * Time.deltaTime);
       
       Vector3 adjustedRotationDirection = Vector3.RotateTowards(rb.transform.up, currentDirection, Mathf.Deg2Rad * 12, 0);      
 

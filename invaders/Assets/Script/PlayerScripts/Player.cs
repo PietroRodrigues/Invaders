@@ -23,12 +23,12 @@ public class Player : Statos
    [SerializeField] float jumpForce;
    [SerializeField] float recuoForce;
    [SerializeField] float powerPropulsion;
-   [Range(1, 360)][SerializeField] float speedRotation = 1f;   
+   [Range(1, 360)][SerializeField] float speedRotation = 1f;
 
    [Range(1, 360)][SerializeField] float speedCanonAim = 1f;
    [SerializeField] float minCanonX = 0;
    [SerializeField] float maxCanonX = 1;
-  
+
    [Range(10, 100)][SerializeField] float maxDistanceBullets;
 
    [SerializeField] float distRaycast;
@@ -52,8 +52,8 @@ public class Player : Statos
       hud = FindFirstObjectByType<HUD>();
       camControler = FindFirstObjectByType<CamControler>();
       inventario = new Inventario(100);
-      playerFisics = new PlayerFisics(rb,partsTank.cabine.GetComponent<BoxCollider>(),poeira,dashEffects);
-      shotting = new Shotting(shotingSettings,camControler.mouseSensitivity);
+      playerFisics = new PlayerFisics(rb, partsTank.cabine.GetComponent<BoxCollider>(), poeira, dashEffects);
+      shotting = new Shotting(shotingSettings, camControler.mouseSensitivity);
       playerAnimation = new PlayerAnimation(partsTank);
       drone = new Drone();
 
@@ -69,38 +69,38 @@ public class Player : Statos
 
       shotting.Aim(camControler.playerInputs.inputsControl.Aim, camControler);
 
-      playerFisics.MoverAWSD(camControler.playerInputs.inputsControl.xInput, camControler.playerInputs.inputsControl.zInput,camControler.playerInputs.inputsControl.Aim ? speedMax / 2 : speedMax);
+      playerFisics.MoverAWSD(camControler.playerInputs.inputsControl.xInput, camControler.playerInputs.inputsControl.zInput, camControler.playerInputs.inputsControl.Aim ? speedMax / 2 : speedMax);
 
-      playerFisics.Propulsor(distRaycast,floatingHeight);
+      playerFisics.Propulsor(distRaycast, floatingHeight);
 
       playerFisics.Jump(camControler.playerInputs.inputsControl.jumpInput);
 
-      playerFisics.Dash(camControler.playerInputs.inputsControl.xInput, camControler.playerInputs.inputsControl.zInput,camControler.playerInputs.inputsControl.Dash);
+      playerFisics.Dash(camControler.playerInputs.inputsControl.xInput, camControler.playerInputs.inputsControl.zInput, camControler.playerInputs.inputsControl.Dash);
 
       playerFisics.RotationDirection();
 
       AutoDestroyer();
-      
-      drone.LifeTimer(ref droneStatos,ref this.buffs);
-      alvo = drone.RadarScan(this,45);
+
+      drone.LifeTimer(ref droneStatos, ref this.buffs);
+      alvo = drone.RadarScan(this, 45);
 
    }
 
    void FixedUpdate()
    {
-      shotting.ShotMissile(camControler.playerInputs.inputsControl.disparar, 0, transform.position, maxDistanceBullets,playerFisics,buffs.buffFastShot,buffs.buff2X);
+      shotting.ShotMissile(camControler.playerInputs.inputsControl.disparar, 0, transform.position, maxDistanceBullets, playerFisics, buffs.buffFastShot, buffs.buff2X, buffs.buffTermico);
 
-      playerFisics.AplicaMovemento(dashForce,jumpForce,recuoForce,-partsTank.canon.forward);
+      playerFisics.AplicaMovemento(dashForce, jumpForce, recuoForce, -partsTank.canon.forward);
       playerFisics.AplicaFlutuadores(powerPropulsion);
 
-      drone.MovementDrones(ref droneStatos,buffs.buffDrone);
-      drone.LookDroneTarget(alvo,hud.hud_Aim.MiraVeiculo,45,droneStatos);
-      
+      drone.MovementDrones(ref droneStatos, buffs.buffDrone);
+      drone.LookDroneTarget(alvo, hud.hud_Aim.MiraVeiculo, 45, droneStatos);
+
    }
 
    private void LateUpdate()
-   {        
-      playerAnimation.AimCanon(hud.hud_Aim.MouseAimPos,minCanonX, maxCanonX);
+   {
+      playerAnimation.AimCanon(hud.hud_Aim.MouseAimPos, minCanonX, maxCanonX);
    }
 
    void OnEnable()
@@ -117,6 +117,7 @@ public class Player : Statos
          explosionPlayer.transform.SetParent(null);
          explosionPlayer.Play();
          buffs.TimerDroneLife = 0;
+         buffs.TimerTermico = 0;
          buffs.buffDrone = false;
          droneStatos.drone.transform.SetParent(droneStatos.droneBeg);
          droneStatos.drone.transform.localPosition = droneStatos.posDrone;
@@ -124,16 +125,17 @@ public class Player : Statos
          bodies--;
          this.gameObject.SetActive(false);
       }
-         
+
    }
 
-   public void Ripples(Vector3 posBullet){
-      
+   public void Ripples(Vector3 posBullet)
+   {
+
       VisualEffect ripples = shieldParticle.Find("ShieldRipples").GetComponent<VisualEffect>();
 
       Vector3 direction = posBullet - ripples.transform.position;
 
-      Quaternion ripplesRotation = Quaternion.LookRotation(direction,Vector3.up);
+      Quaternion ripplesRotation = Quaternion.LookRotation(direction, Vector3.up);
       Vector3 ripplesEulerAngle = ripplesRotation.eulerAngles;
 
       ripples.transform.rotation = Quaternion.Euler(ripplesEulerAngle);
@@ -142,10 +144,11 @@ public class Player : Statos
 
    }
 
-   public void ShieldCharger(){
-      
+   public void ShieldCharger()
+   {
+
       VisualEffect shield = shieldParticle.Find("Shield").GetComponent<VisualEffect>();
-      
+
       shield.Play();
 
    }
@@ -156,23 +159,25 @@ public class Player : Statos
       {
          Vector3 forcaImpact = other.relativeVelocity;
 
-         float magnitudeImpact = forcaImpact.magnitude; 
-         
-         playerFisics.ImpactForceReaction(other.contacts[0].normal,1.2f + magnitudeImpact/4);
+         float magnitudeImpact = forcaImpact.magnitude;
+
+         playerFisics.ImpactForceReaction(other.contacts[0].normal, 1.2f + magnitudeImpact / 4);
       }
    }
 
 }
 
 [System.Serializable]
-public struct Inventario{
-   
+public struct Inventario
+{
+
    [HideInInspector] public float shield;
    public float ShieldMax;
 
-   public Inventario (float shieldMax){
+   public Inventario(float shieldMax)
+   {
       this.shield = 0;
       this.ShieldMax = shieldMax;
    }
-   
+
 }

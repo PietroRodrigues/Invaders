@@ -31,14 +31,15 @@ public class Spawner : MonoBehaviour
 
     WavePosition wavePosition;
 
-    private void Awake()
+    private void Start()
     {
         enemyesInStage = new EnemyesInStage();
 
-        if(waveList.Count > 0){
-            wavePosition = new WavePosition(WaveTransform,allMap);
+        if (waveList.Count > 0)
+        {
+            wavePosition = new WavePosition(WaveTransform, allMap);
         }
-        
+
         foreach (WaveStage wave in waveList)
         {
             foreach (EnemyInfo enemyInfo in wave.enemyInWave)
@@ -46,36 +47,46 @@ public class Spawner : MonoBehaviour
                 enemyInfo.enemy = FillTheEnemies(enemyInfo.tipo);
             }
         }
+
+
     }
 
     private void Update()
     {
-        if(enemyesInStage.alive.Count == 0){
-        
-            if(enemyesInStage.waveCont < waveList.Count)
+        if (enemyesInStage.alive.Count == 0)
+        {
+            if (enemyesInStage.waveCont < waveList.Count)
                 enemyesInStage.waveCont++;
-            else{
+            else
+            {
                 boss.bossActive = true;
                 boss.gameObject.SetActive(boss.bossActive);
                 enemyesInStage.waveCont = waveList.Count + 1;
             }
 
-            if(!boss.bossActive){
+            if (!boss.bossActive)
+            {
                 StartCoroutine(SpawnEnemy());
-            }else{
-                if(boss.statos.hp <= 0){
+            }
+            else
+            {
+                if (boss.statos.hp <= 0)
+                {
                     Debug.Log("Fim De jogo!!!");
                 }
             }
-        
-        }else{
+
+        }
+        else
+        {
 
             List<GameObject> dead = new List<GameObject>();
             foreach (GameObject enemy in enemyesInStage.alive)
             {
-                if(!enemy.activeSelf){
+                if (!enemy.activeSelf)
+                {
                     dead.Add(enemy);
-                }                
+                }
             }
 
             foreach (var obj in dead)
@@ -83,22 +94,24 @@ public class Spawner : MonoBehaviour
                 enemyesInStage.dead.Add(obj);
                 enemyesInStage.alive.Remove(obj);
             }
-            
-            
-            wavePosition.WavePositionSet(waveSpeed,mapLarger,heightWave,boxSize);
-            
-            wavePosition.EnemyPosSet(enemyesInStage.alive,boxSize);
+
+
+            wavePosition.WavePositionSet(waveSpeed, mapLarger, heightWave, boxSize);
+
+            wavePosition.EnemyPosSet(enemyesInStage.alive, boxSize);
         }
     }
 
-    IEnumerator SpawnEnemy(){
-
-        if(waveList.Count > 0){
+    IEnumerator SpawnEnemy()
+    {
+        if (waveList.Count > 0)
+        {
             foreach (EnemyInfo enemyInfo in waveList[enemyesInStage.waveCont - 1].enemyInWave)
             {
                 GameObject enemy = RecicleEnemy(enemyInfo);
 
-                if(enemy == null){
+                if (enemy == null)
+                {
                     enemy = InstantiateEnemy(enemyInfo);
                 }
 
@@ -111,27 +124,30 @@ public class Spawner : MonoBehaviour
 
     }
 
-    GameObject InstantiateEnemy(EnemyInfo enemyInfo){
-        
+    GameObject InstantiateEnemy(EnemyInfo enemyInfo)
+    {
+
         GameObject enemy = Instantiate(enemyInfo.enemy);
         enemy.GetComponent<Enemy>().proprerts.waveTransform = WaveTransform;
         enemy.GetComponent<Enemy>().proprerts.target = player;
         enemy.name = "Enemy";
         SetPositionEnemySpawn(enemy);
-        
+
         return enemy;
 
     }
 
-    GameObject RecicleEnemy(EnemyInfo enemyInfo){
+    GameObject RecicleEnemy(EnemyInfo enemyInfo)
+    {
 
         GameObject enemyReciclado = null;
         List<GameObject> objectsToRemove = new List<GameObject>();
 
         foreach (GameObject enemy in enemyesInStage.dead)
         {
-            if(enemy.GetComponent<Enemy>().tipo == enemyInfo.tipo){
-                
+            if (enemy.GetComponent<Enemy>().tipo == enemyInfo.tipo)
+            {
+
                 objectsToRemove.Add(enemy);
                 SetPositionEnemySpawn(enemy);
                 enemyReciclado = enemy;
@@ -139,7 +155,7 @@ public class Spawner : MonoBehaviour
                 break;
             }
 
-        }        
+        }
 
         foreach (GameObject obj in objectsToRemove)
         {
@@ -150,48 +166,51 @@ public class Spawner : MonoBehaviour
 
     }
 
-    void SetPositionEnemySpawn(GameObject enemy){
+    void SetPositionEnemySpawn(GameObject enemy)
+    {
 
         Vector3 randomDirection = Random.insideUnitSphere;
         Vector3 randomPosition = randomDirection * radiusSpawnPont;
         enemy.transform.position = pointsSpawner[Random.Range(0, pointsSpawner.Count)].position + randomPosition;
-    
+
     }
 
     GameObject FillTheEnemies(StatosEnemyes.Tipo tipo)
     {
-      GameObject enemy = null;
+        GameObject enemy = null;
 
-      foreach (GameObject enemysPrefabs in thePhasePrefabs)
-      {
-         if (enemysPrefabs.GetComponent<Enemy>().tipo == tipo)
-         {
-            enemy = enemysPrefabs;
-         }
-      }
+        foreach (GameObject enemysPrefabs in thePhasePrefabs)
+        {
+            if (enemysPrefabs.GetComponent<Enemy>().tipo == tipo)
+            {
+                enemy = enemysPrefabs;
+            }
+        }
 
-      return enemy;
+        return enemy;
     }
 
     void OnDrawGizmosSelected()
     {
-        if(wavePosition != null){
-            if (wavePosition.quadrants != null){
-                
+        if (wavePosition != null)
+        {
+            if (wavePosition.quadrants != null)
+            {
+
                 Gizmos.color = Color.red;
 
                 foreach (Vector3 point in wavePosition.quadrants)
                 {
-                    Gizmos.DrawSphere(point,1f);                    
+                    Gizmos.DrawSphere(point, 1f);
                 }
-            }            
+            }
         }
     }
 
     void OnDrawGizmos()
     {
-        if(WaveTransform != null)
-            DrawCubeEdges(WaveTransform.position,boxSize);
+        if (WaveTransform != null)
+            DrawCubeEdges(WaveTransform.position, boxSize);
     }
 
     private void DrawCubeEdges(Vector3 center, Vector3 size)
@@ -239,18 +258,19 @@ public class Spawner : MonoBehaviour
 [System.Serializable]
 public class WaveStage
 {
-   public  List<EnemyInfo> enemyInWave;
+    public List<EnemyInfo> enemyInWave;
 }
 
 [System.Serializable]
 public class EnemyInfo
 {
-   public StatosEnemyes.Tipo tipo;
-   [HideInInspector] public GameObject enemy;
+    public StatosEnemyes.Tipo tipo;
+    public GameObject enemy;
 }
 
 [System.Serializable]
-public class EnemyesInStage{
+public class EnemyesInStage
+{
 
     public int waveCont = 0;
     public List<GameObject> alive = new List<GameObject>();

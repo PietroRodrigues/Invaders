@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 990373336302835260}
   - component: {fileID: 7438247532215508457}
   - component: {fileID: 7817335173036872686}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,6 +106,7 @@ VFXRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_StaticBatchInfo:
@@ -137,7 +138,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5243803693514387361}
-  m_Layer: 2
+  m_Layer: 9
   m_Name: ShildParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +173,7 @@ GameObject:
   - component: {fileID: 4937596544378383992}
   - component: {fileID: 5262209004886994858}
   - component: {fileID: 5487113322786062060}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ShieldRipples
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -264,6 +265,7 @@ VFXRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_StaticBatchInfo:
@@ -295,7 +297,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7488460278075822226}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +331,7 @@ GameObject:
   - component: {fileID: 7488460278269263331}
   - component: {fileID: 7488460278269263328}
   - component: {fileID: 7488460278269263329}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -378,6 +380,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -435,9 +438,9 @@ GameObject:
   - component: {fileID: 7488460278307368707}
   - component: {fileID: 7488460278307368706}
   - component: {fileID: -1696655731236404198}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EnemyRed
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -538,7 +541,7 @@ GameObject:
   - component: {fileID: 7488460278821082105}
   - component: {fileID: 7488460278821082102}
   - component: {fileID: 7488460278821082103}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -587,6 +590,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -645,7 +649,7 @@ GameObject:
   - component: {fileID: 7488460279262105048}
   - component: {fileID: 7488460279262105049}
   - component: {fileID: 7488460279262105046}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -694,6 +698,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -752,7 +757,7 @@ GameObject:
   - component: {fileID: 7488460279381373924}
   - component: {fileID: 7488460279381373925}
   - component: {fileID: 7488460279381373922}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -801,6 +806,7 @@ MeshRenderer:
   m_RayTraceProcedural: 0
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -856,7 +862,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7488460279585279698}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CxBalas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -887,7 +893,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7488460279621304159}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Canon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
